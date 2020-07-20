@@ -1,0 +1,13 @@
+doctype html
+html
+  head
+    block head
+      meta(charset="utf-8")
+      meta(name="viewport", content="width=device-width")
+      meta(http-equiv="X-UA-Compatible", content="IE=edge")
+      meta(name="x-apple-disable-message-reformatting")
+  body
+    p Hello #{name},
+    p We received a request to reset your #{brand} password. Click the link below to choose a new one:
+    p #{password_reset_form}
+    p If you don’t use this link within 3 hours, it will expire. To get a new password reset link, visit #{password_reset_url}

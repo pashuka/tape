@@ -1,0 +1,14 @@
+doctype html
+html
+  head
+    block head
+      meta(charset="utf-8")
+      meta(name="viewport", content="width=device-width")
+      meta(http-equiv="X-UA-Compatible", content="IE=edge")
+      meta(name="x-apple-disable-message-reformatting")
+  body
+    p Hello #{name},
+    p We wanted to let you know that the password to your #{brand} account was changed.
+    p If you did not perform this action, you can recover access by entering your email into the form at #{password_reset_url}
+    p If you run into problems, please contact support by visiting #{contacts_url}
+    p Please do not reply to this email with your password. We will never ask for your password, and we strongly discourage you from sharing it with anyone.

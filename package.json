@@ -1,0 +1,25 @@
+{
+  "name": "tape",
+  "private": true,
+  "scripts": {
+    "start": "yarn wsrun dev",
+    "lint": "yarn wsrun lint",
+    "lint-fix": "yarn wsrun lint-fix",
+    "test": "yarn wsrun test"
+  },
+  "workspaces": [
+    "backend",
+    "frontend"
+  ],
+  "lint-staged": {
+    "*.(ts|tsx)": [
+      "yarn run lint-fix",
+      "git add"
+    ]
+  },
+  "devDependencies": {
+    "husky": "^3.1.0",
+    "lint-staged": "^9.5.0",
+    "wsrun": "^5.1.0"
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "en": {
+    "translation": {
+      "Brand": "Tape",
+      "Company": "Product",
+      "Sign in": "Sign in",
+      "Sign up": "Sign up",
+      "Sign out": "Sign out",
+      "Sign in to resume": "Sign in to resume",
+      "Save": "Save",
+      "Cancel": "Cancel",
+      "New record": "New record",
+      "Forgot password?": "Forgot password?",
+      "You need to sign out before": "You need to sign out before",
+      "Undefined error": "Undefined error",
+      "We never share your email with anyone else": "We never share your email with anyone else",
+      "Password": "Password",
+      "Remove file?": "Remove file?"
+    }
+  }
+}

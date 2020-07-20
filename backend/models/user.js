@@ -154,11 +154,6 @@ class model extends Repository {
 
       values = { username };
 
-      // TODO: if we change username then we need change founder name inside companies/members/... too
-      const companiesModel = libmodel(resources.companies);
-      companiesModel.user = this.user;
-      await companiesModel.update({ founder: this.user.username }, { founder: username });
-
       const fullname = this.user.realname || this.user.username;
       // TODO: notify throught rabbit
       Mailer.send({

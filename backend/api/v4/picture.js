@@ -15,7 +15,7 @@ const supportMimes = [
   "image/png",
   "image/svg+xml",
   "image/tiff",
-  "image/webp"
+  "image/webp",
 ];
 
 const removeFile = (resource, profile) => {
@@ -41,12 +41,12 @@ const removeFile = (resource, profile) => {
  * @apiName Update
  * @apiSampleRequest /v4/picture/resource/name/1024
  */
-router.put(`/${api.v4}/picture/:resource+/`, Auth, async ctx => {
+router.put(`/${api.v4}/picture/:resource+/`, Auth, async (ctx) => {
   const resource = ctx.params.resource;
   const user = ctx.req.user || { id: 1, email: roles.anonymous, role: roles.anonymous };
   checkPerms(resource, user.role, "updateOwn");
 
-  if (![resources.companies, resources.user].includes(resource)) {
+  if (![resources.user].includes(resource)) {
     throw new BadRequest([{ resource: "bad" }]);
   }
   if (!has(ctx.request.files)) {
@@ -59,17 +59,7 @@ router.put(`/${api.v4}/picture/:resource+/`, Auth, async ctx => {
   let query = ctx.request.query;
   let profile;
 
-  if (resources.companies === resource) {
-    if (!query || !query.brand) {
-      throw new BabRequest([{ update: "!own" }]);
-    }
-    query.founder = user.username;
-    const entity = await Model.findOne(query);
-    if (!entity) {
-      throw new NotFound();
-    }
-    profile = entity.profile;
-  } else if (resources.user === resource) {
+  if (resources.user === resource) {
     if (!query || !query.username || query.username !== user.username) {
       throw new BabRequest([{ update: "!own" }]);
     }
@@ -102,12 +92,12 @@ router.put(`/${api.v4}/picture/:resource+/`, Auth, async ctx => {
  * @apiName Delete
  * @apiSampleRequest /v4/picture/resource/name/1024
  */
-router.delete(`/${api.v4}/picture/:resource+/`, Auth, async ctx => {
+router.delete(`/${api.v4}/picture/:resource+/`, Auth, async (ctx) => {
   const resource = ctx.params.resource;
   const user = ctx.req.user || { id: 1, email: roles.anonymous, role: roles.anonymous };
   checkPerms(resource, user.role, "deleteOwn");
 
-  if (![resources.companies, resources.user].includes(resource)) {
+  if (![resources.user].includes(resource)) {
     throw new BadRequest([{ resource: "bad" }]);
   }
 
@@ -117,17 +107,7 @@ router.delete(`/${api.v4}/picture/:resource+/`, Auth, async ctx => {
   let query = ctx.request.query;
   let profile;
 
-  if (resources.companies === resource) {
-    if (!query || !query.brand) {
-      throw new BabRequest([{ update: "!own" }]);
-    }
-    query.founder = user.username;
-    const entity = await Model.findOne(query);
-    if (!entity) {
-      throw new NotFound();
-    }
-    profile = entity.profile;
-  } else if (resources.user === resource) {
+  if (resources.user === resource) {
     if (!query || !query.username || query.username !== user.username) {
       throw new BabRequest([{ update: "!own" }]);
     }

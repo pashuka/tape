@@ -7,6 +7,12 @@ import IClose from "@material-ui/icons/Close";
 import IPersonAdd from "@material-ui/icons/PersonAdd";
 
 import useOutsideClick from "../../../hooks/useOutsideClick";
+import { useRouteMatch } from "react-router-dom";
+import {
+  QSParamsType,
+  ParamsKeyUser,
+  ParamsKeyDialog,
+} from "../../../constants";
 
 type HeaderPropsType = {
   isPending: boolean;
@@ -15,8 +21,11 @@ type HeaderPropsType = {
 
 const Header: React.FC<HeaderPropsType> = ({ isPending, onChange }) => {
   const { t } = useTranslation();
-  const [ddRef, isVisible, setIsVisible] = useOutsideClick<HTMLDivElement>(false);
+  const [ddRef, isVisible, setIsVisible] = useOutsideClick<HTMLDivElement>(
+    false,
+  );
   const searchRef = React.createRef<HTMLInputElement>();
+  const { params } = useRouteMatch<QSParamsType>();
 
   const [query, setQuery] = React.useState<string>("");
 
@@ -25,12 +34,21 @@ const Header: React.FC<HeaderPropsType> = ({ isPending, onChange }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [query]);
 
+  React.useEffect(() => {
+    if (params[ParamsKeyUser] || params[ParamsKeyDialog]) {
+      setQuery("");
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [params]);
+
   return (
     <div className="dialog-header py-2 py-lg-3 px-2">
       <div className="input-group">
         <div className="input-group-prepend">
           <span
-            className={`input-group-text border-0 ${isPending ? "bg-gray-200" : "bg-white"} pr-0`}
+            className={`input-group-text border-0 ${
+              isPending ? "bg-gray-200" : "bg-white"
+            } pr-0`}
           >
             <ISearch className="text-gray-400" />
           </span>

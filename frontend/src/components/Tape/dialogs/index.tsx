@@ -1,25 +1,25 @@
-import React, { Fragment } from 'react';
-import { useFetch } from 'react-async';
-import { useRecoilState } from 'recoil';
+import React, { Fragment } from "react";
+import { useFetch } from "react-async";
+import { useRecoilState } from "recoil";
 
-import CardDialog from './cards/dialog';
-import CardSearch from './cards/search';
-import CardNew from './cards/new';
-import DialogsSkeleton from './skeleton';
-import Header from './header';
+import CardDialog from "./cards/dialog";
+import CardSearch from "./cards/search";
+import CardNew from "./cards/new";
+import DialogsSkeleton from "./skeleton";
+import Header from "./header";
 import {
   QSParamsType,
   ParamsKeyUser,
   host,
   apis,
   routes,
-} from '../../../constants';
-import CardHeader from './cards/header';
-import { DialogsAtom, DialogType } from '../../../hooks/recoil/dialog';
-import { useRecoilStore } from '../../../hooks/recoil/request';
-import { AuthAtom } from '../../../hooks/recoil/auth';
-import { UsersAtom, UserType } from '../../../hooks/recoil/user';
-import { useRouteMatch } from 'react-router-dom';
+} from "../../../constants";
+import CardHeader from "./cards/header";
+import { DialogsAtom, DialogType } from "../../../hooks/recoil/dialog";
+import { useRecoilStore } from "../../../hooks/recoil/request";
+import { AuthAtom } from "../../../hooks/recoil/auth";
+import { UsersAtom, UserType } from "../../../hooks/recoil/user";
+import { useRouteMatch } from "react-router-dom";
 
 const indexOfLower = (a: string, b: string) =>
   a.toLocaleLowerCase().indexOf(b.toLocaleLowerCase());
@@ -32,7 +32,7 @@ const Dialogs = () => {
 
   useRecoilStore<DialogType[]>(
     DialogsAtom,
-    `${host}/${apis.version}/find/${routes.dialogs}/`,
+    `${host}/${apis.version}/findMy/${routes.dialogs}/`,
   );
   const [{ isPending: isPendingDialogs, data: dialogs }] = useRecoilState(
     DialogsAtom,
@@ -42,11 +42,11 @@ const Dialogs = () => {
     UserType[]
   >(
     `${host}/${apis.v}/find/${routes.user}/?query`,
-    { headers: { accept: 'application/json' } },
+    { headers: { accept: "application/json" } },
     { defer: true },
   );
 
-  const [searchQuery, setSearchQuery] = React.useState<string>('');
+  const [searchQuery, setSearchQuery] = React.useState<string>("");
   const [searchDialogs, setSearchDialogs] = React.useState<DialogType[]>([]);
   const [searchUsers, setSearchUsers] = React.useState<UserType[]>([]);
 
@@ -108,7 +108,7 @@ const Dialogs = () => {
 
             <nav className="nav nav-dialog d-block">
               {ParamsKeyUser in params && (
-                <CardNew username={params[ParamsKeyUser] || ''} />
+                <CardNew username={params[ParamsKeyUser] || ""} />
               )}
               {searchQuery.length > 0 && (
                 <Fragment>

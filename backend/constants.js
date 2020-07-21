@@ -1,28 +1,28 @@
 const lengths = {
   username: {
     min: 3,
-    max: 34
+    max: 34,
   },
   email: {
     min: 3,
-    max: 256
+    max: 256,
   },
   password: {
     min: 4,
-    max: 64
-  }
+    max: 64,
+  },
 };
 
 const coreUser = { id: 0, email: "core@email" };
 
 const api = {
-  v4: "v4"
+  v4: "v4",
 };
 
 const tables = {
   users: "users",
   dialogs: "dialogs",
-  messages: "messages"
+  messages: "messages",
 };
 
 const resources = {
@@ -32,23 +32,23 @@ const resources = {
     signout: "auth/signout",
     status: "auth/status",
     reset: "auth/reset",
-    verify: "auth/verify"
+    verify: "auth/verify",
   },
   user: "user",
   dialogs: "dialogs",
-  messages: "messages"
+  messages: "messages",
 };
 
 const roles = {
   anonymous: "anonymous",
   user: "user",
-  admin: "admin"
+  admin: "admin",
 };
 
 const grants = {
   [roles.anonymous]: {
     home: { "read:any": ["*"] },
-    auth: { "read:own": ["*"] }
+    auth: { "read:any": ["*"] },
   },
   [roles.user]: {
     home: { "read:any": ["*"] },
@@ -59,8 +59,8 @@ const grants = {
       "create:own": ["*"],
       "read:any": ["*"],
       "update:own": ["*"],
-      "delete:own": ["*"]
-    }
+      "delete:own": ["*"],
+    },
   },
   [roles.admin]: {
     home: { "read:any": ["*"] },
@@ -70,16 +70,16 @@ const grants = {
       "create:any": ["*"],
       "read:any": ["*"],
       "update:any": ["*"],
-      "delete:own": ["*"]
+      "delete:own": ["*"],
     },
     [resources.dialogs]: { "read:own": ["*"] },
     [resources.messages]: {
       "create:own": ["*"],
       "read:any": ["*"],
       "update:own": ["*"],
-      "delete:own": ["*"]
-    }
-  }
+      "delete:own": ["*"],
+    },
+  },
 };
 
 module.exports = {
@@ -89,5 +89,5 @@ module.exports = {
   resources,
   roles,
   grants,
-  lengths
+  lengths,
 };

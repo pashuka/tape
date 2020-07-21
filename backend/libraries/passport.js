@@ -35,7 +35,7 @@ passport.use(
     if (!email || !password) return done(null, false);
     return Model.findOne(
       { [email.indexOf("@") !== -1 ? "email" : "username"]: email },
-      columnsToAuth
+      { select: columnsToAuth }
     )
       .then((user) => {
         if (!user) {

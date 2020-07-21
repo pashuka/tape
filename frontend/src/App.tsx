@@ -73,7 +73,8 @@ const App: React.FC = () => {
             </PrivateRoute>
             <Route path={'/' + routes.auth.index} component={PageAuth} />
             <Route
-              path={''}
+              exact
+              path={'/'}
               render={({ location }) => (
                 <Redirect
                   to={{

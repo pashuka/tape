@@ -32,11 +32,17 @@ const SignIn = ({ history }) => {
 
   useEffect(() => {
     if (!isPending && data) {
-      setAuth({ data });
-      history.push('/'); //.goBack();
+      setAuth({ isPending: false, data });
     }
     // eslint-disable-next-line
   }, [data]);
+
+  useEffect(() => {
+    if (iam) {
+      history.push('/');
+    }
+    // eslint-disable-next-line
+  }, [iam]);
 
   return (
     <div className="col mt-5 mb-5">

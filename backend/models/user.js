@@ -19,18 +19,6 @@ const allowed = {
   update: ["username", "realname", "email", "password", "profile"],
 };
 
-exports.columnsToAuth = [
-  "id",
-  "created_at",
-  "username",
-  "realname",
-  "email",
-  "role",
-  "profile",
-  "password",
-  "active",
-];
-
 class model extends Repository {
   cook(key, value) {
     switch (key) {

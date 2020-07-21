@@ -2,7 +2,6 @@ const passport = require("koa-passport");
 const LocalStrategy = require("passport-local").Strategy;
 const bcrypt = require("bcryptjs");
 const Model = require("../models/user");
-const { columnsToAuth } = require("../models/user");
 
 const options = {
   usernameField: "email",
@@ -35,7 +34,7 @@ passport.use(
     if (!email || !password) return done(null, false);
     return Model.findOne(
       { [email.indexOf("@") !== -1 ? "email" : "username"]: email },
-      { select: columnsToAuth }
+      { select: ["username", "realname", "password", "email", "profile", "role"] }
     )
       .then((user) => {
         if (!user) {

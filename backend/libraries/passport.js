@@ -19,7 +19,10 @@ passport.deserializeUser(({ username }, done) => {
     // return done(new Error("id is undefined"), null);
     return done(null, null);
   }
-  return Model.findOne({ username })
+  return Model.findOne(
+    { username },
+    { select: ["username", "realname", "email", "profile", "role"] }
+  )
     .then((user) => {
       if (!user) {
         return done(null, false);

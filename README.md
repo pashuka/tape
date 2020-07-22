@@ -25,3 +25,40 @@ This project's aim to ...
     - <b>Language</b>: Typescript
     - <b>Linter</b>: Eslint
     - <b>Formatter</b>: Prettier
+
+### Implemented Features
+
+#### SignIn
+
+![SignIn](./screenshots/signup.png)
+
+#### SignUp
+
+![SignUp](./screenshots/signup.png)
+
+![SignUp Filled](./screenshots/signup-filled.png)
+
+#### Auto login
+
+![Home screen](./screenshots/home.png)
+
+#### Search users
+
+![Search users](./screenshots/search.png)
+
+#### Send Direct Messages
+
+![Messages](./screenshots/)
+
+#### Reset password
+
+![Reset password](./screenshots/reset-password.png)
+
+#### Emails
+
+- Registration, activation email
+- Reset password
+
+![Registration, activation email](./screenshots/activation.png)
+
+![Registration, activation email](./screenshots/activation-2.png)

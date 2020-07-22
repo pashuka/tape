@@ -30,7 +30,7 @@ This project's aim to ...
 
 #### SignIn
 
-![SignIn](./screenshots/signup.png)
+![SignIn](./screenshots/signin.png)
 
 #### SignUp
 
@@ -48,7 +48,7 @@ This project's aim to ...
 
 #### Send Direct Messages
 
-![Messages](./screenshots/)
+![Messages](./screenshots/messages.png)
 
 #### Reset password
 

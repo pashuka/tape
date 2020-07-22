@@ -108,7 +108,9 @@ class model extends Repository {
         email,
         brand: locales.en.translation.Brand,
         action_url: `${config.client.url}/${resources.auth.verify}/${entity.confirmation_code}`,
-        contacts_url: `${config.client.url}/${resources.contacts}/`,
+        contacts_url: resources.contacts
+          ? `${config.client.url}/${resources.contacts}/`
+          : config.client.url,
       },
     })
       .then((result) => {})

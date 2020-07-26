@@ -2,7 +2,7 @@ import React from 'react';
 import ISettings from '@material-ui/icons/Settings';
 import IChatBubbleOutline from '@material-ui/icons/ChatBubbleOutline';
 import IPeople from '@material-ui/icons/People';
-import IEdit from '@material-ui/icons/Edit';
+// import IEdit from '@material-ui/icons/Edit';
 import { useRecoilState } from 'recoil';
 
 import Logo from '../../Logo/index';
@@ -34,7 +34,7 @@ const Navbar = () => {
 
       <li className="nav-item d-none d-xl-block flex-xl-grow-1"></li>
 
-      <li className="nav-item">
+      {/* <li className="nav-item">
         <a
           className="nav-link position-relative p-0 py-xl-4"
           href="#tab-content-create-chat"
@@ -42,7 +42,7 @@ const Navbar = () => {
         >
           <IEdit />
         </a>
-      </li>
+      </li> */}
 
       <li className="nav-item mt-xl-9">
         <a

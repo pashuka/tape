@@ -33,7 +33,7 @@ const CardSearch: React.FC<CardSearchPropsType> = ({ user, isOnline }) => {
     <Link
       className="nav-link btn btn-link text-body p-0"
       to={`/${routes.dialogs}/${linkParam}`}
-      onClick={e => {
+      onClick={(e) => {
         setMessenger({ isOpen: messenger.isOpen, isChatOpen: true });
       }}
     >
@@ -59,7 +59,7 @@ const CardSearch: React.FC<CardSearchPropsType> = ({ user, isOnline }) => {
             <div className="media-body overflow-hidden">
               <div className="d-flex align-items-center">
                 <h6 className="text-truncate mt-2 mb-0 pt-1 mr-auto">
-                  {user.realname || user.username}
+                  {user.realname || <span>@{user.username}</span>}
                 </h6>
               </div>
             </div>

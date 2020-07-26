@@ -37,6 +37,7 @@ const resources = {
   user: "user",
   dialogs: "dialogs",
   messages: "messages",
+  events: "events",
 };
 
 const roles = {
@@ -61,6 +62,7 @@ const grants = {
       "update:own": ["*"],
       "delete:own": ["*"],
     },
+    [resources.events]: { "read:any": ["*"] },
   },
   [roles.admin]: {
     home: { "read:any": ["*"] },
@@ -79,6 +81,7 @@ const grants = {
       "update:own": ["*"],
       "delete:own": ["*"],
     },
+    [resources.events]: { "read:any": ["*"] },
   },
 };
 

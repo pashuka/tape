@@ -6,7 +6,13 @@ import Navbar from './navbar';
 import Dialogs from './dialogs/index';
 import Chat from './chat/index';
 import useUserAgent from '../../hooks/useUserAgent';
-import { QSParamsType, ParamsKeyUser, ParamsKeyDialog } from '../../constants';
+import {
+  QSParamsType,
+  ParamsKeyUser,
+  ParamsKeyDialog,
+  // routes,
+  // apis,
+} from '../../constants';
 import { MessengerAtom } from '../../hooks/recoil/messenger';
 const Messenger = () => {
   const { device } = useUserAgent();
@@ -20,6 +26,18 @@ const Messenger = () => {
   // The second argument is an array of values (usually props).
   // When it's an empty list, the callback will only be fired once, similar to componentDidMount.
   React.useEffect(() => {
+    // connect EventSource
+    // const eventSource = new EventSource(
+    //   // '/' + apis.version + '/' + routes.events,
+    //   '/' + apis.version + '/?' + routes.events + '=subscribe',
+    //   {
+    //     withCredentials: true,
+    //   },
+    // );
+    // eventSource.onmessage = (es) => {
+    //   console.log('message', es);
+    // };
+
     // Set specifics to messenger css styles
     document.body.style.height = '100%';
     document.documentElement.style.height = '100%';

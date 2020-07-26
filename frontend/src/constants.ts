@@ -32,13 +32,14 @@ export const routes = {
     reset: 'auth/reset',
     verify: 'auth/verify',
   },
+  events: 'events',
+  dialogs: 'dialogs',
+  messages: 'messages',
   settings: {
     profile: 'settings/profile',
     account: 'settings/account',
     security: 'settings/security',
   },
-  dialogs: 'dialogs',
-  messages: 'messages',
   user: 'user',
 };
 

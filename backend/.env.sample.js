@@ -56,9 +56,10 @@ module.exports = {
   seed: {
     users: [
       {
-        name: "John Doe",
-        email: "john@doe.domain",
-        password: "12345678",
+        realname: "John Doe",
+        username: "john",
+        email: "john.doe@domain.name",
+        password: "secret password",
         role: "user",
       },
     ],

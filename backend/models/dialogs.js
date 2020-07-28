@@ -38,7 +38,7 @@ class model extends Repository {
       .whereRaw(`(${this.table}.participants)::jsonb \\? ?`, [this.user.username])
       .orderBy("last_message_created_at", "desc")
       .offset(0)
-      .limit(100);
+      .limit(1000);
   }
 
   findOne(conditions) {

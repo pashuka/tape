@@ -4,7 +4,7 @@ const { tables } = require("../../constants");
 
 const counts = {
   // How many fixtures users we should generate
-  users: 256,
+  users: 48,
   // How many fixtures messages for one peer dialog we should generate
   messages: { min: 5, max: 50 },
 };

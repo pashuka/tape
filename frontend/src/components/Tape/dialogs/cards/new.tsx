@@ -39,7 +39,7 @@ const CardNew = ({ username }: PropsType) => {
             <div className="media-body overflow-hidden">
               <div className="d-flex align-items-center mt-2 pt-1">
                 <h6 className="text-truncate mb-0 mr-auto">
-                  {participant?.realname || participant?.username}
+                  {participant?.realname || `@${participant?.username}`}
                 </h6>
                 <Link
                   className="btn btn-link text-gray-400 text-nowrap"

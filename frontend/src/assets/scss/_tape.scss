@@ -25,7 +25,7 @@ $chat-sidebar-width: 350px;
 
 // Remove the unit of a length
 @function strip-unit($number) {
-  @if type-of($number) == "number" and not unitless($number) {
+  @if type-of($number) == 'number' and not unitless($number) {
     @return $number / ($number * 0 + 1);
   }
   @return $number;
@@ -33,7 +33,11 @@ $chat-sidebar-width: 350px;
 
 // Convert an RGBA color to its RGB look-alike
 @function rgba-to-rgb($rgba, $background: #fff) {
-  @return mix(rgb(red($rgba), green($rgba), blue($rgba)), $background, alpha($rgba) * 100%);
+  @return mix(
+    rgb(red($rgba), green($rgba), blue($rgba)),
+    $background,
+    alpha($rgba) * 100%
+  );
 }
 
 @mixin hide-scrollbar() {
@@ -59,11 +63,12 @@ $chat-sidebar-width: 350px;
 }
 
 .navigation {
-  border-top: 1px solid $border-color;
   padding-left: $grid-gutter-width / 2;
   padding-right: $grid-gutter-width / 2;
   order: 2;
   min-height: 61px;
+  box-shadow: 0px -1px 1px 0px rgba(0, 0, 0, 0.1);
+  z-index: 1;
 }
 
 .sidebar,
@@ -83,11 +88,11 @@ $chat-sidebar-width: 350px;
 .navigation,
 .chat-sidebar {
   // background: $body-bg;
-  background: theme-color("light");
+  background: theme-color('light');
 }
 
 .sidebar {
-  background: theme-color("light");
+  background-color: $gray-150;
   flex-grow: 2;
   order: 1;
 }
@@ -127,7 +132,8 @@ $chat-sidebar-width: 350px;
   z-index: 3;
   width: 100%;
   visibility: hidden;
-  transition: visibility 0.4s ease, -webkit-transform 0.4s ease, transform 0.4s ease;
+  transition: visibility 0.4s ease, -webkit-transform 0.4s ease,
+    transform 0.4s ease;
 
   &.chat-sidebar-visible {
     visibility: visible;
@@ -199,7 +205,8 @@ $chat-sidebar-width: 350px;
     z-index: $zindex-sticky;
     visibility: hidden;
     transform: translateX(100%);
-    transition: visibility 0.4s ease, -webkit-transform 0.4s ease, transform 0.4s ease;
+    transition: visibility 0.4s ease, -webkit-transform 0.4s ease,
+      transform 0.4s ease;
     background: $body-bg;
 
     &.main-visible {
@@ -300,18 +307,18 @@ $chat-sidebar-width: 350px;
     display: block;
     bottom: -3px;
     right: 0px;
-    content: "";
+    content: '';
     border-radius: 50%;
     transform: translate(-10%, 0%);
     @include theme_size(30%);
   }
 
   &.avatar-online::before {
-    background: theme-color("success");
+    background: theme-color('success');
   }
 
   &.avatar-offline::before {
-    background: theme-color("secondary");
+    background: theme-color('secondary');
   }
 }
 
@@ -487,9 +494,9 @@ $chat-sidebar-width: 350px;
 @include media-breakpoint-up(lg) {
   .card-active-listener {
     &::before {
-      background: theme-color("primary");
+      background: theme-color('primary');
       position: absolute;
-      content: "";
+      content: '';
       height: 0px;
       width: 2px;
       top: 50%;
@@ -539,7 +546,7 @@ $chat-sidebar-width: 350px;
   .navbar-nav {
     .nav-item {
       .nav-link.active {
-        color: theme-color("primary");
+        color: theme-color('primary');
       }
     }
   }

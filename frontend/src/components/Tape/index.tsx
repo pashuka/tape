@@ -59,9 +59,7 @@ const Messenger = () => {
   }, []);
 
   React.useEffect(() => {
-    if (params[ParamsKeyDialog]) {
-      setDialogId(params[ParamsKeyDialog]);
-    }
+    setDialogId(params[ParamsKeyDialog]);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [params]);
 
@@ -69,7 +67,7 @@ const Messenger = () => {
     <div className="messenger">
       <div
         ref={refNavbar}
-        className="navigation navbar navbar-light justify-content-center py-xl-1 bg-gray-200"
+        className="navigation navbar navbar-light justify-content-center py-xl-1 bg-white"
       >
         <Navbar />
       </div>

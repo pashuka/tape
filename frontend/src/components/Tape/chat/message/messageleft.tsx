@@ -31,7 +31,7 @@ const MessageLeft = ({
             alt=""
           />
         ) : (
-          <IPerson fontSize="large" className="m-1 text-white" />
+          <IPerson fontSize="large" className="m-lg-1 text-white" />
         )}
       </a>
 

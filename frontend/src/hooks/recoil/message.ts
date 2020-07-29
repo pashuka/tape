@@ -14,7 +14,7 @@ export type MessagesType = {
   [key: string]: MessageType[];
 };
 
-const messagesTrigger = Recoil.atom({
+const atomTrigger = Recoil.atom({
   key: 'messagesTrigger',
   default: 0,
 });
@@ -22,7 +22,7 @@ const messagesTrigger = Recoil.atom({
 export const messagesState = Recoil.selector<MessageType[] | undefined>({
   key: 'messagesState',
   get: async ({ get }) => {
-    get(messagesTrigger); // 'register' as a dependency
+    get(atomTrigger); // 'register' as a dependency
     const id = get(currentDialogIdState);
     return id
       ? await request<MessageType[]>(
@@ -33,11 +33,11 @@ export const messagesState = Recoil.selector<MessageType[] | undefined>({
             throw reason;
           },
         )
-      : ([] as MessageType[]);
+      : undefined;
   },
   set: ({ set }, value) => {
     if (value instanceof Recoil.DefaultValue) {
-      set(messagesTrigger, (v) => v + 1);
+      set(atomTrigger, (v) => v + 1);
     }
   },
 });

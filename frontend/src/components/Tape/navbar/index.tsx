@@ -13,11 +13,15 @@ import { MessengerAtom } from '../../../hooks/recoil/messenger';
 import { useResetRecoilState } from 'recoil';
 import { authState } from '../../../hooks/recoil/auth';
 import { request } from '../../../hooks/recoil/request';
+import { DialogsState } from '../../../hooks/recoil/dialog';
+import { messagesState } from '../../../hooks/recoil/message';
 
 const Navbar = () => {
   const [messenger, setMessenger] = useRecoilState(MessengerAtom);
   const [reset, setReset] = React.useState(false);
   const resetAuth = useResetRecoilState(authState);
+  const resetDialogs = useResetRecoilState(DialogsState);
+  const resetMessages = useResetRecoilState(messagesState);
 
   React.useEffect(() => {
     const fetchSignOut = async () => {
@@ -31,6 +35,8 @@ const Navbar = () => {
       );
       if ('status' in result && result.status === 'ok') {
         resetAuth();
+        resetDialogs();
+        resetMessages();
       }
     };
 

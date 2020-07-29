@@ -8,7 +8,7 @@ import Chat from './chat/index';
 import useUserAgent from '../../hooks/useUserAgent';
 import { QSParamsType, ParamsKeyUser, ParamsKeyDialog } from '../../constants';
 import { MessengerAtom } from '../../hooks/recoil/messenger';
-import { DialogIdState } from '../../hooks/recoil/message';
+import { currentDialogIdState } from '../../hooks/recoil/dialog';
 
 const Messenger = () => {
   const { device } = useUserAgent();
@@ -19,7 +19,7 @@ const Messenger = () => {
   const refSidebar = React.createRef<HTMLDivElement>();
 
   const [messenger] = useRecoilState(MessengerAtom);
-  const setDialogId = useSetRecoilState(DialogIdState);
+  const setDialogId = useSetRecoilState(currentDialogIdState);
 
   const { params } = useRouteMatch<QSParamsType>();
 

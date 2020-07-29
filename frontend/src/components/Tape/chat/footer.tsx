@@ -10,7 +10,7 @@ import {
   routes,
 } from '../../../constants';
 import { useRouteMatch } from 'react-router-dom';
-import { MessageType, MessagesState } from '../../../hooks/recoil/message';
+import { MessageType, messagesState } from '../../../hooks/recoil/message';
 import { useResetRecoilState } from 'recoil';
 import { DialogsState } from '../../../hooks/recoil/dialog';
 
@@ -19,7 +19,7 @@ const Footer = () => {
   const [message, setMessage] = React.useState<string>('');
   const [isShiftEnter, setIsShiftEnter] = React.useState(false);
 
-  const resetMessage = useResetRecoilState(MessagesState);
+  const resetMessage = useResetRecoilState(messagesState);
   const resetDialogs = useResetRecoilState(DialogsState);
 
   const { data, isPending, run: sendMessage } = useFetch<MessageType>(

@@ -2,27 +2,18 @@ import React, { Fragment } from 'react';
 import { useRecoilValueLoadable } from 'recoil';
 
 import { MessageSkeleton } from './message/skeleton';
-import { DialogType } from '../../../hooks/recoil/dialog';
-import {
-  // MessagesInfo,
-  // MessagesAtomFamily,
-  MessagesState,
-} from '../../../hooks/recoil/message';
+import { messagesState } from '../../../hooks/recoil/message';
 import Messages from './message';
 import { UserType } from '../../../hooks/recoil/user';
 
 type ContentPropsType = {
   iam: UserType;
-  dialog: DialogType | undefined;
 };
 
-const Content = ({ iam, dialog }: ContentPropsType) => {
+const Content = ({ iam }: ContentPropsType) => {
   const refContentElement = React.createRef<HTMLDivElement>();
   const refLastElement = React.createRef<HTMLDivElement>();
-  // const { state, contents } = useRecoilValueLoadable(
-  //   MessagesInfo(dialog?.dialog_id),
-  // );
-  const { state, contents } = useRecoilValueLoadable(MessagesState);
+  const { state, contents } = useRecoilValueLoadable(messagesState);
 
   React.useEffect(() => {
     refLastElement.current?.scrollIntoView();

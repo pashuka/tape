@@ -39,7 +39,7 @@ const Chat = () => {
       <div className="chat-body bg-white">
         <Header iam={iam} dialog={dialog} user={params[ParamsKeyUser]} />
         <SearchBar />
-        <Content iam={iam} dialog={dialog} />
+        <Content iam={iam} />
         <Footer />
       </div>
     </div>

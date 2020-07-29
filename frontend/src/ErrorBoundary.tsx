@@ -20,7 +20,7 @@ class ErrorBoundary extends React.Component<
   }
 
   componentDidCatch(error: any, errorInfo: any) {
-    Sentry.withScope(scope => {
+    Sentry.withScope((scope) => {
       scope.setExtras(errorInfo);
       Sentry.captureException(error);
     });
@@ -33,7 +33,7 @@ class ErrorBoundary extends React.Component<
     let message = 'Unknown error';
     let details = 'Application returning unknown error';
     if (error) {
-      if (error.message.startsWith('Cannot find module ', 0)) {
+      if (error.message && error.message.startsWith('Cannot find module ', 0)) {
         code = 501;
         message = 'Not implemented';
         details =

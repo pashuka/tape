@@ -1,18 +1,18 @@
-import React from "react";
-import { useTranslation } from "react-i18next";
-import IAdd from "@material-ui/icons/Add";
-import IGroupAdd from "@material-ui/icons/GroupAdd";
-import ISearch from "@material-ui/icons/Search";
-import IClose from "@material-ui/icons/Close";
-import IPersonAdd from "@material-ui/icons/PersonAdd";
+import React from 'react';
+import { useTranslation } from 'react-i18next';
+import IAdd from '@material-ui/icons/Add';
+import IGroupAdd from '@material-ui/icons/GroupAdd';
+import ISearch from '@material-ui/icons/Search';
+import IClose from '@material-ui/icons/Close';
+import IPersonAdd from '@material-ui/icons/PersonAdd';
 
-import useOutsideClick from "../../../hooks/useOutsideClick";
-import { useRouteMatch } from "react-router-dom";
+import useOutsideClick from '../../../hooks/useOutsideClick';
+import { useRouteMatch } from 'react-router-dom';
 import {
   QSParamsType,
   ParamsKeyUser,
   ParamsKeyDialog,
-} from "../../../constants";
+} from '../../../constants';
 
 type HeaderPropsType = {
   isPending: boolean;
@@ -27,7 +27,7 @@ const Header: React.FC<HeaderPropsType> = ({ isPending, onChange }) => {
   const searchRef = React.createRef<HTMLInputElement>();
   const { params } = useRouteMatch<QSParamsType>();
 
-  const [query, setQuery] = React.useState<string>("");
+  const [query, setQuery] = React.useState<string>('');
 
   React.useEffect(() => {
     onChange(query);
@@ -36,7 +36,7 @@ const Header: React.FC<HeaderPropsType> = ({ isPending, onChange }) => {
 
   React.useEffect(() => {
     if (params[ParamsKeyUser] || params[ParamsKeyDialog]) {
-      setQuery("");
+      setQuery('');
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [params]);
@@ -47,7 +47,7 @@ const Header: React.FC<HeaderPropsType> = ({ isPending, onChange }) => {
         <div className="input-group-prepend">
           <span
             className={`input-group-text border-0 ${
-              isPending ? "bg-gray-200" : "bg-white"
+              isPending ? 'bg-gray-200' : 'bg-white'
             } pr-0`}
           >
             <ISearch className="text-gray-400" />
@@ -58,7 +58,7 @@ const Header: React.FC<HeaderPropsType> = ({ isPending, onChange }) => {
           ref={searchRef}
           type="text"
           className="form-control border-0 rounded shadow-none"
-          placeholder={t("Search for messages or users...")}
+          placeholder={t('Search dialogs or users...')}
           onChange={(e: React.FormEvent<HTMLInputElement>) => {
             // Event fired when the input value is changed
             const value = e.currentTarget.value;
@@ -80,7 +80,7 @@ const Header: React.FC<HeaderPropsType> = ({ isPending, onChange }) => {
               href="#clean"
               onClick={(e) => {
                 e.preventDefault();
-                setQuery("");
+                setQuery('');
               }}
             >
               <IClose fontSize="small" />
@@ -97,7 +97,7 @@ const Header: React.FC<HeaderPropsType> = ({ isPending, onChange }) => {
           </button>
           <div
             className={`dropdown-menu dropdown-menu-right border-light ${
-              isVisible ? "show" : ""
+              isVisible ? 'show' : ''
             } shadow`}
           >
             <button
@@ -109,7 +109,7 @@ const Header: React.FC<HeaderPropsType> = ({ isPending, onChange }) => {
                 setIsVisible(!isVisible);
               }}
             >
-              <IPersonAdd className="mr-3" /> {t("Private chat")}
+              <IPersonAdd className="mr-3" /> {t('Private chat')}
             </button>
             <button
               type="button"
@@ -117,7 +117,7 @@ const Header: React.FC<HeaderPropsType> = ({ isPending, onChange }) => {
               className="dropdown-item d-flex align-items-center"
               onClick={() => setIsVisible(!isVisible)}
             >
-              <IGroupAdd className="mr-3" /> {t("New Group")}
+              <IGroupAdd className="mr-3" /> {t('New Group')}
             </button>
           </div>
         </div>

@@ -1,14 +1,12 @@
 import React, { Fragment } from 'react';
-import { useRecoilState } from 'recoil';
+import { useRecoilValueLoadable } from 'recoil';
 
-import { routes, host, apis } from '../../../constants';
 import { MessageSkeleton } from './message/skeleton';
 import { DialogType } from '../../../hooks/recoil/dialog';
-import { useRecoilStore } from '../../../hooks/recoil/request';
 import {
-  MessagesAtom,
-  MessagesType,
-  MessageType,
+  // MessagesInfo,
+  // MessagesAtomFamily,
+  MessagesState,
 } from '../../../hooks/recoil/message';
 import Messages from './message';
 import { UserType } from '../../../hooks/recoil/user';
@@ -21,29 +19,10 @@ type ContentPropsType = {
 const Content = ({ iam, dialog }: ContentPropsType) => {
   const refContentElement = React.createRef<HTMLDivElement>();
   const refLastElement = React.createRef<HTMLDivElement>();
-  const [messages, setMessages] = React.useState<MessageType[]>([]);
-
-  useRecoilStore<MessagesType>(
-    MessagesAtom,
-    dialog
-      ? `${host}/${apis.version}/find/${routes.messages}/?dialog_id=${dialog.dialog_id}`
-      : undefined,
-  );
-  const [{ isPending, data }] = useRecoilState(MessagesAtom);
-
-  React.useEffect(() => {
-    if (dialog && data && data[dialog.dialog_id]) {
-      setMessages(data[dialog.dialog_id]);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [data, dialog]);
-
-  React.useEffect(() => {
-    if (dialog && data && data[dialog.dialog_id]) {
-      setMessages(data[dialog.dialog_id]);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [data, dialog]);
+  // const { state, contents } = useRecoilValueLoadable(
+  //   MessagesInfo(dialog?.dialog_id),
+  // );
+  const { state, contents } = useRecoilValueLoadable(MessagesState);
 
   React.useEffect(() => {
     refLastElement.current?.scrollIntoView();
@@ -53,16 +32,16 @@ const Content = ({ iam, dialog }: ContentPropsType) => {
   return (
     <div ref={refContentElement} className="chat-content px-2 px-lg-4">
       <div className="container-xxl py-2 py-lg-4">
-        {isPending ? (
+        {state === 'loading' ? (
           <Fragment>
             <MessageSkeleton />
             <MessageSkeleton isIam />
             <MessageSkeleton />
             <MessageSkeleton isIam />
           </Fragment>
-        ) : (
-          <Messages messages={messages} iam={iam} />
-        )}
+        ) : state === 'hasValue' && Array.isArray(contents) ? (
+          <Messages messages={contents} iam={iam} />
+        ) : null}
       </div>
 
       {/* Scroll to last message */}

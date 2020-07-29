@@ -1,12 +1,11 @@
 import React from 'react';
 import IPerson from '@material-ui/icons/Person';
 import ICancel from '@material-ui/icons/Cancel';
-import { useRecoilState } from 'recoil';
+import { useRecoilValue } from 'recoil';
 import { Link } from 'react-router-dom';
 
-import { routes, apis, host } from '../../../../constants';
-import { useFetch } from 'react-async';
-import { UsersAtom, UserType } from '../../../../hooks/recoil/user';
+import { routes } from '../../../../constants';
+import { UserInfo } from '../../../../hooks/recoil/user';
 
 type PropsType = {
   username: string;
@@ -14,38 +13,7 @@ type PropsType = {
 
 const CardNew = ({ username }: PropsType) => {
   const isOnline = false;
-  const [participant, setParticipant] = React.useState<UserType | undefined>();
-  const [{ data: users }, setUsers] = useRecoilState(UsersAtom);
-
-  const { data, run } = useFetch<UserType>(
-    `${host}/${apis.version}/get/${routes.user}/?username=`,
-    { headers: { accept: 'application/json' } },
-    { defer: true },
-  );
-
-  React.useEffect(() => {
-    if (username.length) {
-      const record = users?.find((_) => username === _.username);
-      if (record) {
-        setParticipant(record);
-      } else {
-        run({
-          resource: `${host}/${apis.version}/get/${routes.user}/?username=${username}`,
-        });
-      }
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  React.useEffect(() => {
-    if (data && data.username === username) {
-      setUsers((prev) =>
-        prev.data ? { ...prev, data: [...prev.data, data] } : prev,
-      );
-      setParticipant(data);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [data]);
+  const participant = useRecoilValue(UserInfo(username));
 
   return (
     <div className="nav-link text-body p-0">

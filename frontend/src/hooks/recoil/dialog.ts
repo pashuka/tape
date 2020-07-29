@@ -1,5 +1,8 @@
-import { atom } from "recoil";
-import { StoreValueType } from "./request";
+import { atom, selector, DefaultValue } from 'recoil';
+import { request } from './request';
+import { SearchQueryAtom } from './search';
+import { limitSearchMax } from './constants';
+import { host, apis, routes } from '../../constants';
 
 export declare type DialogIdType = string;
 
@@ -18,10 +21,42 @@ export type DialogType = {
   profile: DialogProfileType;
 };
 
-export const DialogsAtom = atom<StoreValueType<DialogType[]>>({
-  key: "dialogs",
-  default: {
-    isPending: false,
-    data: [] as DialogType[],
+const atomTrigger = atom({
+  key: 'dialogsTrigger',
+  default: 0,
+});
+
+export const DialogsState = selector<DialogType[] | undefined>({
+  key: 'DialogsState',
+  get: async ({ get }) => {
+    get(atomTrigger); // 'register' as a dependency
+    return await request<DialogType[]>(
+      `${host}/${apis.version}/findMy/${routes.dialogs}/`,
+    ).then(
+      (data) => data,
+      (reason) => {
+        throw reason;
+      },
+    );
+  },
+  set: ({ set }, value) => {
+    if (value instanceof DefaultValue) {
+      set(atomTrigger, (v) => v + 1);
+    }
+  },
+});
+
+export const DialogsFilter = selector({
+  key: 'DialogsFilter',
+  get: ({ get }) => {
+    const query = get(SearchQueryAtom);
+    const records = get(DialogsState);
+    return query.length && records
+      ? records
+          .filter(({ participants }) =>
+            participants.find((_) => _.includes(query)),
+          )
+          .slice(0, limitSearchMax)
+      : ([] as DialogType[]);
   },
 });

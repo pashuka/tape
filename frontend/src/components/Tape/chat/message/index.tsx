@@ -1,11 +1,10 @@
-import React from "react";
-import { useRecoilState } from "recoil";
+import React from 'react';
 
-import { MessageType } from "../../../../hooks/recoil/message";
-import { UserType, UsersAtom } from "../../../../hooks/recoil/user";
-import MessageRight from "./messageright";
-import MessageLeft from "./messageleft";
-import Day from "../day";
+import { MessageType } from '../../../../hooks/recoil/message';
+import { UserType } from '../../../../hooks/recoil/user';
+import MessageRight from './messageright';
+import MessageLeft from './messageleft';
+import Day from '../day';
 
 type PropsType = {
   messages: MessageType[];
@@ -13,7 +12,6 @@ type PropsType = {
 };
 
 const Messages = ({ messages, iam }: PropsType) => {
-  const [{ data: users }] = useRecoilState(UsersAtom);
   let prevDay: string;
   return (
     <React.Fragment>
@@ -23,7 +21,7 @@ const Messages = ({ messages, iam }: PropsType) => {
           iam.username === owner ? (
             <MessageRight user={iam} data={_} />
           ) : (
-            <MessageLeft user={users?.find(({ username }) => username === owner)} data={_} />
+            <MessageLeft username={owner} data={_} />
           );
         const day = <Day createdAt={created_at} prevDay={prevDay} />;
         prevDay = created_at;

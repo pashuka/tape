@@ -1,12 +1,12 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import IPerson from '@material-ui/icons/Person';
-import { useRecoilState } from 'recoil';
+import { useRecoilState, useRecoilValue } from 'recoil';
 
 import { ParamsKeyUser, routes } from '../../../../constants';
 import { MessengerAtom } from '../../../../hooks/recoil/messenger';
-import { DialogsAtom } from '../../../../hooks/recoil/dialog';
-import { AuthAtom } from '../../../../hooks/recoil/auth';
+import { DialogsState } from '../../../../hooks/recoil/dialog';
+import { authState } from '../../../../hooks/recoil/auth';
 import { UserType } from '../../../../hooks/recoil/user';
 
 type CardSearchPropsType = {
@@ -16,8 +16,8 @@ type CardSearchPropsType = {
 
 const CardSearch: React.FC<CardSearchPropsType> = ({ user, isOnline }) => {
   const [messenger, setMessenger] = useRecoilState(MessengerAtom);
-  const [{ data: iam }] = useRecoilState(AuthAtom);
-  const [{ data: dialogs }] = useRecoilState(DialogsAtom);
+  const iam = useRecoilValue(authState);
+  const dialogs = useRecoilValue(DialogsState);
   const dialog = dialogs?.find(
     ({ participants }) =>
       participants.length === 2 &&

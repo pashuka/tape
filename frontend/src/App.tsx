@@ -1,12 +1,10 @@
 import React from 'react';
 import { BrowserRouter, Route, Switch, Redirect } from 'react-router-dom';
-import { useRecoilState } from 'recoil';
+import { useRecoilValueLoadable } from 'recoil';
 
 import ErrorBoundary from './ErrorBoundary';
-import { useRecoilStore } from './hooks/recoil/request';
-import { AuthAtom } from './hooks/recoil/auth';
-import { UserType } from './hooks/recoil/user';
-import { getRoute, routes } from './constants';
+import { authState } from './hooks/recoil/auth';
+import { routes } from './constants';
 import Overlay from './components/Overlay';
 import ErrorPage from './pages/error/index';
 import Notifications from './components/Notifications';
@@ -43,16 +41,16 @@ const PrivateRoute = ({
 
 const App: React.FC = () => {
   const { t } = useTranslation();
-  useRecoilStore<UserType>(AuthAtom, getRoute(routes.auth.status));
-  const [auth] = useRecoilState(AuthAtom);
-  const isAuthorized = 'data' in auth && auth.data !== undefined;
+  const { state, contents } = useRecoilValueLoadable(authState);
+  const isAuthorized =
+    state === 'hasValue' && contents !== undefined && 'username' in contents;
 
-  if (auth.isPending || !('data' in auth)) {
+  if (state === 'loading' || contents === undefined) {
     return <Overlay />;
   }
   return (
     <ErrorBoundary>
-      {auth.error && auth.error.statusCode === 404 && (
+      {state === 'hasError' && (
         <Notifications
           toasts={[
             {
@@ -63,7 +61,7 @@ const App: React.FC = () => {
         />
       )}
       <BrowserRouter>
-        <React.Suspense fallback={null}>
+        <React.Suspense fallback={<Overlay />}>
           <Switch>
             <PrivateRoute
               isAuthorized={isAuthorized}

@@ -6,7 +6,7 @@ import { useRecoilState, useRecoilValue } from 'recoil';
 
 import isToday from 'dayjs/plugin/isToday';
 import { QSParamsType, ParamsKeyDialog, routes } from '../../../../constants';
-import { AuthAtom } from '../../../../hooks/recoil/auth';
+import { authState } from '../../../../hooks/recoil/auth';
 import { MessengerAtom } from '../../../../hooks/recoil/messenger';
 import { UserInfo } from '../../../../hooks/recoil/user';
 import { DialogType } from '../../../../hooks/recoil/dialog';
@@ -22,7 +22,7 @@ const Dialog = ({ dialog }: DialogPropsType) => {
   const date = dialog ? new Date(dialog.last_message_created_at) : '';
   const { params } = useRouteMatch<QSParamsType>();
   const [messenger, setMessenger] = useRecoilState(MessengerAtom);
-  const [{ data: iam }] = useRecoilState(AuthAtom);
+  const iam = useRecoilValue(authState);
   const participantName =
     dialog.participants.find((_) => _ !== iam?.username) || '';
   const participant = useRecoilValue(UserInfo(participantName));

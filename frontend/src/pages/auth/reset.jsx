@@ -3,13 +3,13 @@ import { Link } from 'react-router-dom';
 import { useFetch } from 'react-async';
 import { useTranslation } from 'react-i18next';
 import IChevronLeft from '@material-ui/icons/ChevronLeft';
-import { useRecoilState } from 'recoil';
+import { useRecoilValue } from 'recoil';
 
 import { host, apis, routes } from '../../constants';
 import Form from '../../components/Form/index';
 import { schema } from './constants';
 import { onReject } from '../../utils';
-import { AuthAtom } from '../../hooks/recoil/auth';
+import { authState } from '../../hooks/recoil/auth';
 
 const ForgotPassword = ({
   history,
@@ -19,7 +19,7 @@ const ForgotPassword = ({
 }) => {
   const { t } = useTranslation();
   const [error, setError] = useState();
-  const [{ data: iam }] = useRecoilState(AuthAtom);
+  const iam = useRecoilValue(authState);
   const { data, isPending, run } = useFetch(
     // send credentials
     `${host}/${apis.version}/${routes.auth.reset}`,

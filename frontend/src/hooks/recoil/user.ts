@@ -1,7 +1,8 @@
-import { atom, selector, selectorFamily } from 'recoil';
-import { StoreValueType, request } from './request';
+import Recoil from 'recoil';
+import { request } from './request';
 import { SearchQueryAtom } from './search';
 import { routes, apis, host } from '../../constants';
+import { limitSearchMax } from './constants';
 
 type UserProfileType = {
   picture?: string;
@@ -17,29 +18,27 @@ export type UserType = {
   profile: UserProfileType;
 };
 
-export const UsersAtom = atom<StoreValueType<UserType[]>>({
-  key: 'Users',
-  default: {
-    isPending: false,
-    data: [] as UserType[],
-  },
-});
-
-export const filterUsers = selector({
-  key: 'filterUsers',
-  get: ({ get }) => {
+export const UsersFilter = Recoil.selector<UserType[]>({
+  key: 'UsersFilter',
+  get: async ({ get }) => {
     const query = get(SearchQueryAtom);
-    const state = get(UsersAtom);
-    return query.length && state.data
-      ? state.data.filter(
-          ({ username, realname }) =>
-            (realname && realname.includes(query)) || username.includes(query),
+    return query.length
+      ? await request<UserType[]>(
+          `${host}/${apis.version}/find/${routes.user}/?query=${String(query)}`,
+        ).then(
+          (data) => data.slice(0, limitSearchMax),
+          (reason) => {
+            throw reason;
+          },
         )
-      : ([] as UserType[]);
+      : new Promise((resolve) => resolve([] as UserType[]));
   },
 });
 
-export const UserInfo = selectorFamily<UserType, string | undefined>({
+export const UserInfo = Recoil.selectorFamily<
+  UserType | undefined,
+  string | undefined
+>({
   key: 'UserInfo',
   get: (username) => async () => {
     return username
@@ -53,6 +52,6 @@ export const UserInfo = selectorFamily<UserType, string | undefined>({
             throw reason;
           },
         )
-      : new Promise((resolve, reject) => reject('username is undefined'));
+      : new Promise((resolve) => resolve());
   },
 });

@@ -1,5 +1,5 @@
 import React from 'react';
-import { useRecoilState } from 'recoil';
+import { useRecoilValue } from 'recoil';
 
 import Header from './header/index';
 import SearchBar from './search';
@@ -12,18 +12,18 @@ import {
   ParamsKeyUser,
   ParamsKeyDialog,
 } from '../../../constants';
-import { AuthAtom } from '../../../hooks/recoil/auth';
-import { DialogsAtom, DialogType } from '../../../hooks/recoil/dialog';
+import { authState } from '../../../hooks/recoil/auth';
+import { DialogType, DialogsState } from '../../../hooks/recoil/dialog';
 
 const Chat = () => {
   const { params } = useRouteMatch<QSParamsType>();
-  const [{ data: iam }] = useRecoilState(AuthAtom);
-  const [{ data: dialogs }] = useRecoilState(DialogsAtom);
+  const iam = useRecoilValue(authState);
+  const dialogs = useRecoilValue(DialogsState);
   const [dialog, setDialog] = React.useState<DialogType | undefined>(undefined);
 
   React.useEffect(() => {
     if (dialogs && params[ParamsKeyDialog]) {
-      setDialog(dialogs?.find(_ => _.dialog_id === params[ParamsKeyDialog]));
+      setDialog(dialogs?.find((_) => _.dialog_id === params[ParamsKeyDialog]));
     }
   }, [params, dialogs]);
 

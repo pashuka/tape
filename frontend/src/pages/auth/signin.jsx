@@ -8,13 +8,13 @@ import { host, apis, routes } from '../../constants';
 import Form from '../../components/Form/index';
 import { schema } from './constants';
 import { onReject } from '../../utils';
-import { AuthAtom } from '../../hooks/recoil/auth';
+import { authState } from '../../hooks/recoil/auth';
 
 const SignIn = ({ history }) => {
   const { t } = useTranslation();
   const [error, setError] = useState();
 
-  const [{ data: iam }, setAuth] = useRecoilState(AuthAtom);
+  const [iam, setAuth] = useRecoilState(authState);
   const { data, isPending, run } = useFetch(
     // send credentials
     `${host}/${apis.version}/${routes.auth.signin}`,

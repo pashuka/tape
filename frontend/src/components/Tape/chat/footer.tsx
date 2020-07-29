@@ -9,14 +9,18 @@ import {
   apis,
   routes,
 } from '../../../constants';
-import { useHistory, useRouteMatch } from 'react-router-dom';
-import { MessageType } from '../../../hooks/recoil/message';
+import { useRouteMatch } from 'react-router-dom';
+import { MessageType, MessagesState } from '../../../hooks/recoil/message';
+import { useResetRecoilState } from 'recoil';
+import { DialogsState } from '../../../hooks/recoil/dialog';
 
 const Footer = () => {
-  const history = useHistory();
   const { params } = useRouteMatch<QSParamsType>();
   const [message, setMessage] = React.useState<string>('');
   const [isShiftEnter, setIsShiftEnter] = React.useState(false);
+
+  const resetMessage = useResetRecoilState(MessagesState);
+  const resetDialogs = useResetRecoilState(DialogsState);
 
   const { data, isPending, run: sendMessage } = useFetch<MessageType>(
     `${host}/${apis.version}/post/${routes.messages}/`,
@@ -27,9 +31,8 @@ const Footer = () => {
   );
   React.useEffect(() => {
     if (!isPending && data) {
-      history.push(`/${routes.dialogs}/${data.dialog_id}/`);
-      // reloadMessages();
-      // TODO: reload dialog record by it's dialog_id
+      resetMessage();
+      resetDialogs();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [data, isPending]);

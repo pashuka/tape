@@ -55,3 +55,7 @@ export const UserInfo = Recoil.selectorFamily<
       : new Promise((resolve) => resolve());
   },
 });
+
+export function isUserType(obj: any) {
+  return typeof obj === 'object' && 'username' in obj;
+}

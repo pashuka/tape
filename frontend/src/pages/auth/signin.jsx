@@ -9,12 +9,14 @@ import Form from '../../components/Form/index';
 import { schema } from './constants';
 import { onReject } from '../../utils';
 import { authState } from '../../hooks/recoil/auth';
+import { isUserType } from '../../hooks/recoil/user';
 
 const SignIn = ({ history }) => {
   const { t } = useTranslation();
   const [error, setError] = useState();
 
   const [iam, setAuth] = useRecoilState(authState);
+  const isAuthorized = iam !== undefined && 'username' in iam;
   const { data, isPending, run } = useFetch(
     // send credentials
     `${host}/${apis.version}/${routes.auth.signin}`,
@@ -32,13 +34,13 @@ const SignIn = ({ history }) => {
 
   useEffect(() => {
     if (!isPending && data) {
-      setAuth({ isPending: false, data });
+      setAuth(() => data);
     }
     // eslint-disable-next-line
   }, [data]);
 
   useEffect(() => {
-    if (iam) {
+    if (isUserType(iam)) {
       history.push('/');
     }
     // eslint-disable-next-line
@@ -50,10 +52,10 @@ const SignIn = ({ history }) => {
         <div className="col col-md-5">
           <Form
             pending={isPending}
-            disabled={!!iam}
+            disabled={isAuthorized}
             title={t('Sign in to') + ' ' + t('Brand')}
             schema={schema.signin}
-            warning={iam && t('You need to sign out before')}
+            warning={isAuthorized && t('You need to sign out before')}
             errors={[error]}
             history={history}
             buttonTitle={t('Sign in')}

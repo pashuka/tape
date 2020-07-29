@@ -2,17 +2,43 @@ import React from 'react';
 import ISettings from '@material-ui/icons/Settings';
 import IChatBubbleOutline from '@material-ui/icons/ChatBubbleOutline';
 import IPeople from '@material-ui/icons/People';
-// import IEdit from '@material-ui/icons/Edit';
+import IMeetingRoom from '@material-ui/icons/MeetingRoom';
 import { useRecoilState } from 'recoil';
 
 import Logo from '../../Logo/index';
 
 import { Link } from 'react-router-dom';
-import { routes } from '../../../constants';
+import { routes, getRoute } from '../../../constants';
 import { MessengerAtom } from '../../../hooks/recoil/messenger';
+import { useResetRecoilState } from 'recoil';
+import { authState } from '../../../hooks/recoil/auth';
+import { request } from '../../../hooks/recoil/request';
 
 const Navbar = () => {
   const [messenger, setMessenger] = useRecoilState(MessengerAtom);
+  const [reset, setReset] = React.useState(false);
+  const resetAuth = useResetRecoilState(authState);
+
+  React.useEffect(() => {
+    const fetchSignOut = async () => {
+      const result = await request<{ status: string }>(
+        getRoute(routes.auth.signout),
+      ).then(
+        (data) => data,
+        (reason) => {
+          return reason;
+        },
+      );
+      if ('status' in result && result.status === 'ok') {
+        resetAuth();
+      }
+    };
+
+    if (reset) {
+      fetchSignOut();
+    }
+    // eslint-disable-next-line
+  }, [reset]);
 
   return (
     <ul className="nav navbar-nav navbar-light flex-row flex-xl-column flex-grow-1 justify-content-between justify-content-xl-center py-3 py-lg-0">
@@ -33,16 +59,6 @@ const Navbar = () => {
       </li>
 
       <li className="nav-item d-none d-xl-block flex-xl-grow-1"></li>
-
-      {/* <li className="nav-item">
-        <a
-          className="nav-link position-relative p-0 py-xl-4"
-          href="#tab-content-create-chat"
-          title="Create chat"
-        >
-          <IEdit />
-        </a>
-      </li> */}
 
       <li className="nav-item mt-xl-9">
         <a
@@ -72,6 +88,20 @@ const Navbar = () => {
           title="Settings"
         >
           <ISettings />
+        </a>
+      </li>
+
+      <li className="nav-item mt-xl-9">
+        <a
+          className="nav-link position-relative p-0 py-xl-4"
+          href="#sign-out"
+          title="Sign out"
+          onClick={(e) => {
+            e.preventDefault();
+            window.confirm('Sign out?') && setReset(true);
+          }}
+        >
+          <IMeetingRoom />
         </a>
       </li>
     </ul>

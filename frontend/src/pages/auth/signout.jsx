@@ -9,7 +9,7 @@ import { authState } from '../../hooks/recoil/auth';
 
 const SignOut = () => {
   const history = useHistory();
-  const resetAuth = useResetRecoilState(authState);
+  const reset = useResetRecoilState(authState);
   const { isPending } = useFetch(
     `${host}/${apis.version}/${routes.auth.signout}`,
     {
@@ -19,7 +19,7 @@ const SignOut = () => {
 
   useEffect(() => {
     if (!isPending) {
-      resetAuth();
+      reset();
       history.push('/');
     }
     // eslint-disable-next-line

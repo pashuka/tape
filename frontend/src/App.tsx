@@ -7,10 +7,9 @@ import { authState } from './hooks/recoil/auth';
 import { routes } from './constants';
 import Overlay from './components/Overlay';
 import ErrorPage from './pages/error/index';
-import Notifications from './components/Notifications';
-import { useTranslation } from 'react-i18next';
 import PageAuth from './pages/auth/index';
 import PageDialogs from './pages/dialogs/index';
+import { isUserType } from './hooks/recoil/user';
 
 type PrivateRoutePropsType = {
   isAuthorized: boolean;
@@ -40,26 +39,15 @@ const PrivateRoute = ({
 );
 
 const App: React.FC = () => {
-  const { t } = useTranslation();
   const { state, contents } = useRecoilValueLoadable(authState);
   const isAuthorized =
-    state === 'hasValue' && contents !== undefined && 'username' in contents;
+    state === 'hasValue' && contents !== undefined && isUserType(contents);
 
   if (state === 'loading' || contents === undefined) {
     return <Overlay />;
   }
   return (
     <ErrorBoundary>
-      {state === 'hasError' && (
-        <Notifications
-          toasts={[
-            {
-              header: { title: t('Error') },
-              body: t('Auth provider is not available now'),
-            },
-          ]}
-        />
-      )}
       <BrowserRouter>
         <React.Suspense fallback={<Overlay />}>
           <Switch>

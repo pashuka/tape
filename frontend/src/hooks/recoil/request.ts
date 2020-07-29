@@ -2,7 +2,6 @@ export const request = <T>(
   input: RequestInfo,
   init?: RequestInit | undefined,
 ): Promise<T> => {
-  console.log('fetch', input);
   return new Promise((resolve, reject) => {
     fetch(input, {
       headers: new Headers({

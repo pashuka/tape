@@ -37,7 +37,7 @@ class model extends Repository {
       .orderBy("created_at")
       .offset(0)
       .limit(100);
-    return { [dialog.dialog_id]: records };
+    return records;
   }
 
   findOne(conditions) {

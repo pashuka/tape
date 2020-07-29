@@ -1,4 +1,4 @@
-import { atom, selector, DefaultValue } from 'recoil';
+import Recoil from 'recoil';
 import { request } from './request';
 import { SearchQueryAtom } from './search';
 import { limitSearchMax } from './constants';
@@ -21,12 +21,17 @@ export type DialogType = {
   profile: DialogProfileType;
 };
 
-const atomTrigger = atom({
+export const currentDialogIdState = Recoil.atom<string | undefined>({
+  key: 'currentDialogIdState',
+  default: undefined,
+});
+
+const atomTrigger = Recoil.atom({
   key: 'dialogsTrigger',
   default: 0,
 });
 
-export const DialogsState = selector<DialogType[] | undefined>({
+export const DialogsState = Recoil.selector<DialogType[] | undefined>({
   key: 'DialogsState',
   get: async ({ get }) => {
     get(atomTrigger); // 'register' as a dependency
@@ -40,13 +45,13 @@ export const DialogsState = selector<DialogType[] | undefined>({
     );
   },
   set: ({ set }, value) => {
-    if (value instanceof DefaultValue) {
+    if (value instanceof Recoil.DefaultValue) {
       set(atomTrigger, (v) => v + 1);
     }
   },
 });
 
-export const DialogsFilter = selector({
+export const DialogsFilter = Recoil.selector({
   key: 'DialogsFilter',
   get: ({ get }) => {
     const query = get(SearchQueryAtom);

@@ -16,7 +16,6 @@ const Messenger = () => {
   const [sidebarScrollTop, setSidebarScrollTop] = React.useState(false);
   const [sidebarScrollBottom, setSidebarScrollBottom] = React.useState(false);
   const refNavbar = React.createRef<HTMLDivElement>();
-  const refSidebar = React.createRef<HTMLDivElement>();
 
   const [messenger] = useRecoilState(MessengerAtom);
   const setDialogId = useSetRecoilState(currentDialogIdState);
@@ -43,9 +42,11 @@ const Messenger = () => {
     // Set specifics to messenger css styles
     document.body.style.height = '100%';
     document.documentElement.style.height = '100%';
+
     if (refNavbar.current) {
+      // TODO: find the problem with zero offsetHeight and fix it
       setSidebarHeight(
-        document.documentElement.clientHeight - refNavbar.current.clientHeight,
+        document.documentElement.clientHeight - 81, //refNavbar.current.clientHeight,
       );
     }
 
@@ -73,7 +74,6 @@ const Messenger = () => {
         <Navbar />
       </div>
       <div
-        ref={refSidebar}
         onScroll={handleScroll}
         className="sidebar"
         style={{

@@ -75,7 +75,7 @@ const Dialogs = ({ scrollTop, scrollBottom }: PropsType) => {
               )}
               {state === 'loading' && <DialogsSkeleton />}
               {state === 'hasValue' &&
-                !searchQuery.length &&
+                searchQuery.length === 0 &&
                 Array.isArray(contents) &&
                 contents
                   ?.slice(0, 128)

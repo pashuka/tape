@@ -43,7 +43,7 @@ const Participants = ({ scrollTop, scrollBottom }: PropsType) => {
                     ))}
                   </Fragment>
                 )}
-              {searchQuery.length &&
+              {searchQuery.length > 0 &&
                 filteredUsers.state === 'hasValue' &&
                 Array.isArray(filteredUsers.contents) && (
                   <Fragment>

@@ -9,7 +9,7 @@ import Form from '../../components/Form/index';
 import { schema } from './constants';
 import { onReject } from '../../utils';
 import { authState } from '../../hooks/recoil/auth';
-import { isUserType } from '../../hooks/recoil/user';
+import { instanceOfUser } from '../../hooks/recoil/user';
 
 const SignUp = ({ history }) => {
   const { t } = useTranslation();
@@ -32,14 +32,14 @@ const SignUp = ({ history }) => {
   );
 
   useEffect(() => {
-    if (!isPending && isUserType(data)) {
+    if (!isPending && instanceOfUser(data)) {
       setAuth(() => data);
     }
     // eslint-disable-next-line
   }, [data]);
 
   useEffect(() => {
-    if (isUserType(iam)) {
+    if (instanceOfUser(iam)) {
       history.push('/');
     }
     // eslint-disable-next-line
@@ -51,10 +51,10 @@ const SignUp = ({ history }) => {
         <div className="col col-md-5">
           <Form
             pending={isPending}
-            disabled={isUserType(iam)}
+            disabled={instanceOfUser(iam)}
             title={t('Create your account')}
             schema={schema.signup}
-            warning={isUserType(iam) && t('You need to sign out before')}
+            warning={instanceOfUser(iam) && t('You need to sign out before')}
             errors={[error]}
             history={history}
             buttonTitle={t('Sign up')}

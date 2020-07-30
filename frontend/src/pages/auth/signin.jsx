@@ -9,7 +9,7 @@ import Form from '../../components/Form/index';
 import { schema } from './constants';
 import { onReject } from '../../utils';
 import { authState } from '../../hooks/recoil/auth';
-import { isUserType } from '../../hooks/recoil/user';
+import { instanceOfUser } from '../../hooks/recoil/user';
 
 const SignIn = ({ history }) => {
   const { t } = useTranslation();
@@ -40,7 +40,7 @@ const SignIn = ({ history }) => {
   }, [data]);
 
   useEffect(() => {
-    if (isUserType(iam)) {
+    if (instanceOfUser(iam)) {
       history.push('/');
     }
     // eslint-disable-next-line

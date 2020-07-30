@@ -6,7 +6,7 @@ import IPerson from '@material-ui/icons/Person';
 import SubMenu from './submenu';
 import { routes } from '../../../../constants';
 import { MessageType } from '../../../../hooks/recoil/message';
-import { UserInfo } from '../../../../hooks/recoil/user';
+import { userInfoQuery } from '../../../../hooks/recoil/user';
 import { useRecoilValue } from 'recoil';
 
 dayjs.extend(LocalizedFormat);
@@ -20,7 +20,7 @@ const MessageLeft = ({
   data: { created_at, owner, body },
   username,
 }: MessageLeftPropsType) => {
-  const user = useRecoilValue(UserInfo(username));
+  const user = useRecoilValue(userInfoQuery(username));
   return (
     <div className="message">
       <a className="avatar avatar-sm mr-2 mr-lg-5" href="#chat-messages">

@@ -8,8 +8,8 @@ import { routes } from './constants';
 import Overlay from './components/Overlay';
 import ErrorPage from './pages/error/index';
 import PageAuth from './pages/auth/index';
-import PageDialogs from './pages/dialogs/index';
-import { isUserType } from './hooks/recoil/user';
+import PageTape from './pages/tape/index';
+import { instanceOfUser } from './hooks/recoil/user';
 
 type PrivateRoutePropsType = {
   isAuthorized: boolean;
@@ -40,8 +40,7 @@ const PrivateRoute = ({
 
 const App: React.FC = () => {
   const { state, contents } = useRecoilValueLoadable(authState);
-  const isAuthorized =
-    state === 'hasValue' && contents !== undefined && isUserType(contents);
+  const isAuthorized = state === 'hasValue' && instanceOfUser(contents);
 
   if (state === 'loading' || contents === undefined) {
     return <Overlay />;
@@ -51,11 +50,8 @@ const App: React.FC = () => {
       <BrowserRouter>
         <React.Suspense fallback={<Overlay />}>
           <Switch>
-            <PrivateRoute
-              isAuthorized={isAuthorized}
-              path={'/' + routes.dialogs}
-            >
-              <PageDialogs />
+            <PrivateRoute isAuthorized={isAuthorized} path={'/' + routes.tape}>
+              <PageTape />
             </PrivateRoute>
             <Route path={'/' + routes.auth.index} component={PageAuth} />
             <Route
@@ -65,8 +61,7 @@ const App: React.FC = () => {
                 <Redirect
                   to={{
                     pathname:
-                      '/' +
-                      (isAuthorized ? routes.dialogs : routes.auth.signin),
+                      '/' + (isAuthorized ? routes.tape : routes.auth.signin),
                     state: { from: location },
                   }}
                 />

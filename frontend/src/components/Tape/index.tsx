@@ -3,14 +3,25 @@ import { useRouteMatch } from 'react-router-dom';
 import { useRecoilState, useSetRecoilState } from 'recoil';
 
 import Navbar from './navbar';
-import Dialogs from './dialogs/index';
+import DialogsBar from './sidebar/dialogs';
+import ParticipantsBar from './sidebar/participants';
 import Chat from './chat/index';
 import useUserAgent from '../../hooks/useUserAgent';
 import { QSParamsType, ParamsKeyUser, ParamsKeyDialog } from '../../constants';
 import { MessengerAtom } from '../../hooks/recoil/messenger';
 import { currentDialogIdState } from '../../hooks/recoil/dialog';
 
-const Messenger = () => {
+export enum TabEnum {
+  Dialogs,
+  Participants,
+  Settings,
+}
+
+type PropsType = {
+  tab: TabEnum;
+};
+
+const Messenger = ({ tab }: PropsType) => {
   const { device } = useUserAgent();
   const [sidebarHeight, setSidebarHeight] = React.useState(0);
   const [sidebarScrollTop, setSidebarScrollTop] = React.useState(false);
@@ -63,6 +74,36 @@ const Messenger = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [params]);
 
+  let sidebarComponent = null;
+  switch (tab) {
+    case TabEnum.Participants:
+      sidebarComponent = (
+        <ParticipantsBar
+          scrollTop={sidebarScrollTop}
+          scrollBottom={sidebarScrollBottom}
+        />
+      );
+      break;
+
+    case TabEnum.Settings:
+      sidebarComponent = (
+        <DialogsBar
+          scrollTop={sidebarScrollTop}
+          scrollBottom={sidebarScrollBottom}
+        />
+      );
+      break;
+
+    case TabEnum.Dialogs:
+    default:
+      sidebarComponent = (
+        <DialogsBar
+          scrollTop={sidebarScrollTop}
+          scrollBottom={sidebarScrollBottom}
+        />
+      );
+      break;
+  }
   return (
     <div className="messenger">
       <div
@@ -78,10 +119,7 @@ const Messenger = () => {
           height: device.type === 'mobile' ? sidebarHeight : '',
         }}
       >
-        <Dialogs
-          scrollTop={sidebarScrollTop}
-          scrollBottom={sidebarScrollBottom}
-        />
+        {sidebarComponent}
       </div>
       <div
         className={`main ${

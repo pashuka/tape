@@ -10,7 +10,7 @@ import Form from '../../components/Form/index';
 import { schema } from './constants';
 import { onReject } from '../../utils';
 import { authState } from '../../hooks/recoil/auth';
-import { isUserType } from '../../hooks/recoil/user';
+import { instanceOfUser } from '../../hooks/recoil/user';
 
 const ForgotPassword = ({
   history,
@@ -48,10 +48,10 @@ const ForgotPassword = ({
   const resetForm = (
     <Form
       pending={isPending}
-      disabled={isUserType(iam)}
+      disabled={instanceOfUser(iam)}
       title={t('Reset password')}
       schema={schema.forgot}
-      warning={isUserType(iam) && t('You need to sign out before')}
+      warning={instanceOfUser(iam) && t('You need to sign out before')}
       errors={[error]}
       history={history}
       buttonTitle={t('Reset')}

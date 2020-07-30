@@ -35,7 +35,7 @@ const Footer = () => {
       resetMessages();
       resetDialogs();
       if (params[ParamsKeyUser]) {
-        history.push(`/${routes.dialogs}/${data.dialog_id}/`);
+        history.push(`/${routes.tape}/${routes.dialogs}/${data.dialog_id}/`);
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps

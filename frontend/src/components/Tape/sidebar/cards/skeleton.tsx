@@ -1,5 +1,5 @@
-import React from "react";
-import Skeleton from "../../../Skeleton";
+import React from 'react';
+import Skeleton from '../../../Skeleton';
 
 const CardSkeleton = () => (
   <div className="nav-link btn btn-link text-body p-0">

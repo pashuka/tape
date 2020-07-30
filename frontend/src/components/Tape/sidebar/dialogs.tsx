@@ -4,7 +4,7 @@ import { useRecoilState, useRecoilValue, useRecoilValueLoadable } from 'recoil';
 import CardDialog from './cards/dialog';
 import CardSearch from './cards/search';
 import CardNew from './cards/new';
-import DialogsSkeleton from './skeleton';
+import CardSkeleton from './cards/skeleton';
 import Header from './header';
 import { QSParamsType, ParamsKeyUser } from '../../../constants';
 import CardHeader from './cards/header';
@@ -12,7 +12,17 @@ import { DialogsFilter, DialogsState } from '../../../hooks/recoil/dialog';
 import { authState } from '../../../hooks/recoil/auth';
 import { UsersFilter } from '../../../hooks/recoil/user';
 import { useRouteMatch } from 'react-router-dom';
-import { SearchQueryAtom } from '../../../hooks/recoil/search';
+import { searchQueryAtom } from '../../../hooks/recoil/search';
+
+const DialogsSkeleton = ({ count = 10 }) => (
+  <React.Fragment>
+    {Array(count)
+      .fill(0)
+      .map((_, i) => (
+        <CardSkeleton key={i} />
+      ))}
+  </React.Fragment>
+);
 
 type PropsType = {
   scrollTop: boolean;
@@ -25,7 +35,7 @@ const Dialogs = ({ scrollTop, scrollBottom }: PropsType) => {
 
   const { state, contents } = useRecoilValueLoadable(DialogsState);
 
-  const [searchQuery, setSearchQuery] = useRecoilState(SearchQueryAtom);
+  const [searchQuery, setSearchQuery] = useRecoilState(searchQueryAtom);
   const filteredDialogs = useRecoilValue(DialogsFilter);
   const filteredUsers = useRecoilValueLoadable(UsersFilter);
 

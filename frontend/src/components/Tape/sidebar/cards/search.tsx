@@ -31,8 +31,8 @@ const CardSearch: React.FC<CardSearchPropsType> = ({ user, isOnline }) => {
 
   return (
     <Link
-      className="nav-link btn btn-link text-body p-0"
-      to={`/${routes.dialogs}/${linkParam}`}
+      className="nav-link btn btn-link text-body p-0 m-1"
+      to={`${linkParam}`}
       onClick={(e) => {
         setMessenger({ isOpen: messenger.isOpen, isChatOpen: true });
       }}

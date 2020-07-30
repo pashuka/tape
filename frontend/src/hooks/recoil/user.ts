@@ -1,6 +1,6 @@
 import Recoil from 'recoil';
 import { request } from './request';
-import { SearchQueryAtom } from './search';
+import { searchQueryAtom } from './search';
 import { routes, apis, host } from '../../constants';
 import { limitSearchMax } from './constants';
 
@@ -18,28 +18,15 @@ export type UserType = {
   profile: UserProfileType;
 };
 
-export const UsersFilter = Recoil.selector<UserType[]>({
-  key: 'UsersFilter',
-  get: async ({ get }) => {
-    const query = get(SearchQueryAtom);
-    return query.length
-      ? await request<UserType[]>(
-          `${host}/${apis.version}/find/${routes.user}/?query=${String(query)}`,
-        ).then(
-          (data) => data.slice(0, limitSearchMax),
-          (reason) => {
-            throw reason;
-          },
-        )
-      : new Promise((resolve) => resolve([] as UserType[]));
-  },
-});
+export function instanceOfUser(o: any): o is UserType {
+  return 'username' in o;
+}
 
-export const UserInfo = Recoil.selectorFamily<
+export const userInfoQuery = Recoil.selectorFamily<
   UserType | undefined,
   string | undefined
 >({
-  key: 'UserInfo',
+  key: 'userInfoQuery',
   get: (username) => async () => {
     return username
       ? await request<UserType>(
@@ -56,6 +43,19 @@ export const UserInfo = Recoil.selectorFamily<
   },
 });
 
-export function isUserType(obj: any) {
-  return typeof obj === 'object' && 'username' in obj;
-}
+export const UsersFilter = Recoil.selector<UserType[]>({
+  key: 'UsersFilter',
+  get: async ({ get }) => {
+    const query = get(searchQueryAtom);
+    return query.length
+      ? await request<UserType[]>(
+          `${host}/${apis.version}/find/${routes.user}/?query=${String(query)}`,
+        ).then(
+          (data) => data.slice(0, limitSearchMax),
+          (reason) => {
+            throw reason;
+          },
+        )
+      : new Promise((resolve) => resolve([] as UserType[]));
+  },
+});

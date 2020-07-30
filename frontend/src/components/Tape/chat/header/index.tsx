@@ -10,7 +10,7 @@ import { routes } from '../../../../constants';
 import Skeleton from '../../../Skeleton';
 import { DialogType, DialogsState } from '../../../../hooks/recoil/dialog';
 import { MessengerAtom } from '../../../../hooks/recoil/messenger';
-import { UserType, UserInfo } from '../../../../hooks/recoil/user';
+import { UserType, userInfoQuery } from '../../../../hooks/recoil/user';
 import DialogHeader from './dialog';
 import UserHeader from './user';
 import SideBar from './sidebar';
@@ -35,7 +35,7 @@ const Header = ({ dialog, iam, user }: HeaderPropsType) => {
   } else if (dialog) {
     participantName = dialog?.participants.find((_) => _ !== iam?.username);
   }
-  const participant = useRecoilValue(UserInfo(participantName));
+  const participant = useRecoilValue(userInfoQuery(participantName));
 
   return (
     <div className="chat-header bg-light py-2 py-lg-3 px-2 px-lg-4">
@@ -45,7 +45,7 @@ const Header = ({ dialog, iam, user }: HeaderPropsType) => {
             <ul className="list-inline mb-0">
               <li className="list-inline-item">
                 <Link
-                  to={`/${routes.dialogs}/`}
+                  to={`/${routes.tape}/${routes.dialogs}/`}
                   className="text-muted px-0"
                   onClick={(e) => {
                     // e.preventDefault();

@@ -5,7 +5,7 @@ import { useRecoilValue } from 'recoil';
 import { Link } from 'react-router-dom';
 
 import { routes } from '../../../../constants';
-import { UserInfo } from '../../../../hooks/recoil/user';
+import { userInfoQuery } from '../../../../hooks/recoil/user';
 
 type PropsType = {
   username: string;
@@ -13,10 +13,10 @@ type PropsType = {
 
 const CardNew = ({ username }: PropsType) => {
   const isOnline = false;
-  const participant = useRecoilValue(UserInfo(username));
+  const participant = useRecoilValue(userInfoQuery(username));
 
   return (
-    <div className="nav-link text-body p-0">
+    <div className="nav-link text-body p-0 m-1">
       <div className="card border-0 rounded-0 alert-primary">
         <div className="card-body py-2 py-lg-2">
           <div className="media">
@@ -43,7 +43,7 @@ const CardNew = ({ username }: PropsType) => {
                 </h6>
                 <Link
                   className="btn btn-link text-gray-400 text-nowrap"
-                  to={`/${routes.dialogs}/`}
+                  to={`/${routes.tape}/${routes.dialogs}/`}
                 >
                   <ICancel className="" />
                 </Link>

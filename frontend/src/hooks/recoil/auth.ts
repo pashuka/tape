@@ -1,5 +1,5 @@
 import Recoil from 'recoil';
-import { UserType, isUserType } from './user';
+import { UserType, instanceOfUser } from './user';
 import { request } from './request';
 import { routes, getRoute } from '../../constants';
 
@@ -20,7 +20,7 @@ export const authState = Recoil.selector<UserType | undefined>({
     );
   },
   set: ({ set }, value) => {
-    if (value instanceof Recoil.DefaultValue || isUserType(value)) {
+    if (value instanceof Recoil.DefaultValue || instanceOfUser(value)) {
       set(atomTrigger, (v) => v + 1);
     }
   },

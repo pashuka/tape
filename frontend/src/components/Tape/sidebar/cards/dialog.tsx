@@ -8,7 +8,7 @@ import isToday from 'dayjs/plugin/isToday';
 import { QSParamsType, ParamsKeyDialog, routes } from '../../../../constants';
 import { authState } from '../../../../hooks/recoil/auth';
 import { MessengerAtom } from '../../../../hooks/recoil/messenger';
-import { UserInfo } from '../../../../hooks/recoil/user';
+import { userInfoQuery } from '../../../../hooks/recoil/user';
 import { DialogType } from '../../../../hooks/recoil/dialog';
 
 dayjs.extend(isToday);
@@ -25,7 +25,7 @@ const Dialog = ({ dialog }: DialogPropsType) => {
   const iam = useRecoilValue(authState);
   const participantName =
     dialog.participants.find((_) => _ !== iam?.username) || '';
-  const participant = useRecoilValue(UserInfo(participantName));
+  const participant = useRecoilValue(userInfoQuery(participantName));
 
   let sDate;
   if (dayjs(date).isToday()) {
@@ -37,8 +37,8 @@ const Dialog = ({ dialog }: DialogPropsType) => {
   }
   return (
     <Link
-      className="nav-link text-body p-0 border-bottom m-2"
-      to={`/${routes.dialogs}/${dialog.dialog_id}/`}
+      className="nav-link text-body p-0 border-bottom m-1"
+      to={`/${routes.tape}/${routes.dialogs}/${dialog.dialog_id}/`}
       onClick={(e) => {
         setMessenger({ isOpen: messenger.isOpen, isChatOpen: true });
       }}

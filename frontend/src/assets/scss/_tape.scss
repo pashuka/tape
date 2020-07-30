@@ -92,7 +92,7 @@ $chat-sidebar-width: 350px;
 }
 
 .sidebar {
-  background-color: $gray-150;
+  background-color: $gray-200;
   flex-grow: 2;
   order: 1;
 }
@@ -525,7 +525,7 @@ $chat-sidebar-width: 350px;
   .card.card-regular {
     &.selected,
     &:hover {
-      background-color: $gray-150;
+      background-color: $gray-100;
     }
   }
 }

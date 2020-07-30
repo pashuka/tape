@@ -28,7 +28,11 @@ const Participants = ({ scrollTop, scrollBottom }: PropsType) => {
       <div className="d-flex flex-column h-100">
         <div className="hide-scrollbar">
           <div className="container-fluid pl-0 pr-0">
-            <Header isPending={false} onChange={setSearchQuery} />
+            <Header
+              isPending={false}
+              onChange={setSearchQuery}
+              searchPlaceholder="Search users..."
+            />
 
             <nav className="nav nav-dialog d-block">
               {ParamsKeyUser in params && (

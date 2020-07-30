@@ -17,9 +17,14 @@ import {
 type HeaderPropsType = {
   isPending: boolean;
   onChange: (value: string) => void;
+  searchPlaceholder: string;
 };
 
-const Header: React.FC<HeaderPropsType> = ({ isPending, onChange }) => {
+const Header = ({
+  isPending,
+  onChange,
+  searchPlaceholder,
+}: HeaderPropsType) => {
   const { t } = useTranslation();
   const [ddRef, isVisible, setIsVisible] = useOutsideClick<HTMLDivElement>(
     false,
@@ -58,7 +63,7 @@ const Header: React.FC<HeaderPropsType> = ({ isPending, onChange }) => {
           ref={searchRef}
           type="text"
           className="form-control border-0 rounded shadow-none"
-          placeholder={t('Search dialogs or users...')}
+          placeholder={t(searchPlaceholder)}
           onChange={(e: React.FormEvent<HTMLInputElement>) => {
             // Event fired when the input value is changed
             const value = e.currentTarget.value;

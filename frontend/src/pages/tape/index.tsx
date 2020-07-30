@@ -37,11 +37,14 @@ const IndexPage = () => (
     />
 
     {/* /settings/... */}
-    <Route
-      exact
-      path={`/${routes.tape}/${routes.settings.profile}/`}
-      render={() => <Tape tab={TabEnum.Settings} />}
-    />
+    {Object.keys(routes.settings).map((_: any) => (
+      <Route
+        exact
+        key={_}
+        path={`/${routes.tape}/${(routes.settings as any)[_]}/`}
+        render={() => <Tape tab={TabEnum.Settings} />}
+      />
+    ))}
 
     {/* /tape/ */}
     <Route

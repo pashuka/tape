@@ -5,6 +5,7 @@ import { useRecoilState, useSetRecoilState } from 'recoil';
 import Navbar from './navbar';
 import DialogsBar from './sidebar/dialogs';
 import ParticipantsBar from './sidebar/participants';
+import SettingsBar from './sidebar/settings';
 import Chat from './chat/index';
 import useUserAgent from '../../hooks/useUserAgent';
 import { QSParamsType, ParamsKeyUser, ParamsKeyDialog } from '../../constants';
@@ -87,7 +88,7 @@ const Messenger = ({ tab }: PropsType) => {
 
     case TabEnum.Settings:
       sidebarComponent = (
-        <DialogsBar
+        <SettingsBar
           scrollTop={sidebarScrollTop}
           scrollBottom={sidebarScrollBottom}
         />

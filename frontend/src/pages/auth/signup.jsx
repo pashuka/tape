@@ -4,7 +4,7 @@ import { useFetch } from 'react-async';
 import { useTranslation } from 'react-i18next';
 import { useRecoilState } from 'recoil';
 
-import { host, apis, routes } from '../../constants';
+import { routes, getRoute } from '../../constants';
 import Form from '../../components/Form/index';
 import { schema } from './constants';
 import { onReject } from '../../utils';
@@ -18,7 +18,7 @@ const SignUp = ({ history }) => {
   // const reset = useResetRecoilState(authState);
   const { data, isPending, run } = useFetch(
     // send credentials
-    `${host}/${apis.version}/${routes.auth.signup}`,
+    getRoute(`${routes.auth.signup}`),
     { headers: { accept: 'application/json' } },
     {
       defer: true,

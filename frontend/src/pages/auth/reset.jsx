@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next';
 import IChevronLeft from '@material-ui/icons/ChevronLeft';
 import { useRecoilValue } from 'recoil';
 
-import { host, apis, routes } from '../../constants';
+import { routes, getRoute } from '../../constants';
 import Form from '../../components/Form/index';
 import { schema } from './constants';
 import { onReject } from '../../utils';
@@ -23,7 +23,7 @@ const ForgotPassword = ({
   const iam = useRecoilValue(authState);
   const { data, isPending, run } = useFetch(
     // send credentials
-    `${host}/${apis.version}/${routes.auth.reset}`,
+    getRoute(`${routes.auth.reset}`),
     { headers: { accept: 'application/json' } },
     {
       defer: true,
@@ -118,7 +118,7 @@ const ForgotPassword = ({
             body.append(field, values[field]);
           }
           run({
-            resource: `${host}/${apis.version}/${routes.auth.reset}/?code=${resetCode}`,
+            resource: getRoute(`${routes.auth.reset}/?code=${resetCode}`),
             method: 'PUT',
             body,
           });

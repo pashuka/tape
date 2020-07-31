@@ -3,7 +3,7 @@ import { useFetch } from 'react-async';
 import { useTranslation } from 'react-i18next';
 import IChevronLeft from '@material-ui/icons/ChevronLeft';
 
-import { host, apis, routes } from '../../constants';
+import { routes, getRoute } from '../../constants';
 import { onReject } from '../../utils';
 import Overlay from '../../components/Overlay';
 
@@ -18,11 +18,11 @@ const EmailVerify = ({
   const [success, setSuccess] = useState(false);
   const { data, isPending, run } = useFetch(
     // send credentials
-    `${host}/${apis.version}/${routes.auth.reset}`,
+    getRoute(`${routes.auth.reset}`),
     { headers: { accept: 'application/json' } },
     {
       defer: true,
-      onReject: reason => {
+      onReject: (reason) => {
         onReject(reason, setError);
       },
       onResolve: () => {
@@ -40,7 +40,7 @@ const EmailVerify = ({
       )
     ) {
       run({
-        resource: `${host}/${apis.version}/${routes.auth.verify}/?code=${verificationCode}`,
+        resource: getRoute(`${routes.auth.verify}/?code=${verificationCode}`),
       });
     }
     // eslint-disable-next-line
@@ -63,7 +63,7 @@ const EmailVerify = ({
         <div className="float-left border-right">
           <button
             type="button"
-            onClick={e => {
+            onClick={(e) => {
               e.preventDefault();
               history.goBack();
             }}
@@ -104,7 +104,7 @@ const EmailVerify = ({
         <div className="float-left border-right">
           <button
             type="button"
-            onClick={e => {
+            onClick={(e) => {
               e.preventDefault();
               history.goBack();
             }}

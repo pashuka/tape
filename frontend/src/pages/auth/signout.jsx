@@ -3,19 +3,16 @@ import { useHistory } from 'react-router-dom';
 import { useFetch } from 'react-async';
 import { useResetRecoilState } from 'recoil';
 
-import { host, apis, routes } from '../../constants';
+import { routes, getRoute } from '../../constants';
 import Overlay from '../../components/Overlay/index';
 import { authState } from '../../hooks/recoil/auth';
 
 const SignOut = () => {
   const history = useHistory();
   const reset = useResetRecoilState(authState);
-  const { isPending } = useFetch(
-    `${host}/${apis.version}/${routes.auth.signout}`,
-    {
-      defer: true,
-    },
-  );
+  const { isPending } = useFetch(getRoute(`${routes.auth.signout}`), {
+    defer: true,
+  });
 
   useEffect(() => {
     if (!isPending) {

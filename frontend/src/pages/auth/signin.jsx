@@ -4,7 +4,7 @@ import { useFetch } from 'react-async';
 import { useTranslation } from 'react-i18next';
 import { useRecoilState } from 'recoil';
 
-import { host, apis, routes } from '../../constants';
+import { routes, getRoute } from '../../constants';
 import Form from '../../components/Form/index';
 import { schema } from './constants';
 import { onReject } from '../../utils';
@@ -19,7 +19,7 @@ const SignIn = ({ history }) => {
   const isAuthorized = iam !== undefined && 'username' in iam;
   const { data, isPending, run } = useFetch(
     // send credentials
-    `${host}/${apis.version}/${routes.auth.signin}`,
+    getRoute(`${routes.auth.signin}`),
     { headers: { accept: 'application/json' } },
     {
       defer: true,

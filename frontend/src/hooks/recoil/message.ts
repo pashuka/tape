@@ -1,7 +1,7 @@
 import Recoil from 'recoil';
 import { request } from './request';
 import { DialogIdType, currentDialogIdState } from './dialog';
-import { host, apis, routes } from '../../constants';
+import { routes, getRoute } from '../../constants';
 
 export type MessageType = {
   dialog_id: DialogIdType;
@@ -26,7 +26,7 @@ export const messagesState = Recoil.selector<MessageType[] | undefined>({
     const id = get(currentDialogIdState);
     return id
       ? await request<MessageType[]>(
-          `${host}/${apis.version}/find/${routes.messages}/?dialog_id=${id}`,
+          getRoute(`find/${routes.messages}/?dialog_id=${id}`),
         ).then(
           (data) => data,
           (reason) => {

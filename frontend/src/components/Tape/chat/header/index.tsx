@@ -10,11 +10,16 @@ import { routes } from '../../../../constants';
 import Skeleton from '../../../Skeleton';
 import { DialogType, DialogsState } from '../../../../hooks/recoil/dialog';
 import { MessengerAtom } from '../../../../hooks/recoil/messenger';
-import { UserType, userInfoQuery } from '../../../../hooks/recoil/user';
+import {
+  UserType,
+  userInfoQuery,
+  instanceOfUser,
+} from '../../../../hooks/recoil/user';
 import DialogHeader from './dialog';
 import UserHeader from './user';
 import SideBar from './sidebar';
 import { useRecoilValue } from 'recoil';
+import Avatar from '../../components/avatar';
 
 dayjs.extend(relativeTime);
 
@@ -63,17 +68,15 @@ const Header = ({ dialog, iam, user }: HeaderPropsType) => {
 
           <div className="col-8 col-xl-8">
             <div className="media text-center text-xl-left">
-              <div className="avatar avatar-sm d-none d-xl-inline-block mr-3 text-center">
-                {state === 'loading' ? (
-                  <Skeleton rounded />
-                ) : participant?.profile?.picture ? (
-                  <img
-                    className="avatar-img"
-                    src={`${process.env.REACT_APP_IMG_HOST}/${routes.user}/thumb-${participant?.profile.picture}`}
-                    alt="Participant"
+              <div className="d-none d-xl-inline-block text-center">
+                {state === 'loading' && <Skeleton roundedCircle />}
+                {state === 'hasValue' && instanceOfUser(participant) && (
+                  <Avatar
+                    picture={participant.profile?.picture}
+                    realname={participant.realname}
+                    username={participant.username}
+                    size="md"
                   />
-                ) : (
-                  <IPerson fontSize="large" className="m-1 text-white" />
                 )}
               </div>
               {state === 'loading' && (

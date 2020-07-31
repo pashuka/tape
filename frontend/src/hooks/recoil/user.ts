@@ -1,8 +1,9 @@
 import Recoil from 'recoil';
 import { request } from './request';
 import { searchQueryAtom } from './search';
-import { routes, apis, host } from '../../constants';
+import { routes, getRoute } from '../../constants';
 import { limitSearchMax } from './constants';
+import { authState } from './auth';
 
 type UserProfileType = {
   picture?: string;
@@ -14,12 +15,12 @@ type UserProfileType = {
 
 export type UserType = {
   username: string;
-  realname: string | null;
+  realname: string | undefined;
   profile: UserProfileType;
 };
 
 export function instanceOfUser(o: any): o is UserType {
-  return 'username' in o;
+  return o && 'username' in o;
 }
 
 export const userInfoQuery = Recoil.selectorFamily<
@@ -30,9 +31,7 @@ export const userInfoQuery = Recoil.selectorFamily<
   get: (username) => async () => {
     return username
       ? await request<UserType>(
-          `${host}/${apis.version}/get/${routes.user}/?username=${String(
-            username,
-          )}`,
+          getRoute(`get/${routes.user}/?username=${String(username)}`),
         ).then(
           (data) => data,
           (reason) => {
@@ -46,12 +45,16 @@ export const userInfoQuery = Recoil.selectorFamily<
 export const UsersFilter = Recoil.selector<UserType[]>({
   key: 'UsersFilter',
   get: async ({ get }) => {
+    const iam = get(authState);
     const query = get(searchQueryAtom);
     return query.length
       ? await request<UserType[]>(
-          `${host}/${apis.version}/find/${routes.user}/?query=${String(query)}`,
+          getRoute(`find/${routes.user}/?query=${String(query)}`),
         ).then(
-          (data) => data.slice(0, limitSearchMax),
+          (data) =>
+            data
+              .filter((_) => iam?.username !== _.username)
+              .slice(0, limitSearchMax),
           (reason) => {
             throw reason;
           },

@@ -8,6 +8,7 @@ import { routes } from '../../../../constants';
 import { MessageType } from '../../../../hooks/recoil/message';
 import { userInfoQuery } from '../../../../hooks/recoil/user';
 import { useRecoilValue } from 'recoil';
+import Avatar from '../../components/avatar';
 
 dayjs.extend(LocalizedFormat);
 
@@ -23,16 +24,13 @@ const MessageLeft = ({
   const user = useRecoilValue(userInfoQuery(username));
   return (
     <div className="message">
-      <a className="avatar avatar-sm mr-2 mr-lg-5" href="#chat-messages">
-        {user?.profile && user.profile?.picture ? (
-          <img
-            className="avatar-img"
-            src={`${process.env.REACT_APP_IMG_HOST}/${routes.user}/thumb-${user.profile.picture}`}
-            alt=""
-          />
-        ) : (
-          <IPerson fontSize="large" className="m-lg-1 text-white" />
-        )}
+      <a className=" mr-2 mr-lg-4" href="#chat-messages">
+        <Avatar
+          picture={user?.profile?.picture}
+          realname={user?.realname}
+          username={user?.username}
+          size="sm"
+        />
       </a>
 
       <div className="message-body">

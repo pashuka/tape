@@ -5,9 +5,8 @@ import {
   QSParamsType,
   ParamsKeyUser,
   ParamsKeyDialog,
-  host,
-  apis,
   routes,
+  getRoute,
 } from '../../../constants';
 import { useRouteMatch, useHistory } from 'react-router-dom';
 import { MessageType, messagesState } from '../../../hooks/recoil/message';
@@ -24,7 +23,7 @@ const Footer = () => {
   const resetDialogs = useResetRecoilState(DialogsState);
 
   const { data, isPending, run: sendMessage } = useFetch<MessageType>(
-    `${host}/${apis.version}/post/${routes.messages}/`,
+    getRoute(`post/${routes.messages}/`),
     {
       headers: { accept: 'application/json' },
     },

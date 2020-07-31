@@ -7,6 +7,7 @@ import { routes } from '../../../../constants';
 import SubMenu from './submenu';
 import { MessageType } from '../../../../hooks/recoil/message';
 import { UserType } from '../../../../hooks/recoil/user';
+import Avatar from '../../components/avatar';
 
 dayjs.extend(LocalizedFormat);
 
@@ -20,16 +21,13 @@ const MessageRight = ({
   user,
 }: MessageRightPropsType) => (
   <div className="message message-right">
-    <div className="avatar avatar-sm ml-2 ml-lg-5 d-none d-lg-block">
-      {user.profile?.picture ? (
-        <img
-          className="avatar-img"
-          src={`${process.env.REACT_APP_IMG_HOST}/${routes.user}/thumb-${user.profile.picture}`}
-          alt=""
-        />
-      ) : (
-        <IPerson fontSize="large" className="m-1 text-white" />
-      )}
+    <div className="ml-2 ml-lg-4 d-none d-lg-inline-block">
+      <Avatar
+        picture={user.profile?.picture}
+        realname={user.realname}
+        username={user.username}
+        size="sm"
+      />
     </div>
 
     <div className="message-body">

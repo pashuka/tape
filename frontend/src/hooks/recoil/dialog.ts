@@ -2,7 +2,7 @@ import Recoil from 'recoil';
 import { request } from './request';
 import { searchQueryAtom } from './search';
 import { limitSearchMax } from './constants';
-import { host, apis, routes } from '../../constants';
+import { routes, getRoute } from '../../constants';
 import { authState } from './auth';
 
 export declare type DialogIdType = string;
@@ -22,6 +22,10 @@ export type DialogType = {
   profile: DialogProfileType;
 };
 
+export function instanceOfDialog(o: any): o is DialogType {
+  return o && 'dialog_id' in o;
+}
+
 export const currentDialogIdState = Recoil.atom<string | undefined>({
   key: 'currentDialogIdState',
   default: undefined,
@@ -37,7 +41,7 @@ export const DialogsState = Recoil.selector<DialogType[]>({
   get: async ({ get }) => {
     get(atomTrigger); // 'register' as a dependency
     return await request<DialogType[]>(
-      `${host}/${apis.version}/findMy/${routes.dialogs}/`,
+      getRoute(`findMy/${routes.dialogs}/`),
     ).then(
       (data) => (Array.isArray(data) ? data : ([] as DialogType[])),
       (reason) => {

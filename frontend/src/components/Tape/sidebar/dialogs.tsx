@@ -14,7 +14,7 @@ import { UsersFilter } from '../../../hooks/recoil/user';
 import { useRouteMatch } from 'react-router-dom';
 import { searchQueryAtom } from '../../../hooks/recoil/search';
 
-const DialogsSkeleton = ({ count = 10 }) => (
+const DialogsSkeleton = ({ count = 1 }) => (
   <React.Fragment>
     {Array(count)
       .fill(0)
@@ -65,7 +65,7 @@ const Dialogs = ({ scrollTop, scrollBottom }: PropsType) => {
                     </Fragment>
                   )}
                   {state === 'loading' || filteredUsers.state === 'loading' ? (
-                    <DialogsSkeleton />
+                    <DialogsSkeleton count={1} />
                   ) : (
                     <Fragment>
                       <CardHeader title="Search" />
@@ -77,7 +77,7 @@ const Dialogs = ({ scrollTop, scrollBottom }: PropsType) => {
                   )}
                 </Fragment>
               )}
-              {state === 'loading' && <DialogsSkeleton />}
+              {state === 'loading' && <DialogsSkeleton count={1} />}
               {state === 'hasValue' &&
                 searchQuery.length === 0 &&
                 Array.isArray(contents) &&

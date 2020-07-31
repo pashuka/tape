@@ -341,7 +341,7 @@ $chat-sidebar-width: 350px;
 
 .message {
   display: flex;
-  align-items: flex-end;
+  align-items: flex-start;
 
   & + & {
     margin-top: rem(32px);
@@ -368,7 +368,7 @@ $chat-sidebar-width: 350px;
 }
 
 .message-right {
-  .avatar {
+  .message-avatar {
     order: 2;
   }
 

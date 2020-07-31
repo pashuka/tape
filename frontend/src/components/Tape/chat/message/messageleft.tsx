@@ -1,10 +1,8 @@
 import React from 'react';
 import dayjs from 'dayjs';
 import LocalizedFormat from 'dayjs/plugin/localizedFormat';
-import IPerson from '@material-ui/icons/Person';
 
 import SubMenu from './submenu';
-import { routes } from '../../../../constants';
 import { MessageType } from '../../../../hooks/recoil/message';
 import { userInfoQuery } from '../../../../hooks/recoil/user';
 import { useRecoilValue } from 'recoil';
@@ -36,18 +34,21 @@ const MessageLeft = ({
       <div className="message-body">
         <div className="message-row">
           <div className="d-flex align-items-center">
-            <div className="alert message-content bg-gray-100 border-gray-200 mb-0 py-1 py-lg-2 px-lg-3 px-2">
-              <h6 className="mt-1 mb-1">{owner}</h6>
-              <div className="text-body">{body}</div>
-
-              <div className="text-right small">
-                <small
-                  className="text-gray-600"
-                  style={{ lineHeight: 1 }}
-                  title={dayjs(new Date(created_at)).format('lll')}
-                >
-                  {dayjs(new Date(created_at)).format('HH:mm')}
-                </small>
+            <div className="message-content">
+              <h6 className="ml-3">
+                {user?.realname || <span>@{user?.username}</span>}
+              </h6>
+              <div className="alert bg-gray-100 border-gray-200 mb-0 py-1 py-lg-2 px-lg-3 px-2">
+                <div className="float-right small">
+                  <small
+                    className="text-gray-600"
+                    style={{ lineHeight: 1 }}
+                    title={dayjs(new Date(created_at)).format('lll')}
+                  >
+                    {dayjs(new Date(created_at)).format('HH:mm')}
+                  </small>
+                </div>
+                <div className="text-body">{body}</div>
               </div>
             </div>
             <SubMenu />

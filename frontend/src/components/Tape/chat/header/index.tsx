@@ -1,7 +1,6 @@
 import React from 'react';
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
-import IPerson from '@material-ui/icons/Person';
 import IChevronLeft from '@material-ui/icons/ChevronLeft';
 import { useRecoilState, useRecoilValueLoadable } from 'recoil';
 

@@ -38,7 +38,7 @@ const PrivateRoute = ({
   />
 );
 
-const App: React.FC = () => {
+const App = () => {
   const { state, contents } = useRecoilValueLoadable(authState);
   const isAuthorized = state === 'hasValue' && instanceOfUser(contents);
 

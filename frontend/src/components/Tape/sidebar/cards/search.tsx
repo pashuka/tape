@@ -14,7 +14,7 @@ type CardSearchPropsType = {
   user: UserType;
 };
 
-const CardSearch: React.FC<CardSearchPropsType> = ({ user, isOnline }) => {
+const CardSearch = ({ user, isOnline }: CardSearchPropsType) => {
   const [messenger, setMessenger] = useRecoilState(MessengerAtom);
   const iam = useRecoilValue(authState);
   const dialogs = useRecoilValue(DialogsState);
@@ -39,10 +39,10 @@ const CardSearch: React.FC<CardSearchPropsType> = ({ user, isOnline }) => {
     >
       <div className="card border-0 rounded-0 card-regular">
         <div className="card-body py-2 py-lg-2">
-          <div className="media">
+          <div className="media d-flex align-items-center justify-content-center">
             <div
-              className={`avatar avatar-sm ${
-                isOnline ? 'avatar-online' : ''
+              className={`bg-gray-200 rounded-circle ${
+                isOnline ? 'online' : ''
               } mr-3`}
             >
               {user.profile?.picture ? (

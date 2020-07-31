@@ -2,6 +2,7 @@ import React from 'react';
 import { Link, useRouteMatch } from 'react-router-dom';
 import dayjs from 'dayjs';
 import IPerson from '@material-ui/icons/Person';
+import IAccountCircle from '@material-ui/icons/AccountCircle';
 import { useRecoilState, useRecoilValue } from 'recoil';
 
 import isToday from 'dayjs/plugin/isToday';
@@ -51,11 +52,11 @@ const Dialog = ({ dialog }: DialogPropsType) => {
         }`}
       >
         <div className="card-body py-2 py-lg-2">
-          <div className="media">
+          <div className="media d-flex align-items-center justify-content-center">
             <div
-              className={`avatar ${
-                isOnline ? 'avatar-online' : ''
-              } mt-2 mb-2 mr-3`}
+              className={`bg-gray-2001 p-11 rounded-circle1 ${
+                isOnline ? 'online' : ''
+              } mr-3`}
             >
               {participant?.profile?.picture ? (
                 <img
@@ -64,9 +65,12 @@ const Dialog = ({ dialog }: DialogPropsType) => {
                   alt={participant?.realname || participant?.username}
                 />
               ) : (
-                <IPerson fontSize="large" className="ml-2 mt-2 text-white" />
+                <IAccountCircle
+                  fontSize="inherit"
+                  className="text-gray-200"
+                  style={{ width: '56px', height: '56px' }}
+                />
               )}
-              {/* <IAccountCircle /> */}
             </div>
 
             <div className="media-body overflow-hidden">

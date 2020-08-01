@@ -67,7 +67,7 @@ const Header = ({ dialog, iam, user }: HeaderPropsType) => {
 
           <div className="col-8 col-xl-8">
             <div className="media text-center text-xl-left">
-              <div className="d-none d-xl-inline-block text-center">
+              <div className="d-none d-xl-inline-block text-center mr-3">
                 {state === 'loading' && <Skeleton roundedCircle />}
                 {state === 'hasValue' && instanceOfUser(participant) && (
                   <Avatar

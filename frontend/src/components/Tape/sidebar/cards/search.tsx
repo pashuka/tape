@@ -17,7 +17,7 @@ const CardSearch = ({ user }: CardSearchPropsType) => {
   const dialog = useRecoilValue(dialogParticipant(user.username));
   const baseUrl = `/${routes.tape}/${routes.dialogs}/`;
   const to = instanceOfDialog(dialog)
-    ? `${baseUrl}${dialog.dialog_id}`
+    ? `${dialog.dialog_id}`
     : `${ParamsKeyUser}/${user.username}`;
   return <CardBasic to={baseUrl + to} avaSize="sm" member={user} />;
 };

@@ -12,14 +12,12 @@ dayjs.extend(LocalizedFormat);
 
 type MessageLeftPropsType = {
   data: MessageType;
-  username: string;
 };
 
 const MessageLeft = ({
   data: { created_at, owner, body },
-  username,
 }: MessageLeftPropsType) => {
-  const user = useRecoilValue(userInfoQuery(username));
+  const user = useRecoilValue(userInfoQuery(owner));
   return (
     <div className="message">
       <a className=" mr-2 mr-lg-4" href="#chat-messages">

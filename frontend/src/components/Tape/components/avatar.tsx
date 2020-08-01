@@ -18,6 +18,7 @@ type PropsType = {
   realname?: string;
   username?: string;
   size?: iconSizeType;
+  color?: string;
 };
 
 const Avatar = ({
@@ -27,9 +28,10 @@ const Avatar = ({
   realname,
   username,
   size,
+  color,
 }: PropsType) => {
   return (
-    <div className={`card-avatar mr-2 ${online ? 'online' : ''}`}>
+    <div className={`card-avatar ${online ? 'online' : ''}`}>
       {picture ? (
         <img
           className="rounded-circle"
@@ -39,7 +41,7 @@ const Avatar = ({
       ) : (
         <IAccountCircle
           fontSize="inherit"
-          className={active ? 'text-white' : 'text-gray-200'}
+          className={active ? 'text-white' : color || 'text-gray-200'}
           style={
             size && {
               width: iconSize[size] + 'px',

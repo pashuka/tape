@@ -2,8 +2,6 @@ import React from 'react';
 import dayjs from 'dayjs';
 import LocalizedFormat from 'dayjs/plugin/localizedFormat';
 
-import IPerson from '@material-ui/icons/Person';
-import { routes } from '../../../../constants';
 import SubMenu from './submenu';
 import { MessageType } from '../../../../hooks/recoil/message';
 import { UserType } from '../../../../hooks/recoil/user';

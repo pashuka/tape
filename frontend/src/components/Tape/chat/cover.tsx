@@ -1,6 +1,5 @@
 import React from 'react';
 
-import { routes } from '../../../constants';
 import { UserType } from '../../../hooks/recoil/user';
 import Avatar from '../components/avatar';
 

@@ -40,6 +40,7 @@ export const routes = {
     profile: 'settings/profile',
     account: 'settings/account',
     security: 'settings/security',
+    notifications: 'settings/notifications',
   },
   tape: 'tape',
   user: 'user',

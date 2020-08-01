@@ -16,7 +16,7 @@ type PropsType = {
 
 const CardUserInfo = ({ participant }: PropsType) => {
   const { params } = useRouteMatch<QSParamsType>();
-  const baseUrl = `/${routes.tape}/${routes.dialogs}/`;
+  const baseUrl = `/${routes.tape}/${routes.participants}/`;
   const to = participant.dialog_id
     ? `${participant.dialog_id}`
     : `${ParamsKeyUser}/${participant.username}`;

@@ -3,9 +3,7 @@ import ISettings from '@material-ui/icons/Settings';
 import IChatBubbleOutline from '@material-ui/icons/ChatBubbleOutline';
 import IPeople from '@material-ui/icons/People';
 import IMeetingRoom from '@material-ui/icons/MeetingRoom';
-import { useRecoilState } from 'recoil';
-
-import Logo from '../../Logo/index';
+import { useRecoilState, useRecoilValue } from 'recoil';
 
 import { Link, useLocation } from 'react-router-dom';
 import { routes, getRoute } from '../../../constants';
@@ -15,6 +13,7 @@ import { authState } from '../../../hooks/recoil/auth';
 import { request } from '../../../hooks/recoil/request';
 import { DialogsState } from '../../../hooks/recoil/dialog';
 import { messagesState } from '../../../hooks/recoil/message';
+import Avatar from '../components/avatar';
 
 type NavItemPropsType = {
   active?: boolean;
@@ -59,6 +58,7 @@ const navItems: NavItemPropsType[] = [
 const Navbar = () => {
   const [messenger, setMessenger] = useRecoilState(MessengerAtom);
   const [reset, setReset] = React.useState(false);
+  const iam = useRecoilValue(authState);
   const resetAuth = useResetRecoilState(authState);
   const resetDialogs = useResetRecoilState(DialogsState);
   const resetMessages = useResetRecoilState(messagesState);
@@ -97,10 +97,12 @@ const Navbar = () => {
             setMessenger({ isOpen: false, isChatOpen: messenger.isChatOpen });
           }}
         >
-          <Logo
-            width="32"
-            height="32"
-            className="mx-auto rounded-circle bg-white"
+          <Avatar
+            picture={iam?.profile?.picture}
+            realname={iam?.realname}
+            username={iam?.username}
+            size="xs"
+            color="text-muted"
           />
         </Link>
       </li>

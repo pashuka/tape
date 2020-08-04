@@ -136,7 +136,7 @@ const Page = ({ iam }: PropsType) => {
               <Figure
                 title={realname}
                 placeholder={initials}
-                caption={values.username}
+                caption={'@' + values.username}
                 src={
                   values.profile && values.profile.picture
                     ? `${process.env.REACT_APP_IMG_HOST}/${routes.user}/${values.profile.picture}`
@@ -174,14 +174,9 @@ const Page = ({ iam }: PropsType) => {
                       }
                     }}
                   />
-                  <label
-                    htmlFor="logo"
-                    className="picture-file-label text-truncate"
-                  >
-                    {isPending ? (
+                  <label className="picture-file-label text-truncate">
+                    {isPending && (
                       <span className="spinner-grow spinner-grow-sm"></span>
-                    ) : (
-                      t('Upload')
                     )}
                   </label>
                 </div>

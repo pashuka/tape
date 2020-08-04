@@ -11,7 +11,7 @@ import useUserAgent from '../../hooks/useUserAgent';
 import { QSParamsType, ParamsKeyUser, ParamsKeyDialog } from '../../constants';
 import { MessengerAtom } from '../../hooks/recoil/messenger';
 import { currentDialogIdState } from '../../hooks/recoil/dialog';
-import SettingsContent from './settings';
+import SettingsContent from './settings/index';
 
 export enum TabEnum {
   Dialogs,

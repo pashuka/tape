@@ -75,6 +75,7 @@ $chat-sidebar-width: 350px;
   padding-right: $grid-gutter-width / 2;
   order: 2;
   min-height: 61px;
+  border-top: 1px solid $gray-200;
   // box-shadow: $layout-box-shadow;
   // z-index: $layout-z-index;
 }
@@ -82,6 +83,7 @@ $chat-sidebar-width: 350px;
 .sidebar,
 .navigation,
 .chat-content,
+.page-content,
 .chat-sidebar {
   @include hide-scrollbar();
 }
@@ -118,6 +120,7 @@ $chat-sidebar-width: 350px;
     width: 100%;
   }
 
+  .page-content,
   .chat-content {
     flex: 2;
   }

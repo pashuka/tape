@@ -11,7 +11,6 @@ type ContentPropsType = {
 };
 
 const Content = ({ iam }: ContentPropsType) => {
-  const refContentElement = React.createRef<HTMLDivElement>();
   const refLastElement = React.createRef<HTMLDivElement>();
   const { state, contents } = useRecoilValueLoadable(messagesState);
 
@@ -21,8 +20,8 @@ const Content = ({ iam }: ContentPropsType) => {
   });
 
   return (
-    <div ref={refContentElement} className="chat-content px-2 px-lg-4">
-      <div className="container-xxl py-2 py-lg-4">
+    <div className="chat-content px-2 px-lg-4">
+      <div className="py-2 py-lg-4">
         {state === 'loading' ? (
           <Fragment>
             <MessageSkeleton />

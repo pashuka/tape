@@ -3,11 +3,10 @@ import ISettings from '@material-ui/icons/Settings';
 import IChat from '@material-ui/icons/Chat';
 import IPeople from '@material-ui/icons/People';
 import IMeetingRoom from '@material-ui/icons/MeetingRoom';
-import { useRecoilState, useRecoilValue } from 'recoil';
+import { useRecoilValue } from 'recoil';
 
 import { Link, useLocation } from 'react-router-dom';
 import { routes, getRoute } from '../../../constants';
-import { MessengerAtom } from '../../../hooks/recoil/messenger';
 import { useResetRecoilState } from 'recoil';
 import { authState } from '../../../hooks/recoil/auth';
 import { request } from '../../../hooks/recoil/request';
@@ -15,7 +14,7 @@ import { DialogsState } from '../../../hooks/recoil/dialog';
 import { messagesState } from '../../../hooks/recoil/message';
 import Avatar from '../components/avatar';
 
-const iconSize = '32px';
+const iconSize = '24px';
 
 type NavItemPropsType = {
   active?: boolean;
@@ -58,7 +57,6 @@ const navItems: NavItemPropsType[] = [
 ];
 
 const Navbar = () => {
-  const [messenger, setMessenger] = useRecoilState(MessengerAtom);
   const [reset, setReset] = React.useState(false);
   const iam = useRecoilValue(authState);
   const resetAuth = useResetRecoilState(authState);
@@ -94,10 +92,7 @@ const Navbar = () => {
       <li className="nav-item">
         <Link
           className="nav-link position-relative p-0 py-xl-4"
-          to="/"
-          onClick={(e) => {
-            setMessenger({ isOpen: false, isChatOpen: messenger.isChatOpen });
-          }}
+          to={`/${routes.tape}/${routes.settings.profile}/`}
         >
           <Avatar
             picture={iam?.profile?.picture}

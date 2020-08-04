@@ -14,11 +14,11 @@ exports.get = (dest = "", id = "") => {
   return files;
 };
 
-exports.has = files => {
+exports.has = (files) => {
   if (
     typeof files === "object" &&
     Object.entries(files).length > 0 &&
-    Object.keys(files).find(_ => config.docs.includes(_))
+    Object.keys(files).find((_) => config.docs.includes(_))
   ) {
     return true;
   }
@@ -35,15 +35,15 @@ exports.push = (files, id = 0, path) => {
         fs.mkdirSync(nPath, { recursive: true });
       }
       const ext = path.extname(fname).toLowerCase();
-      fs.rename(`${oPath}/${fname}`, `${nPath}/${uuid.v4()}${ext}`, err => {
+      fs.rename(`${oPath}/${fname}`, `${nPath}/${uuid.v4()}${ext}`, (err) => {
         if (err) throw new BadRequest([{ file: err }]);
       });
     }
   }
 };
 
-exports.upload = async function(file, resource = "") {
-  return new Promise(function(resolve, reject) {
+exports.upload = async function (file, resource = "") {
+  return new Promise(function (resolve, reject) {
     const fname = path.basename(file.path);
     const oPath = `${process.cwd()}/${config.destination}`;
     const nPath = `${process.cwd()}/${config.destination}/${resource}`;
@@ -62,7 +62,7 @@ exports.upload = async function(file, resource = "") {
         .flatten({ background: { r: 255, g: 255, b: 255, alpha: 0.5 } })
         .resize(400, 400, {
           fit: sharp.fit.cover,
-          background: { r: 255, g: 255, b: 255, alpha: 0.5 }
+          background: { r: 255, g: 255, b: 255, alpha: 0.5 },
           // Do not enlarge if the width or height are already less than the
           // specified dimensions, equivalent to GraphicsMagick's > geometry
           // option.
@@ -75,14 +75,15 @@ exports.upload = async function(file, resource = "") {
           sharp(resizedFileName)
             .resize(config.thumb.size, config.thumb.size, {
               fit: sharp.fit.inside,
-              background: { r: 255, g: 255, b: 255, alpha: 0.5 }
+              background: { r: 255, g: 255, b: 255, alpha: 0.5 },
             })
             .toFile(thumbFileName)
             .then(() => {
               fs.unlinkSync(uploadedFileName);
               resolve(uid);
             });
-        });
+        })
+        .catch(reject);
     } catch (error) {
       reject(error);
     }

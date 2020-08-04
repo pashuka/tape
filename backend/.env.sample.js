@@ -86,4 +86,12 @@ module.exports = {
       html: "<p>-body-</p>",
     },
   },
+  formidable: {
+    destination: "../frontend/public/uploads",
+    docs: ["file"],
+    thumb: {
+      size: 64,
+      prefix: "thumb-",
+    },
+  },
 };

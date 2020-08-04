@@ -45,7 +45,7 @@ app.use(
   require("koa-body")({
     formidable: {
       // This is where the files will be uploaded
-      uploadDir: `${__dirname}/../${config.formidable.destination}`,
+      uploadDir: `${process.cwd()}/${config.formidable.destination}`,
       keepExtensions: true,
     },
     // formLimit: "2mb",

@@ -1,5 +1,11 @@
 import { FetchError } from 'react-async';
 
+export const isEmpty = (o: object) =>
+  Object.entries(o).length === 0 && o.constructor === Object;
+
+export const filterObject = (o: object, predicate: any) =>
+  Object.fromEntries(Object.entries(o).filter(predicate));
+
 export const compactNumber = (num: number, digits: number = 0) => {
   const si = [
     { value: 1, symbol: '' },
@@ -51,4 +57,19 @@ export const onReject = async (reason: FetchError, callback: Function) => {
   } catch (e) {
     callback({ ...result, body: { errors: [{ message: e.message }] } });
   }
+};
+
+type ErrorMessageType = {
+  message: string;
+  field: string;
+};
+
+type ErrorBodyType = {
+  errors: ErrorMessageType[];
+};
+
+export type TapeErrorType = Error & {
+  readonly status: number;
+  readonly statusText: string;
+  readonly body: ErrorBodyType;
 };

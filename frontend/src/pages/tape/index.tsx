@@ -42,7 +42,9 @@ const IndexPage = () => (
         exact
         key={_}
         path={`/${routes.tape}/${(routes.settings as any)[_]}/`}
-        render={() => <Tape tab={TabEnum.Settings} />}
+        render={() => (
+          <Tape tab={TabEnum.Settings} route={(routes.settings as any)[_]} />
+        )}
       />
     ))}
 

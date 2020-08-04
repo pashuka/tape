@@ -7,10 +7,6 @@ import { authState } from './auth';
 
 type UserProfileType = {
   picture?: string;
-  description?: object[];
-  sectors?: string;
-  skills?: string;
-  socials?: string;
 };
 
 export type UserType = {

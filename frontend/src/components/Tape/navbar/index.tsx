@@ -1,6 +1,6 @@
 import React from 'react';
 import ISettings from '@material-ui/icons/Settings';
-import IChatBubbleOutline from '@material-ui/icons/ChatBubbleOutline';
+import IChat from '@material-ui/icons/Chat';
 import IPeople from '@material-ui/icons/People';
 import IMeetingRoom from '@material-ui/icons/MeetingRoom';
 import { useRecoilState, useRecoilValue } from 'recoil';
@@ -15,6 +15,8 @@ import { DialogsState } from '../../../hooks/recoil/dialog';
 import { messagesState } from '../../../hooks/recoil/message';
 import Avatar from '../components/avatar';
 
+const iconSize = '32px';
+
 type NavItemPropsType = {
   active?: boolean;
   to: string;
@@ -23,7 +25,7 @@ type NavItemPropsType = {
 };
 
 const NavItem = ({ active, to, title, children }: NavItemPropsType) => (
-  <li className="nav-item mt-xl-9">
+  <li className="nav-item">
     <Link
       className={`nav-link position-relative p-0 py-xl-4 ${
         active ? 'active' : ''
@@ -41,17 +43,17 @@ const navItems: NavItemPropsType[] = [
   {
     to: `/${routes.tape}/${routes.participants}/`,
     title: 'Participants',
-    children: <IPeople />,
+    children: <IPeople style={{ width: iconSize, height: iconSize }} />,
   },
   {
     to: `/${routes.tape}/${routes.dialogs}/`,
     title: 'Messages',
-    children: <IChatBubbleOutline />,
+    children: <IChat style={{ width: iconSize, height: iconSize }} />,
   },
   {
-    to: `/${routes.tape}/${routes.settings.profile}/`,
+    to: `/${routes.tape}/${routes.settings.index}/`,
     title: 'Settings',
-    children: <ISettings />,
+    children: <ISettings style={{ width: iconSize, height: iconSize }} />,
   },
 ];
 
@@ -88,7 +90,7 @@ const Navbar = () => {
   }, [reset]);
 
   return (
-    <ul className="nav navbar-nav navbar-light flex-row flex-xl-column flex-grow-1 justify-content-between justify-content-xl-center py-3 py-lg-0">
+    <ul className="nav navbar-nav navbar-light flex-row flex-xl-column flex-grow-1 justify-content-between justify-content-xl-center py-2 py-lg-0">
       <li className="nav-item">
         <Link
           className="nav-link position-relative p-0 py-xl-4"
@@ -117,7 +119,7 @@ const Navbar = () => {
         />
       ))}
 
-      <li className="nav-item mt-xl-9">
+      <li className="nav-item">
         <a
           className="nav-link position-relative p-0 py-xl-4"
           href="#sign-out"
@@ -127,7 +129,7 @@ const Navbar = () => {
             window.confirm('Sign out?') && setReset(true);
           }}
         >
-          <IMeetingRoom />
+          <IMeetingRoom style={{ width: iconSize, height: iconSize }} />
         </a>
       </li>
     </ul>

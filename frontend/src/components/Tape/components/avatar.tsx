@@ -6,8 +6,8 @@ export type iconSizeType = 'xs' | 'sm' | 'md' | 'lg';
 
 const iconSize = {
   xs: 32,
-  sm: 48,
-  md: 56,
+  sm: 40,
+  md: 48,
   lg: 80,
 };
 
@@ -37,6 +37,8 @@ const Avatar = ({
           className="rounded-circle"
           src={`${process.env.REACT_APP_IMG_HOST}/${routes.user}/thumb-${picture}`}
           alt={realname || username}
+          width={size ? iconSize[size] : iconSize['md']}
+          height={size ? iconSize[size] : iconSize['md']}
         />
       ) : (
         <IAccountCircle

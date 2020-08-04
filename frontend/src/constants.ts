@@ -37,6 +37,7 @@ export const routes = {
   messages: 'messages',
   participants: 'participants',
   settings: {
+    index: 'settings',
     profile: 'settings/profile',
     account: 'settings/account',
     security: 'settings/security',

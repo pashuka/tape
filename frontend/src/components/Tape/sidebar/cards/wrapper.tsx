@@ -6,10 +6,16 @@ import { MessengerAtom } from '../../../../hooks/recoil/messenger';
 
 type PropsType = {
   active?: boolean;
+  activeColor?: string;
   to?: string;
 };
 
-const CardWrapper: React.FC<PropsType> = ({ to, active, children }) => {
+const CardWrapper: React.FC<PropsType> = ({
+  to,
+  active,
+  activeColor,
+  children,
+}) => {
   const [messenger, setMessenger] = useRecoilState(MessengerAtom);
   return (
     <Link
@@ -21,7 +27,7 @@ const CardWrapper: React.FC<PropsType> = ({ to, active, children }) => {
     >
       <div
         className={`card border-0 rounded-0 ${
-          active ? 'alert-primary' : 'card-regular'
+          active ? activeColor || 'alert-primary' : 'card-regular'
         }`}
       >
         <div className="card-body p-0 px-2">

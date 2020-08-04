@@ -11,6 +11,7 @@ import useUserAgent from '../../hooks/useUserAgent';
 import { QSParamsType, ParamsKeyUser, ParamsKeyDialog } from '../../constants';
 import { MessengerAtom } from '../../hooks/recoil/messenger';
 import { currentDialogIdState } from '../../hooks/recoil/dialog';
+import SettingsContent from './settings';
 
 export enum TabEnum {
   Dialogs,
@@ -20,9 +21,10 @@ export enum TabEnum {
 
 type PropsType = {
   tab: TabEnum;
+  route?: string;
 };
 
-const Messenger = ({ tab }: PropsType) => {
+const Messenger = ({ tab, route }: PropsType) => {
   const { device } = useUserAgent();
   const [sidebarHeight, setSidebarHeight] = React.useState(0);
   const [sidebarScrollTop, setSidebarScrollTop] = React.useState(false);
@@ -58,7 +60,7 @@ const Messenger = ({ tab }: PropsType) => {
     if (refNavbar.current) {
       // TODO: find the problem with zero offsetHeight and fix it
       setSidebarHeight(
-        document.documentElement.clientHeight - 81, //refNavbar.current.clientHeight,
+        document.documentElement.clientHeight - 60, //refNavbar.current.clientHeight,
       );
     }
 
@@ -76,6 +78,7 @@ const Messenger = ({ tab }: PropsType) => {
   }, [params]);
 
   let sidebarComponent = null;
+  let mainComponent = null;
   switch (tab) {
     case TabEnum.Participants:
       sidebarComponent = (
@@ -84,6 +87,7 @@ const Messenger = ({ tab }: PropsType) => {
           scrollBottom={sidebarScrollBottom}
         />
       );
+      mainComponent = <Chat />;
       break;
 
     case TabEnum.Settings:
@@ -93,6 +97,7 @@ const Messenger = ({ tab }: PropsType) => {
           scrollBottom={sidebarScrollBottom}
         />
       );
+      mainComponent = <SettingsContent current={route} />;
       break;
 
     case TabEnum.Dialogs:
@@ -103,13 +108,14 @@ const Messenger = ({ tab }: PropsType) => {
           scrollBottom={sidebarScrollBottom}
         />
       );
+      mainComponent = <Chat />;
       break;
   }
   return (
     <div className="messenger">
       <div
         ref={refNavbar}
-        className="navigation navbar navbar-light justify-content-center py-xl-1 bg-white"
+        className="navigation navbar navbar-light justify-content-center py-xl-1 bg-white pt-0"
       >
         <Navbar />
       </div>
@@ -131,7 +137,7 @@ const Messenger = ({ tab }: PropsType) => {
             : ''
         }`}
       >
-        <Chat />
+        {mainComponent}
       </div>
     </div>
   );

@@ -27,7 +27,7 @@ const links = [
   },
   {
     title: 'Notifications',
-    to: `/${routes.tape}/${routes.settings.profile}/`,
+    to: `/${routes.tape}/${routes.settings.notifications}/`,
     iconName: 'notifications',
     color: 'text-warning',
   },
@@ -38,7 +38,7 @@ type PropsType = {
   scrollBottom: boolean;
 };
 
-const Participants = ({ scrollTop, scrollBottom }: PropsType) => {
+const Settings = ({ scrollTop, scrollBottom }: PropsType) => {
   const [, setSearchSettingsQuery] = useRecoilState(searchSettingsQueryAtom);
 
   return (
@@ -64,4 +64,4 @@ const Participants = ({ scrollTop, scrollBottom }: PropsType) => {
   );
 };
 
-export default Participants;
+export default Settings;

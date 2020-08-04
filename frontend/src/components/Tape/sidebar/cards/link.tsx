@@ -7,6 +7,7 @@ import INotifications from '@material-ui/icons/Notifications';
 
 import { useTranslation } from 'react-i18next';
 import CardWrapper from './wrapper';
+import { useLocation } from 'react-router-dom';
 
 const LinkIcon = ({ name, color }: { name: string; color: string }) => {
   switch (name) {
@@ -27,21 +28,23 @@ type PropsType = {
   title: string;
   iconName: string;
   color: string;
+  activeColor?: string;
 };
 
-const CardLink = ({ to, title, iconName, color }: PropsType) => {
+const CardLink = ({ to, title, iconName, color, activeColor }: PropsType) => {
   const { t } = useTranslation();
-
+  const { pathname } = useLocation();
+  const active = pathname === to;
   return (
-    <CardWrapper active={false} to={to || ''}>
+    <CardWrapper active={active} activeColor={activeColor} to={to || ''}>
       <div className="ml-2">
-        <LinkIcon name={iconName} color={color} />
+        <LinkIcon name={iconName} color={active ? 'text-white' : color} />
       </div>
 
       <div className="media-body ml-3 overflow-hidden border-top">
         <div className={`d-flex align-items-center my-2 py-2`}>
           <h6 className="text-truncate mb-0 mr-auto">{t(title)}</h6>
-          <IChevronRight className="text-gray-200 text-nowrap" />
+          <IChevronRight className="text-nowrap text-muted" />
         </div>
       </div>
     </CardWrapper>

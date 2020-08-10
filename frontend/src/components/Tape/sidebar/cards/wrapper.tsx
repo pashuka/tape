@@ -8,6 +8,7 @@ type PropsType = {
   active?: boolean;
   activeColor?: string;
   to?: string;
+  disabled?: boolean;
 };
 
 const CardWrapper: React.FC<PropsType> = ({
@@ -15,11 +16,12 @@ const CardWrapper: React.FC<PropsType> = ({
   active,
   activeColor,
   children,
+  disabled,
 }) => {
   const [messenger, setMessenger] = useRecoilState(MessengerAtom);
   return (
     <Link
-      className="nav-link text-body p-0"
+      className={`nav-link text-body p-0 ${disabled ? 'disabled' : ''}`}
       to={to || ''}
       onClick={(e) => {
         setMessenger({ isOpen: messenger.isOpen, isChatOpen: true });

@@ -29,7 +29,8 @@ const links = [
     title: 'Notifications',
     to: `/${routes.tape}/${routes.settings.notifications}/`,
     iconName: 'notifications',
-    color: 'text-warning',
+    color: 'text-gray-300',
+    disabled: true,
   },
 ];
 
@@ -52,7 +53,7 @@ const Settings = ({ scrollTop, scrollBottom }: PropsType) => {
               searchPlaceholder="Search settings..."
             />
 
-            <nav className="nav nav-dialog d-block">
+            <nav className="nav nav-settings d-block">
               {links.map((props, index) => (
                 <CardLink key={index} {...props} />
               ))}

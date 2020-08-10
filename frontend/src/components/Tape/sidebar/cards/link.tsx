@@ -29,14 +29,27 @@ type PropsType = {
   iconName: string;
   color: string;
   activeColor?: string;
+  disabled?: boolean;
 };
 
-const CardLink = ({ to, title, iconName, color, activeColor }: PropsType) => {
+const CardLink = ({
+  to,
+  title,
+  iconName,
+  color,
+  activeColor,
+  disabled,
+}: PropsType) => {
   const { t } = useTranslation();
   const { pathname } = useLocation();
   const active = pathname === to;
   return (
-    <CardWrapper active={active} activeColor={activeColor} to={to || ''}>
+    <CardWrapper
+      active={active}
+      activeColor={activeColor}
+      to={to || ''}
+      disabled={disabled}
+    >
       <div className="ml-2">
         <LinkIcon name={iconName} color={active ? 'text-white' : color} />
       </div>

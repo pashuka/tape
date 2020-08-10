@@ -414,7 +414,8 @@ $chat-sidebar-width: 350px;
   }
 }
 
-.nav-dialog {
+.nav-dialog,
+.nav-settings {
   .card {
     &:active,
     &:focus,
@@ -432,6 +433,12 @@ $chat-sidebar-width: 350px;
     }
   }
   // .card.alert-primary {}
+}
+
+.nav-settings .nav-link.disabled {
+  .card {
+    color: $gray-400;
+  }
 }
 
 .chat-footer {

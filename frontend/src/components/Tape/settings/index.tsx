@@ -8,7 +8,6 @@ import Cover from '../chat/cover';
 import { authState } from '../../../hooks/recoil/auth';
 import { useRecoilValue } from 'recoil';
 import { instanceOfUser } from '../../../hooks/recoil/user';
-import Header from './header';
 
 type PropsType = {
   current?: string;
@@ -38,10 +37,7 @@ const SettingsContent = ({ current }: PropsType) => {
   }
   return (
     <div className="chat">
-      <div className="chat-body bg-white">
-        <Header title={'asd'} />
-        <div className="page-content">{getPage()}</div>
-      </div>
+      <div className="page-content">{getPage()}</div>
     </div>
   );
 };

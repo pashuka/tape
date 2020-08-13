@@ -27,7 +27,9 @@ type PropsType = {
 const Messenger = ({ tab, route }: PropsType) => {
   const { device } = useUserAgent();
   const [sidebarHeight, setSidebarHeight] = React.useState(0);
-  const [sidebarScrollBottom, setSidebarScrollBottom] = React.useState(false);
+  const [sidebarScrollOnBottom, setSidebarScrollOnBottom] = React.useState(
+    false,
+  );
   const refNavbar = React.createRef<HTMLDivElement>();
 
   const [messenger] = useRecoilState(MessengerAtom);
@@ -35,17 +37,17 @@ const Messenger = ({ tab, route }: PropsType) => {
 
   const { params } = useRouteMatch<QSParamsType>();
 
-  // TODO: slicing dialog items in sidebar using scrollTop/Bottom vars
+  // TODO: slicing dialog items in sidebar using scrollTop/Bottom variables
   // TODO: onSelect dialog scroll sidebar visible part to see selected dialog item
   const handleScroll = (e: React.UIEvent<HTMLElement>) => {
     const el = e.currentTarget;
     if (el.scrollTop === 0) {
       // setSidebarScrollTop(true);
     } else if (el.offsetHeight + el.scrollTop >= el.scrollHeight) {
-      setSidebarScrollBottom(true);
+      setSidebarScrollOnBottom(true);
     } else {
       // setSidebarScrollTop(false);
-      setSidebarScrollBottom(false);
+      setSidebarScrollOnBottom(false);
     }
   };
 
@@ -83,18 +85,20 @@ const Messenger = ({ tab, route }: PropsType) => {
   let mainComponent = null;
   switch (tab) {
     case TabEnum.Participants:
-      sidebarComponent = <ParticipantsBar scrollBottom={sidebarScrollBottom} />;
+      sidebarComponent = (
+        <ParticipantsBar scrollBottom={sidebarScrollOnBottom} />
+      );
       mainComponent = <Chat />;
       break;
 
     case TabEnum.Settings:
-      sidebarComponent = <SettingsBar scrollBottom={sidebarScrollBottom} />;
+      sidebarComponent = <SettingsBar scrollBottom={sidebarScrollOnBottom} />;
       mainComponent = <SettingsContent current={route} />;
       break;
 
     case TabEnum.Dialogs:
     default:
-      sidebarComponent = <DialogsBar scrollBottom={sidebarScrollBottom} />;
+      sidebarComponent = <DialogsBar scrollBottom={sidebarScrollOnBottom} />;
       mainComponent = <Chat />;
       break;
   }

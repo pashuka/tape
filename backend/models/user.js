@@ -48,8 +48,13 @@ class model extends Repository {
    * @param {object} first param
    */
   async signup({ username, email, password }) {
-    username = username.toLocaleLowerCase();
-    email = validator.normalizeEmail(email);
+    username = typeof username === "string" ? username.toLocaleLowerCase() : "";
+
+    if (username.length < 3 || username.length > 32) {
+      throw new BadRequest([{ username: "Username length must be between 3 and 32 characters" }]);
+    } else if (!/^[a-z0-9]+$/i.test(username)) {
+      throw new BadRequest([{ username: "Username may only contain alphanumeric characters" }]);
+    }
 
     // Username already used?
     const unameExist = await this.findOne(
@@ -63,6 +68,7 @@ class model extends Repository {
       throw new BadRequest([{ username: `Username ${username} is not available` }]);
     }
 
+    email = validator.normalizeEmail(email);
     // Email already used?
     const emailExist = await this.findOne(
       { email },
@@ -80,6 +86,7 @@ class model extends Repository {
     let entity = await this.insert(
       {
         username,
+        realname: username,
         email,
         password,
         confirmation_code: uuid.v4(),
@@ -118,6 +125,11 @@ class model extends Repository {
     return entity;
   }
 
+  /**
+   * Update
+   * @param {object} conditions
+   * * @param {object} values to update
+   */
   async update(conditions = {}, values = {}) {
     if (!this.user) {
       return;
@@ -143,9 +155,6 @@ class model extends Repository {
       }
 
       values = { username };
-
-      // TODO: update username
-      // dialogs, messages
 
       const fullname = this.user.realname || this.user.username;
       // TODO: notify throught rabbit
@@ -202,6 +211,8 @@ class model extends Repository {
       })
         .then((result) => {})
         .catch(console.error);
+    }
+    if (keys.includes("email")) {
     }
     return super.update(conditions, values);
   }

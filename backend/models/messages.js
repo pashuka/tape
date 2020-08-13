@@ -19,9 +19,12 @@ class model extends Repository {
     if (!"dialog_id" in conditions) {
       throw new BadRequest([{ dialog_id: "Bad dialog id" }]);
     }
-    const { dialog_id } = conditions;
+    const { dialog_id, offset } = conditions;
     if (!validator.isNumeric(dialog_id)) {
       throw new BadRequest([{ dialog_id: "Bad dialog id" }]);
+    }
+    if (!validator.isNumeric(offset) || offset < 0 || offset > Number.MAX_VALUE) {
+      throw new BadRequest([{ offset: "Bad offset" }]);
     }
     const dialog = await knex(tables.members)
       .select("dialog_id")
@@ -36,8 +39,8 @@ class model extends Repository {
       .leftJoin(tables.users, `${tables.users}.id`, `${this.table}.owner_id`)
       .where({ dialog_id: dialog.dialog_id })
       .orderBy(`${this.table}.created_at`)
-      .offset(0)
-      .limit(10);
+      .offset(offset)
+      .limit(this.limit);
     return records;
   }
 

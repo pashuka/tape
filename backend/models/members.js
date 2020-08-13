@@ -25,7 +25,7 @@ class model extends Repository {
       .leftJoin(tables.users, `${tables.users}.id`, `${this.table}.user_id`)
       .whereNot(`${this.table}.user_id`, this.user.id)
       .offset(offset)
-      .limit(25);
+      .limit(this.limit);
 
     if (dialog_id) {
       if (!validator.isNumeric(dialog_id)) {

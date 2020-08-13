@@ -16,6 +16,7 @@ module.exports = class Repository {
    */
   constructor({
     // user = { username: "system@user" },
+    limit = 25,
     table,
     allowed = {
       schema: [],
@@ -33,6 +34,7 @@ module.exports = class Repository {
       increment: "updateOwn",
     },
   }) {
+    this.limit = limit;
     this.table = table;
     this.allowed = allowed;
     this.perms = perms;

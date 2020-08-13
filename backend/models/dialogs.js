@@ -34,7 +34,7 @@ class model extends Repository {
       .where(`${tables.members}.user_id`, this.user.id)
       .orderBy(`${this.table}.last_message_created_at`, "desc")
       .offset(offset)
-      .limit(25);
+      .limit(this.limit);
   }
 
   findOne(conditions) {

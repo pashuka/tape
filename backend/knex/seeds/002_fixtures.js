@@ -6,7 +6,7 @@ const counts = {
   // How many fixtures users we should generate
   users: 128,
   // How many fixtures messages range per one peer dialog we should generate
-  messages: { min: 256, max: 1024 },
+  messages: { min: 1, max: 256 },
 };
 const fixtureUUID = "00000000-0000-0000-0000-000000000000";
 const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));

@@ -27,11 +27,11 @@ const Content = ({ iam }: ContentPropsType) => {
     [] as MessageType[],
   );
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   React.useEffect(() => {
     if (refContentElement.current) {
       setPrevScrollHeight(refContentElement.current.scrollHeight);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   });
 
   React.useEffect(() => {

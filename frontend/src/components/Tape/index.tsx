@@ -1,6 +1,6 @@
 import React from 'react';
 import { useRouteMatch } from 'react-router-dom';
-import { useRecoilState, useSetRecoilState } from 'recoil';
+import { useRecoilState, useSetRecoilState, useResetRecoilState } from 'recoil';
 
 import Navbar from './navbar';
 import DialogsBar from './sidebar/dialogs';
@@ -12,6 +12,7 @@ import { QSParamsType, ParamsKeyUser, ParamsKeyDialog } from '../../constants';
 import { MessengerAtom } from '../../hooks/recoil/messenger';
 import { currentDialogIdState } from '../../hooks/recoil/dialog';
 import SettingsContent from './settings/index';
+import { messagesOffsetAtom } from '../../hooks/recoil/message';
 
 export enum TabEnum {
   Dialogs,
@@ -34,6 +35,7 @@ const Messenger = ({ tab, route }: PropsType) => {
 
   const [messenger] = useRecoilState(MessengerAtom);
   const setDialogId = useSetRecoilState(currentDialogIdState);
+  const resetMessagesOffset = useResetRecoilState(messagesOffsetAtom);
 
   const { params } = useRouteMatch<QSParamsType>();
 
@@ -78,6 +80,7 @@ const Messenger = ({ tab, route }: PropsType) => {
 
   React.useEffect(() => {
     setDialogId(params[ParamsKeyDialog]);
+    resetMessagesOffset();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [params]);
 

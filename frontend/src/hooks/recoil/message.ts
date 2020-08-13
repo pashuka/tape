@@ -21,20 +21,24 @@ export const messagesOffsetAtom = Recoil.atom<number>({
   default: 0,
 });
 
-export const messagesByOffset = Recoil.selectorFamily<MessageType[], number>({
+type OffsetType = {
+  dialog_id: string;
+  offset: number;
+};
+
+const messagesByOffset = Recoil.selectorFamily<MessageType[], OffsetType>({
   key: 'messagesByOffset',
-  get: (offset) => async ({ get }) => {
-    const id = get(currentDialogIdState);
-    return id
-      ? await request<MessageType[]>(
-          getRoute(`find/${routes.messages}/?dialog_id=${id}&offset=${offset}`),
-        ).then(
-          (data) => (Array.isArray(data) ? data : ([] as MessageType[])),
-          (reason) => {
-            throw reason;
-          },
-        )
-      : ([] as MessageType[]);
+  get: ({ dialog_id, offset }) => async ({ get }) => {
+    return await request<MessageType[]>(
+      getRoute(
+        `find/${routes.messages}/?dialog_id=${dialog_id}&offset=${offset}`,
+      ),
+    ).then(
+      (data) => (Array.isArray(data) ? data : ([] as MessageType[])),
+      (reason) => {
+        throw reason;
+      },
+    );
   },
 });
 
@@ -42,10 +46,17 @@ export const messagesState = Recoil.selector<MessageType[]>({
   key: 'messagesState',
   get: async ({ get }) => {
     get(atomTrigger); // 'register' as a resetable dependency
+    const dialog_id = get(currentDialogIdState);
+    if (!dialog_id) {
+      return [] as MessageType[];
+    }
     const offset = get(messagesOffsetAtom);
     let records = [] as MessageType[];
     for (let index = 0; index <= offset; index += limitFetchMax) {
-      records = records.concat(get(messagesByOffset(index)));
+      const recordsByOffset = get(
+        messagesByOffset({ dialog_id, offset: index }),
+      );
+      records = recordsByOffset.concat(records);
     }
     return records;
   },

@@ -17,7 +17,9 @@ type ContentPropsType = {
 
 const Content = ({ iam }: ContentPropsType) => {
   const refLastElement = React.createRef<HTMLDivElement>();
+  const refContentElement = React.createRef<HTMLDivElement>();
   const [scrollOnTop, setScrollOnTop] = React.useState(false);
+  const [prevScrollHeight, setPrevScrollHeight] = React.useState(0);
 
   const [offset, setOffset] = useRecoilState(messagesOffsetAtom);
   const { state, contents } = useRecoilValueLoadable(messagesState);
@@ -26,9 +28,24 @@ const Content = ({ iam }: ContentPropsType) => {
   );
 
   React.useEffect(() => {
-    // refLastElement.current?.scrollIntoView();
+    if (refContentElement.current) {
+      setPrevScrollHeight(refContentElement.current.scrollHeight);
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   });
+
+  React.useEffect(() => {
+    if (offset === 0) {
+      refLastElement.current?.scrollIntoView();
+    } else if (records.length && refContentElement.current) {
+      refContentElement.current?.scrollTo({
+        left: 0,
+        top: refContentElement.current.scrollHeight - prevScrollHeight,
+        behavior: 'auto',
+      });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [records]);
 
   React.useEffect(() => {
     if (scrollOnTop && offset + limitFetchMax === records.length) {
@@ -54,13 +71,19 @@ const Content = ({ iam }: ContentPropsType) => {
   };
 
   return (
-    <div className="chat-content px-2 px-lg-4" onScroll={handleScroll}>
+    <div
+      ref={refContentElement}
+      className="chat-content px-2 px-lg-4"
+      onScroll={handleScroll}
+    >
       <div className="py-2 py-lg-4">
-        {state === 'loading' && (
-          <div className="d-flex justify-content-center p-2">
-            <Overlay size="sm" badge={true} />
-          </div>
-        )}
+        <div
+          className={`d-flex justify-content-center p-2 ${
+            state === 'loading' ? 'show' : 'fade'
+          }`}
+        >
+          <Overlay size="sm" badge={true} />
+        </div>
         <Messages messages={records} iam={iam} />
       </div>
 

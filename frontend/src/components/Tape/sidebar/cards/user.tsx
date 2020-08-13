@@ -9,28 +9,27 @@ import {
   routes,
 } from '../../../../constants';
 import { UserType } from '../../../../hooks/recoil/user';
-import { instanceOfDialog } from '../../../../hooks/recoil/dialog';
+import { MemberType, instanceOfMember } from '../../../../hooks/recoil/members';
 
 type PropsType = {
-  participant: UserType;
+  member: UserType | MemberType;
 };
 
-const CardUser = ({ participant }: PropsType) => {
+const CardUser = ({ member }: PropsType) => {
   const { params } = useRouteMatch<QSParamsType>();
-  const dialog = {};
-  const baseUrl = `/${routes.tape}/${routes.dialogs}/`;
-  const to = instanceOfDialog(dialog)
-    ? `${dialog.id}`
-    : `${ParamsKeyUser}/${participant.username}`;
+  const baseUrl = `/${routes.tape}/${routes.participants}/`;
+  const to = instanceOfMember(member)
+    ? `${member.dialog_id}`
+    : `${ParamsKeyUser}/${member.username}`;
   return (
     <CardBasic
       active={
-        instanceOfDialog(dialog) &&
-        dialog.id.toString() === params[ParamsKeyDialog]
+        instanceOfMember(member) &&
+        member.dialog_id.toString() === params[ParamsKeyDialog]
       }
       to={baseUrl + to}
       avaSize="sm"
-      members={participant}
+      members={member}
     />
   );
 };

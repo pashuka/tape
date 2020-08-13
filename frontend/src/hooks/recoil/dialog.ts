@@ -57,6 +57,7 @@ export const dialogsByOffset = Recoil.selectorFamily<DialogType[], number>({
 export const dialogsState = Recoil.selector<DialogType[]>({
   key: 'dialogsState',
   get: async ({ get }) => {
+    get(atomTrigger); // 'register' as a resetable dependency
     const offset = get(dialogsOffsetAtom);
     let records = [] as DialogType[];
     for (let index = 0; index <= offset; index += limitFetchMax) {

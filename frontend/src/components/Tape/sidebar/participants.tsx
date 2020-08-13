@@ -64,7 +64,7 @@ const Participants = ({ scrollBottom }: PropsType) => {
                 <CardNew username={params[ParamsKeyUser] || ''} />
               )}
               {records.map((_) => (
-                <CardUser key={_.username} participant={_} />
+                <CardUser key={_.username} member={_} />
               ))}
               {state === 'loading' && (
                 <div className="d-flex justify-content-center p-2">
@@ -77,7 +77,7 @@ const Participants = ({ scrollBottom }: PropsType) => {
                   <Fragment>
                     <CardHeader title="Search" />
                     {filteredUsers.contents.map((_) => (
-                      <CardUser key={_.username} participant={_} />
+                      <CardUser key={_.username} member={_} />
                     ))}
                   </Fragment>
                 )}

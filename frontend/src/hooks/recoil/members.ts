@@ -45,6 +45,7 @@ export const membersByOffset = Recoil.selectorFamily<MemberType[], number>({
 export const membersState = Recoil.selector<MemberType[]>({
   key: 'membersState',
   get: async ({ get }) => {
+    get(atomTrigger); // 'register' as a resetable dependency
     const offset = get(membersOffsetAtom);
     let records = [] as MemberType[];
     for (let index = 0; index <= offset; index += limitFetchMax) {

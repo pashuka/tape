@@ -48,28 +48,28 @@ const App = () => {
   return (
     <ErrorBoundary>
       <BrowserRouter>
-        <React.Suspense fallback={<Overlay />}>
-          <Switch>
-            <PrivateRoute isAuthorized={isAuthorized} path={'/' + routes.tape}>
-              <PageTape />
-            </PrivateRoute>
-            <Route path={'/' + routes.auth.index} component={PageAuth} />
-            <Route
-              exact
-              path={'/'}
-              render={({ location }) => (
-                <Redirect
-                  to={{
-                    pathname:
-                      '/' + (isAuthorized ? routes.tape : routes.auth.signin),
-                    state: { from: location },
-                  }}
-                />
-              )}
-            />
-            <Route component={ErrorPage} />
-          </Switch>
-        </React.Suspense>
+        {/* <React.Suspense fallback={<Overlay />}> */}
+        <Switch>
+          <PrivateRoute isAuthorized={isAuthorized} path={'/' + routes.tape}>
+            <PageTape />
+          </PrivateRoute>
+          <Route path={'/' + routes.auth.index} component={PageAuth} />
+          <Route
+            exact
+            path={'/'}
+            render={({ location }) => (
+              <Redirect
+                to={{
+                  pathname:
+                    '/' + (isAuthorized ? routes.tape : routes.auth.signin),
+                  state: { from: location },
+                }}
+              />
+            )}
+          />
+          <Route component={ErrorPage} />
+        </Switch>
+        {/* </React.Suspense> */}
       </BrowserRouter>
     </ErrorBoundary>
   );

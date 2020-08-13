@@ -8,10 +8,13 @@ import {
   QSParamsType,
   ParamsKeyDialog,
 } from '../../../../constants';
-import { ParticipantType } from '../../../../hooks/recoil/dialog';
+import { DialogIdType } from '../../../../hooks/recoil/dialog';
 
 type PropsType = {
-  participant: ParticipantType;
+  participant: {
+    username: string;
+    dialog_id?: DialogIdType;
+  };
 };
 
 const CardUserInfo = ({ participant }: PropsType) => {

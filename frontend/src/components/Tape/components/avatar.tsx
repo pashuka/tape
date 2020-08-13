@@ -1,6 +1,7 @@
 import React from 'react';
 import IAccountCircle from '@material-ui/icons/AccountCircle';
 import { routes } from '../../../constants';
+import Skeleton from '../../Skeleton';
 
 export type iconSizeType = 'xs' | 'sm' | 'md' | 'lg';
 
@@ -12,6 +13,7 @@ const iconSize = {
 };
 
 type PropsType = {
+  pending?: boolean;
   active?: boolean;
   online?: boolean;
   picture?: string;
@@ -22,6 +24,7 @@ type PropsType = {
 };
 
 const Avatar = ({
+  pending,
   active,
   online,
   picture,
@@ -32,7 +35,13 @@ const Avatar = ({
 }: PropsType) => {
   return (
     <div className={`card-avatar ${online ? 'online' : ''}`}>
-      {picture ? (
+      {pending ? (
+        <Skeleton
+          width={size ? iconSize[size] + 'px' : '48px'}
+          height={size ? iconSize[size] + 'px' : '48px'}
+          roundedCircle
+        />
+      ) : picture ? (
         <img
           className="rounded-circle"
           src={`${process.env.REACT_APP_IMG_HOST}/${routes.user}/thumb-${picture}`}

@@ -7,39 +7,25 @@ import { useRecoilState, useRecoilValueLoadable } from 'recoil';
 import { Link } from 'react-router-dom';
 import { routes } from '../../../../constants';
 import Skeleton from '../../../Skeleton';
-import { DialogType, DialogsState } from '../../../../hooks/recoil/dialog';
+import { DialogType, dialogsState } from '../../../../hooks/recoil/dialog';
 import { MessengerAtom } from '../../../../hooks/recoil/messenger';
-import {
-  UserType,
-  userInfoQuery,
-  instanceOfUser,
-} from '../../../../hooks/recoil/user';
+import { UserType } from '../../../../hooks/recoil/user';
 import DialogHeader from './dialog';
 import UserHeader from './user';
 import SideBar from './sidebar';
-import { useRecoilValue } from 'recoil';
-import Avatar from '../../components/avatar';
 
 dayjs.extend(relativeTime);
 
 declare type HeaderPropsType = {
-  dialog?: DialogType;
+  dialog: DialogType | undefined;
   iam: UserType;
-  user?: string;
+  username: string | undefined;
 };
 
 // TODO: split dialog header into user/group headers
-const Header = ({ dialog, iam, user }: HeaderPropsType) => {
+const Header = ({ dialog, iam, username }: HeaderPropsType) => {
   const [messenger, setMessenger] = useRecoilState(MessengerAtom);
-  const { state } = useRecoilValueLoadable(DialogsState);
-
-  let participantName: string | undefined;
-  if (user) {
-    participantName = user;
-  } else if (dialog) {
-    participantName = dialog?.participants.find((_) => _ !== iam?.username);
-  }
-  const participant = useRecoilValue(userInfoQuery(participantName));
+  const { state } = useRecoilValueLoadable(dialogsState);
 
   return (
     <div className="chat-header bg-light py-2 py-lg-3 px-2 px-lg-4">
@@ -69,14 +55,14 @@ const Header = ({ dialog, iam, user }: HeaderPropsType) => {
             <div className="media text-center text-xl-left">
               <div className="d-none d-xl-inline-block text-center mr-3">
                 {state === 'loading' && <Skeleton roundedCircle />}
-                {state === 'hasValue' && instanceOfUser(participant) && (
+                {/* {state === 'hasValue' && instanceOfUser(participant) && (
                   <Avatar
                     picture={participant.profile?.picture}
                     realname={participant.realname}
                     username={participant.username}
                     size="md"
                   />
-                )}
+                )} */}
               </div>
               {state === 'loading' && (
                 <div className="media-body align-self-center text-truncate">
@@ -88,12 +74,10 @@ const Header = ({ dialog, iam, user }: HeaderPropsType) => {
                   </small>
                 </div>
               )}
-              {user ? (
-                <UserHeader participant={participant} />
+              {username ? (
+                <UserHeader username={username} />
               ) : (
-                dialog && (
-                  <DialogHeader dialog={dialog} participant={participant} />
-                )
+                dialog && <DialogHeader dialog={dialog} />
               )}
             </div>
           </div>

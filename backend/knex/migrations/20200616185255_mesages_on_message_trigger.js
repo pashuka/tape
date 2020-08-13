@@ -8,11 +8,11 @@ exports.up = (knex) =>
         -- raise notice '%', new.body;
         update dialogs
           set
-            last_message_id = new.message_id,
-            last_message_owner = new.owner,
+            last_message_id = new.id,
+            last_message_owner_id = new.owner_id,
             last_message_body = new.body,
             last_message_created_at = new.created_at
-          where dialog_id = new.dialog_id
+          where id = new.dialog_id
         ;
         return null;
       end; $${functionName}$

@@ -1,11 +1,9 @@
 import Recoil from 'recoil';
 import { request } from './request';
-import { searchQueryAtom } from './search';
-import { limitSearchMax } from './constants';
 import { routes, getRoute } from '../../constants';
-import { authState } from './auth';
+import { limitFetchMax } from './constants';
 
-export declare type DialogIdType = string;
+export declare type DialogIdType = number;
 
 export type DialogProfileType = {
   picture?: string;
@@ -14,16 +12,17 @@ export type DialogProfileType = {
 };
 
 export type DialogType = {
-  dialog_id: DialogIdType;
-  participants: string[];
+  id: DialogIdType;
+  created_at: string;
   last_message_body: string;
   last_message_created_at: string;
   last_message_owner: string;
   profile: DialogProfileType;
+  participants: string[];
 };
 
 export function instanceOfDialog(o: any): o is DialogType {
-  return o && 'dialog_id' in o;
+  return o && 'id' in o;
 }
 
 export const currentDialogIdState = Recoil.atom<string | undefined>({
@@ -36,18 +35,34 @@ const atomTrigger = Recoil.atom({
   default: 0,
 });
 
-export const DialogsState = Recoil.selector<DialogType[]>({
-  key: 'DialogsState',
-  get: async ({ get }) => {
-    get(atomTrigger); // 'register' as a dependency
+export const dialogsOffsetAtom = Recoil.atom<number>({
+  key: 'dialogsOffsetAtom',
+  default: 0,
+});
+
+export const dialogsByOffset = Recoil.selectorFamily<DialogType[], number>({
+  key: 'dialogsByOffset',
+  get: (offset) => async () => {
     return await request<DialogType[]>(
-      getRoute(`findMy/${routes.dialogs}/`),
+      getRoute(`find/${routes.dialogs}/?offset=${offset}`),
     ).then(
       (data) => (Array.isArray(data) ? data : ([] as DialogType[])),
       (reason) => {
         throw reason;
       },
     );
+  },
+});
+
+export const dialogsState = Recoil.selector<DialogType[]>({
+  key: 'dialogsState',
+  get: async ({ get }) => {
+    const offset = get(dialogsOffsetAtom);
+    let records = [] as DialogType[];
+    for (let index = 0; index <= offset; index += limitFetchMax) {
+      records = records.concat(get(dialogsByOffset(index)));
+    }
+    return records;
   },
   set: ({ set }, value) => {
     if (value instanceof Recoil.DefaultValue) {
@@ -56,60 +71,30 @@ export const DialogsState = Recoil.selector<DialogType[]>({
   },
 });
 
+export const getDialog = Recoil.selectorFamily<
+  DialogType | undefined,
+  string | undefined
+>({
+  key: 'getDialog',
+  get: (dialogID) => ({ get }) => {
+    return dialogID
+      ? get(dialogsState).find(({ id }) => id.toString() === dialogID)
+      : undefined;
+  },
+});
+
 export const DialogsFilter = Recoil.selector({
   key: 'DialogsFilter',
   get: ({ get }) => {
-    const query = get(searchQueryAtom);
-    const records = get(DialogsState);
-    return query.length && records
-      ? records
-          .filter(({ participants }) =>
-            participants.find((_) => _.includes(query)),
-          )
-          .slice(0, limitSearchMax)
-      : ([] as DialogType[]);
-  },
-});
-
-export type ParticipantType = {
-  username: string;
-  dialog_id?: DialogIdType;
-};
-
-export const dialogParticipants = Recoil.selector<ParticipantType[]>({
-  key: 'dialogParticipants',
-  get: ({ get }) => {
-    const iam = get(authState);
-    return get(DialogsState)
-      .map(({ dialog_id, participants }) =>
-        participants
-          .filter((_) => iam?.username !== _)
-          .map((_) => ({ username: _, dialog_id })),
-      )
-      .flat(1)
-      .sort((a, b) => a.username.localeCompare(b.username));
-  },
-});
-
-export const dialogParticipantsQuery = Recoil.selector<ParticipantType[]>({
-  key: 'dialogParticipantsQuery',
-  get: ({ get }) => {
-    const query = get(searchQueryAtom).toLowerCase();
-    const records = get(dialogParticipants);
-    return query.length
-      ? records
-          .filter(({ username }) => username.indexOf(query) !== -1)
-          .slice(0, limitSearchMax)
-      : records;
-  },
-});
-
-export const dialogParticipant = Recoil.selectorFamily<
-  ParticipantType | undefined,
-  string
->({
-  key: 'dialogParticipant',
-  get: (username) => ({ get }) => {
-    return get(dialogParticipants).find((_) => _.username === username);
+    // const query = get(searchQueryAtom);
+    // const records = get(DialogsState);
+    // return query.length && records
+    //   ? records
+    //       .filter(({ participants }) =>
+    //         participants.find((_) => _.includes(query)),
+    //       )
+    //       .slice(0, limitSearchMax)
+    //   : ([] as DialogType[]);
+    return [] as DialogType[];
   },
 });

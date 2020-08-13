@@ -27,7 +27,6 @@ type PropsType = {
 const Messenger = ({ tab, route }: PropsType) => {
   const { device } = useUserAgent();
   const [sidebarHeight, setSidebarHeight] = React.useState(0);
-  const [sidebarScrollTop, setSidebarScrollTop] = React.useState(false);
   const [sidebarScrollBottom, setSidebarScrollBottom] = React.useState(false);
   const refNavbar = React.createRef<HTMLDivElement>();
 
@@ -41,9 +40,12 @@ const Messenger = ({ tab, route }: PropsType) => {
   const handleScroll = (e: React.UIEvent<HTMLElement>) => {
     const el = e.currentTarget;
     if (el.scrollTop === 0) {
-      setSidebarScrollTop(true);
+      // setSidebarScrollTop(true);
     } else if (el.offsetHeight + el.scrollTop >= el.scrollHeight) {
       setSidebarScrollBottom(true);
+    } else {
+      // setSidebarScrollTop(false);
+      setSidebarScrollBottom(false);
     }
   };
 
@@ -81,33 +83,18 @@ const Messenger = ({ tab, route }: PropsType) => {
   let mainComponent = null;
   switch (tab) {
     case TabEnum.Participants:
-      sidebarComponent = (
-        <ParticipantsBar
-          scrollTop={sidebarScrollTop}
-          scrollBottom={sidebarScrollBottom}
-        />
-      );
+      sidebarComponent = <ParticipantsBar scrollBottom={sidebarScrollBottom} />;
       mainComponent = <Chat />;
       break;
 
     case TabEnum.Settings:
-      sidebarComponent = (
-        <SettingsBar
-          scrollTop={sidebarScrollTop}
-          scrollBottom={sidebarScrollBottom}
-        />
-      );
+      sidebarComponent = <SettingsBar scrollBottom={sidebarScrollBottom} />;
       mainComponent = <SettingsContent current={route} />;
       break;
 
     case TabEnum.Dialogs:
     default:
-      sidebarComponent = (
-        <DialogsBar
-          scrollTop={sidebarScrollTop}
-          scrollBottom={sidebarScrollBottom}
-        />
-      );
+      sidebarComponent = <DialogsBar scrollBottom={sidebarScrollBottom} />;
       mainComponent = <Chat />;
       break;
   }

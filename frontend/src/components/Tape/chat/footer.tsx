@@ -11,7 +11,7 @@ import {
 import { useRouteMatch, useHistory } from 'react-router-dom';
 import { MessageType, messagesState } from '../../../hooks/recoil/message';
 import { useResetRecoilState } from 'recoil';
-import { DialogsState } from '../../../hooks/recoil/dialog';
+import { dialogsState } from '../../../hooks/recoil/dialog';
 
 const Footer = () => {
   const history = useHistory();
@@ -20,7 +20,7 @@ const Footer = () => {
   const [isShiftEnter, setIsShiftEnter] = React.useState(false);
 
   const resetMessages = useResetRecoilState(messagesState);
-  const resetDialogs = useResetRecoilState(DialogsState);
+  const resetDialogs = useResetRecoilState(dialogsState);
 
   const { data, isPending, run: sendMessage } = useFetch<MessageType>(
     getRoute(`post/${routes.messages}/`),

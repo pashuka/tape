@@ -8,11 +8,18 @@ import CardSkeleton from './cards/skeleton';
 import Header from './header';
 import { QSParamsType, ParamsKeyUser } from '../../../constants';
 import CardHeader from './cards/header';
-import { DialogsFilter, DialogsState } from '../../../hooks/recoil/dialog';
+import {
+  DialogsFilter,
+  dialogsState,
+  DialogType,
+  dialogsOffsetAtom,
+} from '../../../hooks/recoil/dialog';
 import { authState } from '../../../hooks/recoil/auth';
 import { UsersFilter } from '../../../hooks/recoil/user';
 import { useRouteMatch } from 'react-router-dom';
 import { searchQueryAtom } from '../../../hooks/recoil/search';
+import { limitFetchMax } from '../../../hooks/recoil/constants';
+import Overlay from '../../Overlay';
 
 const DialogsSkeleton = ({ count = 1 }) => (
   <React.Fragment>
@@ -25,19 +32,36 @@ const DialogsSkeleton = ({ count = 1 }) => (
 );
 
 type PropsType = {
-  scrollTop: boolean;
   scrollBottom: boolean;
 };
 
-const Dialogs = ({ scrollTop, scrollBottom }: PropsType) => {
+const Dialogs = ({ scrollBottom }: PropsType) => {
   const iam = useRecoilValue(authState);
   const { params } = useRouteMatch<QSParamsType>();
 
-  const { state, contents } = useRecoilValueLoadable(DialogsState);
+  const [offset, setOffset] = useRecoilState(dialogsOffsetAtom);
+  const { state, contents } = useRecoilValueLoadable(dialogsState);
+  const [records, setRecords] = React.useState<DialogType[]>(
+    [] as DialogType[],
+  );
 
   const [searchQuery, setSearchQuery] = useRecoilState(searchQueryAtom);
   const filteredDialogs = useRecoilValue(DialogsFilter);
   const filteredUsers = useRecoilValueLoadable(UsersFilter);
+
+  React.useEffect(() => {
+    if (scrollBottom && offset + limitFetchMax === records.length) {
+      setOffset((currVal: number) => currVal + limitFetchMax);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [scrollBottom]);
+
+  React.useEffect(() => {
+    if (state === 'hasValue' && Array.isArray(contents)) {
+      setRecords(contents);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [state, contents]);
 
   return (
     <div className="tab-pane fade h-100 show active" id="tab-content-dialogs">
@@ -60,7 +84,7 @@ const Dialogs = ({ scrollTop, scrollBottom }: PropsType) => {
                     <Fragment>
                       <CardHeader title="Dialogs" />
                       {filteredDialogs.map((_) => (
-                        <CardDialog key={_.dialog_id} dialog={_} />
+                        <CardDialog key={_.id} dialog={_} />
                       ))}
                     </Fragment>
                   )}
@@ -77,13 +101,13 @@ const Dialogs = ({ scrollTop, scrollBottom }: PropsType) => {
                   )}
                 </Fragment>
               )}
-              {state === 'loading' && <DialogsSkeleton count={1} />}
-              {state === 'hasValue' &&
-                searchQuery.length === 0 &&
-                Array.isArray(contents) &&
-                contents
-                  ?.slice(0, 128)
-                  .map((_) => <CardDialog key={_.dialog_id} dialog={_} />)}
+              {searchQuery.length === 0 &&
+                records.map((_) => <CardDialog key={_.id} dialog={_} />)}
+              {state === 'loading' && (
+                <div className="d-flex justify-content-center p-2">
+                  <Overlay size="sm" badge={true} />
+                </div>
+              )}
             </nav>
           </div>
         </div>

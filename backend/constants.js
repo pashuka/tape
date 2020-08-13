@@ -20,12 +20,15 @@ const api = {
 };
 
 const tables = {
-  users: "users",
+  admins: "admins",
   dialogs: "dialogs",
+  members: "members",
   messages: "messages",
+  users: "users",
 };
 
 const resources = {
+  admins: "admins",
   auth: {
     signin: "auth/signin",
     signup: "auth/signup",
@@ -34,10 +37,11 @@ const resources = {
     reset: "auth/reset",
     verify: "auth/verify",
   },
-  user: "user",
   dialogs: "dialogs",
-  messages: "messages",
   events: "events",
+  members: "members",
+  messages: "messages",
+  user: "user",
 };
 
 const roles = {
@@ -53,9 +57,11 @@ const grants = {
   },
   [roles.user]: {
     home: { "read:any": ["*"] },
+    [resources.admin]: { "read:any": ["*"] },
     auth: { "read:own": ["*"] },
     [resources.user]: { "read:any": ["*"], "update:own": ["*"], "delete:own": ["*"] },
-    [resources.dialogs]: { "read:own": ["*"] },
+    [resources.dialogs]: { "read:any": ["*"] },
+    [resources.members]: { "read:any": ["*"] },
     [resources.messages]: {
       "create:own": ["*"],
       "read:any": ["*"],
@@ -74,7 +80,7 @@ const grants = {
       "update:any": ["*"],
       "delete:own": ["*"],
     },
-    [resources.dialogs]: { "read:own": ["*"] },
+    [resources.dialogs]: { "read:any": ["*"] },
     [resources.messages]: {
       "create:own": ["*"],
       "read:any": ["*"],

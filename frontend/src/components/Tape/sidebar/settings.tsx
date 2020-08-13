@@ -35,11 +35,10 @@ const links = [
 ];
 
 type PropsType = {
-  scrollTop: boolean;
   scrollBottom: boolean;
 };
 
-const Settings = ({ scrollTop, scrollBottom }: PropsType) => {
+const Settings = ({ scrollBottom }: PropsType) => {
   const [, setSearchSettingsQuery] = useRecoilState(searchSettingsQueryAtom);
 
   return (

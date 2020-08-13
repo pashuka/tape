@@ -1,5 +1,5 @@
 import React from 'react';
-import { useRecoilValue } from 'recoil';
+import { useRecoilValue, useRecoilValueLoadable } from 'recoil';
 
 import Header from './header/index';
 import SearchBar from './search';
@@ -13,19 +13,14 @@ import {
   ParamsKeyDialog,
 } from '../../../constants';
 import { authState } from '../../../hooks/recoil/auth';
-import { DialogType, DialogsState } from '../../../hooks/recoil/dialog';
+import { getDialog, instanceOfDialog } from '../../../hooks/recoil/dialog';
 
 const Chat = () => {
   const { params } = useRouteMatch<QSParamsType>();
   const iam = useRecoilValue(authState);
-  const dialogs = useRecoilValue(DialogsState);
-  const [dialog, setDialog] = React.useState<DialogType | undefined>(undefined);
-
-  React.useEffect(() => {
-    if (dialogs && params[ParamsKeyDialog]) {
-      setDialog(dialogs?.find((_) => _.dialog_id === params[ParamsKeyDialog]));
-    }
-  }, [params, dialogs]);
+  const { state, contents: dialog } = useRecoilValueLoadable(
+    getDialog(params[ParamsKeyDialog]),
+  );
 
   if (!iam) {
     return null;
@@ -37,7 +32,15 @@ const Chat = () => {
   return (
     <div className="chat">
       <div className="chat-body bg-white">
-        <Header iam={iam} dialog={dialog} user={params[ParamsKeyUser]} />
+        <Header
+          iam={iam}
+          dialog={
+            state === 'hasValue' && instanceOfDialog(dialog)
+              ? dialog
+              : undefined
+          }
+          username={params[ParamsKeyUser]}
+        />
         <SearchBar />
         <Content iam={iam} />
         <Footer />

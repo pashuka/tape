@@ -1,30 +1,20 @@
+const validator = require("validator");
 const knex = require("../libraries/knex");
-const {
-  tables: { dialogs: table },
-} = require("../constants");
+const { tables } = require("../constants");
 const Repository = require("./repository");
 const allowed = {
   schema: [
-    "dialog_id",
+    "id",
     "created_at",
-    "participants",
-    "last_message_owner",
+    "last_message_owner_id",
     "last_message_body",
     "last_message_created_at",
     "profile",
   ],
-  conditions: ["created_at", "owners", "participants"],
-  select: [
-    "dialog_id",
-    "created_at",
-    "participants",
-    "last_message_owner",
-    "last_message_body",
-    "last_message_created_at",
-    "profile",
-  ],
-  insert: ["owners", "participants", "profile"],
-  update: ["owners", "participants", "profile"],
+  conditions: ["created_at"],
+  select: ["id", "created_at", "last_message_body", "last_message_created_at", "profile"],
+  insert: ["profile"],
+  update: ["profile"],
 };
 
 class model extends Repository {
@@ -32,13 +22,19 @@ class model extends Repository {
     if (!this.user) {
       return;
     }
-    // select d.* from dialogs as d where (d.participants)::jsonb ? 'pav' ;
+    const { offset } = conditions;
+    if (!validator.isNumeric(offset) || offset < 0 || offset > Number.MAX_VALUE) {
+      throw new BadRequest([{ offset: "Bad offset" }]);
+    }
     return knex(this.table)
-      .select(allowed.select)
-      .whereRaw(`(${this.table}.participants)::jsonb \\? ?`, [this.user.username])
-      .orderBy("last_message_created_at", "desc")
-      .offset(0)
-      .limit(1000);
+      .select(allowed.select.map((c) => `${this.table}.${c}`))
+      .select({ last_message_owner: `${tables.users}.username` })
+      .leftJoin(tables.members, `${this.table}.id`, `${tables.members}.dialog_id`)
+      .leftJoin(tables.users, `${this.table}.last_message_owner_id`, `${tables.users}.id`)
+      .where(`${tables.members}.user_id`, this.user.id)
+      .orderBy(`${this.table}.last_message_created_at`, "desc")
+      .offset(offset)
+      .limit(25);
   }
 
   findOne(conditions) {
@@ -55,6 +51,6 @@ class model extends Repository {
 }
 
 module.exports = new model({
-  table,
+  table: tables.dialogs,
   allowed,
 });

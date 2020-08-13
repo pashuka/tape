@@ -23,6 +23,7 @@ export const host = process.env.REACT_APP_HOST;
 export const apis = JSON.parse(process.env.REACT_APP_APIS || '');
 
 export const routes = {
+  admins: 'admins',
   auth: {
     index: 'auth',
     signin: 'auth/signin',
@@ -34,6 +35,7 @@ export const routes = {
   },
   dialogs: 'dialogs',
   events: 'events',
+  members: 'members',
   messages: 'messages',
   participants: 'participants',
   settings: {

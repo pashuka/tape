@@ -10,7 +10,8 @@ import { routes, getRoute } from '../../../constants';
 import { useResetRecoilState } from 'recoil';
 import { authState } from '../../../hooks/recoil/auth';
 import { request } from '../../../hooks/recoil/request';
-import { DialogsState } from '../../../hooks/recoil/dialog';
+import { dialogsState } from '../../../hooks/recoil/dialog';
+import { membersState } from '../../../hooks/recoil/members';
 import { messagesState } from '../../../hooks/recoil/message';
 import Avatar from '../components/avatar';
 
@@ -60,7 +61,8 @@ const Navbar = () => {
   const [reset, setReset] = React.useState(false);
   const iam = useRecoilValue(authState);
   const resetAuth = useResetRecoilState(authState);
-  const resetDialogs = useResetRecoilState(DialogsState);
+  const resetDialogs = useResetRecoilState(dialogsState);
+  const resetMembers = useResetRecoilState(membersState);
   const resetMessages = useResetRecoilState(messagesState);
   const { pathname } = useLocation();
 
@@ -77,6 +79,7 @@ const Navbar = () => {
       if ('status' in result && result.status === 'ok') {
         resetAuth();
         resetDialogs();
+        resetMembers();
         resetMessages();
       }
     };

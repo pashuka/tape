@@ -4,8 +4,12 @@ import LocalizedFormat from 'dayjs/plugin/localizedFormat';
 
 import SubMenu from './submenu';
 import { MessageType } from '../../../../hooks/recoil/message';
-import { userInfoQuery } from '../../../../hooks/recoil/user';
-import { useRecoilValue } from 'recoil';
+import {
+  userInfoQuery,
+  instanceOfUser,
+  UserType,
+} from '../../../../hooks/recoil/user';
+import { useRecoilValueLoadable } from 'recoil';
 import Avatar from '../../components/avatar';
 
 dayjs.extend(LocalizedFormat);
@@ -17,14 +21,23 @@ type MessageLeftPropsType = {
 const MessageLeft = ({
   data: { created_at, owner, body },
 }: MessageLeftPropsType) => {
-  const user = useRecoilValue(userInfoQuery(owner));
+  const { state, contents } = useRecoilValueLoadable(userInfoQuery(owner));
+  const [member, setMember] = React.useState<UserType | undefined>();
+
+  React.useEffect(() => {
+    setMember(
+      state === 'hasValue' && instanceOfUser(contents) ? contents : undefined,
+    );
+  }, [state, contents]);
+
   return (
     <div className="message">
       <a className=" mr-2 mr-lg-4" href="#chat-messages">
         <Avatar
-          picture={user?.profile?.picture}
-          realname={user?.realname}
-          username={user?.username}
+          pending={state === 'loading'}
+          picture={member?.profile?.picture}
+          realname={member?.realname}
+          username={member?.username}
           size="sm"
         />
       </a>
@@ -34,7 +47,11 @@ const MessageLeft = ({
           <div className="d-flex align-items-center">
             <div className="message-content">
               <h6 className="ml-3">
-                {user?.realname || <span>@{user?.username}</span>}
+                {state === 'loading'
+                  ? '@' + owner
+                  : state === 'hasValue' && instanceOfUser(contents)
+                  ? contents?.realname || <span>@{contents?.username}</span>
+                  : null}
               </h6>
               <div className="alert bg-gray-100 border-gray-200 mb-0 py-1 py-lg-2 px-lg-3 px-2">
                 <div className="float-right small">

@@ -2,13 +2,13 @@ const validator = require("validator");
 const knex = require("../libraries/knex");
 const { tables } = require("../constants");
 const Repository = require("./repository");
-const { BadRequest, NotFound } = require("../libraries/error");
+const { BadRequest } = require("../libraries/error");
 const allowed = {
-  schema: ["id", "message_id", "dialog_id", "created_at", "owner", "body"],
-  conditions: ["message_id", "dialog_id"],
-  select: ["message_id", "dialog_id", "created_at", "owner", "body"],
+  schema: ["id", "dialog_id", "created_at", "owner_id", "body"],
+  conditions: ["dialog_id"],
+  select: ["dialog_id", "created_at", "body"],
   insert: ["dialog_id", "owner", "body"],
-  update: ["owner", "body"],
+  update: ["owner_id", "body"],
 };
 
 class model extends Repository {
@@ -17,26 +17,27 @@ class model extends Repository {
       return;
     }
     if (!"dialog_id" in conditions) {
-      return;
-    }
-    const { dialog_id } = conditions;
-    if (!validator.isUUID(dialog_id)) {
       throw new BadRequest([{ dialog_id: "Bad dialog id" }]);
     }
-    const dialog = await knex(tables.dialogs)
+    const { dialog_id } = conditions;
+    if (!validator.isNumeric(dialog_id)) {
+      throw new BadRequest([{ dialog_id: "Bad dialog id" }]);
+    }
+    const dialog = await knex(tables.members)
       .select("dialog_id")
-      .whereRaw("(participants)::jsonb \\? ?", [this.user.username])
-      .where({ dialog_id })
+      .where({ dialog_id, user_id: this.user.id })
       .first();
     if (!dialog) {
       return;
     }
     const records = await knex(this.table)
-      .select(allowed.select)
+      .select(allowed.select.map((c) => `${this.table}.${c}`))
+      .select({ owner: `${tables.users}.username` })
+      .leftJoin(tables.users, `${tables.users}.id`, `${this.table}.owner_id`)
       .where({ dialog_id: dialog.dialog_id })
-      .orderBy("created_at")
+      .orderBy(`${this.table}.created_at`)
       .offset(0)
-      .limit(100);
+      .limit(10);
     return records;
   }
 
@@ -47,7 +48,6 @@ class model extends Repository {
   async insert(values) {
     const { dialog_id, username, message } = values;
     let dialog;
-    // TODO: check on message length.
     if (typeof message !== "string") {
       throw new BadRequest([{ message: "Bad message" }]);
     }
@@ -55,7 +55,10 @@ class model extends Repository {
       throw new BadRequest([{ message: "Too long message" }]);
     }
     if (username && !dialog_id) {
-      const participant = await knex(tables.users).select(["username"]).where({ username }).first();
+      const participant = await knex(tables.users)
+        .select(["id", "username"])
+        .where({ username })
+        .first();
       if (!participant) {
         return;
       }
@@ -80,22 +83,30 @@ class model extends Repository {
         .returning(["dialog_id", "participants"]);
       dialog = dialog[0];
     } else if (dialog_id) {
-      if (!validator.isUUID(dialog_id)) {
-        throw new BadRequest([{ dialog_id: "Bad dialog id" }]);
+      if (!validator.isNumeric(dialog_id)) {
+        throw new BadRequest([{ dialog_id: "Bad dialog_id" }]);
       }
       dialog = await knex(tables.dialogs)
         .select(["dialog_id", "participants"])
         .where({ dialog_id })
         .first();
+
+      dialog = await knex(tables.dialogs)
+        .select(["id"])
+        .leftJoin(tables.members, `${this.table}.id`, `${tables.members}.dialog_id`)
+        .where(`${tables.members}.user_id`, this.user.id)
+        .where(`${tables.members}.dialog_id`, this.user.id)
+        .first();
     } else {
-      return;
+      throw new BadRequest([{ values: "Bad command" }]);
     }
     if (!dialog) {
-      return;
+      throw new BadRequest([{ dialog: "Bad dialog" }]);
     }
-    if (!dialog.participants.includes(this.user.username)) {
-      return;
-    }
+
+    // if (!dialog.participants.includes(this.user.username)) {
+    //   return;
+    // }
     return super.insert({ dialog_id: dialog.dialog_id, body: message, owner: this.user.username });
   }
 

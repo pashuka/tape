@@ -21,7 +21,7 @@ passport.deserializeUser(({ username }, done) => {
   }
   return Model.findOne(
     { username },
-    { select: ["username", "realname", "email", "profile", "role"] }
+    { select: ["id", "username", "realname", "email", "profile", "role"] }
   )
     .then((user) => {
       if (!user) {

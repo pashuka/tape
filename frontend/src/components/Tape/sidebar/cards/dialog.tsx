@@ -1,12 +1,11 @@
 import React from 'react';
 import { useRouteMatch } from 'react-router-dom';
-import { useRecoilValue } from 'recoil';
+import { useRecoilValueLoadable } from 'recoil';
 
 import CardBasic from './basic';
 import { QSParamsType, ParamsKeyDialog, routes } from '../../../../constants';
-import { authState } from '../../../../hooks/recoil/auth';
-import { userInfoQuery } from '../../../../hooks/recoil/user';
 import { DialogType } from '../../../../hooks/recoil/dialog';
+import { membersByDialog } from '../../../../hooks/recoil/members';
 
 type PropsType = {
   dialog: DialogType;
@@ -14,16 +13,17 @@ type PropsType = {
 
 const CardDialog = ({ dialog }: PropsType) => {
   const { params } = useRouteMatch<QSParamsType>();
-  const iam = useRecoilValue(authState);
-  const participantName =
-    dialog.participants.find((_) => _ !== iam?.username) || '';
-  const participant = useRecoilValue(userInfoQuery(participantName));
+  const { state, contents } = useRecoilValueLoadable(
+    membersByDialog({ dialog_id: dialog.id, offset: 0 }),
+  );
 
   return (
     <CardBasic
-      active={dialog.dialog_id === params[ParamsKeyDialog]}
-      to={`/${routes.tape}/${routes.dialogs}/${dialog.dialog_id}`}
-      member={participant}
+      active={dialog.id.toString() === params[ParamsKeyDialog]}
+      to={`/${routes.tape}/${routes.dialogs}/${dialog.id}`}
+      members={
+        state === 'hasValue' && Array.isArray(contents) ? contents : undefined
+      }
       dialog={dialog}
     />
   );

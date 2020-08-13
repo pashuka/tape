@@ -3,8 +3,9 @@ const { tables, roles, lengths } = require("../../constants");
 exports.up = (knex) =>
   knex.schema
     .createTable(tables.users, (t) => {
-      t.increments("id").unsigned().primary().comment("ID");
+      t.comment("Users");
 
+      t.increments("id").unsigned().primary().comment("ID");
       t.dateTime("created_at").notNull().defaultTo(knex.fn.now(6)).comment("Created at date");
       t.dateTime("updated_at").nullable().comment("Updated at date");
 
@@ -22,7 +23,7 @@ exports.up = (knex) =>
       // Reset password code decay
       t.dateTime("reset_at").nullable().comment("Reset password at date");
 
-      t.json("profile").comment("Users profile");
+      t.jsonb("profile").defaultTo(knex.raw("'{}'::json")).comment("User profile");
 
       t.enu("role", Object.values(roles)).defaultTo(roles.user).comment("Role");
 
@@ -32,8 +33,6 @@ exports.up = (knex) =>
       t.uuid("confirmation_code").nullable().comment("Activation code");
       // Confirmation code decay
       t.dateTime("confirmation_code_at").nullable().comment("Confirmation code at date");
-
-      t.comment("Users");
     })
     .raw(`ALTER SEQUENCE ${tables.users}_id_seq RESTART WITH 1024`);
 

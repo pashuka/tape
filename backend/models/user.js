@@ -6,7 +6,6 @@ const validator = require("validator");
 const config = require("../.env");
 const { BadRequest, NotFound } = require("../libraries/error");
 const { resources } = require("../constants");
-const { model: libmodel } = require("../libraries/utils");
 const { tables } = require("../constants");
 const Repository = require("./repository");
 const Mailer = require("../libraries/nodemailer");
@@ -127,6 +126,7 @@ class model extends Repository {
 
     const keys = Object.keys(values);
 
+    // Update username
     if (keys.includes("username")) {
       const username =
         typeof values.username === "string" ? values.username.toLocaleLowerCase() : "";
@@ -144,6 +144,9 @@ class model extends Repository {
 
       values = { username };
 
+      // TODO: update username
+      // dialogs, messages
+
       const fullname = this.user.realname || this.user.username;
       // TODO: notify throught rabbit
       Mailer.send({
@@ -160,7 +163,10 @@ class model extends Repository {
       })
         .then((result) => {})
         .catch(console.error);
-    } else if (
+    }
+
+    // Update password
+    else if (
       keys.includes("password") &&
       keys.includes("password_new") &&
       keys.includes("password_confirm")

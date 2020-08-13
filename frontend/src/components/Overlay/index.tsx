@@ -1,8 +1,17 @@
 import React from 'react';
 
-const Overlay = () => (
-  <div className="d-flex justify-content-center">
-    <svg className="spinner-dash" viewBox="0 0 50 50">
+type PropsType = {
+  size?: 'md' | 'sm';
+  badge?: boolean;
+};
+
+const Overlay = ({ size = 'md', badge }: PropsType) => (
+  <div
+    className={`d-flex justify-content-center align-items-center ${
+      badge ? 'bg-white rounded-circle p-1 shadow-sm' : ''
+    }`}
+  >
+    <svg className={`spinner-dash-${size}`} viewBox="0 0 50 50">
       <circle
         className="path"
         cx="25"

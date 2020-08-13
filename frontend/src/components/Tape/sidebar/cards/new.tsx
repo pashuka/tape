@@ -11,7 +11,7 @@ type PropsType = {
 const CardNew = ({ username }: PropsType) => {
   const participant = useRecoilValue(userInfoQuery(username));
 
-  return <CardBasic active={true} member={participant} isCancelable={true} />;
+  return <CardBasic active={true} members={participant} isCancelable={true} />;
 };
 
 export default CardNew;

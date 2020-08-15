@@ -1,7 +1,7 @@
 import React from 'react';
 import { useRecoilState } from 'recoil';
 
-import CardLink from './cards/link';
+import CardLink from './cards/settings/link';
 import Header from './header';
 import { searchSettingsQueryAtom } from '../../../hooks/recoil/search';
 import { routes } from '../../../constants';

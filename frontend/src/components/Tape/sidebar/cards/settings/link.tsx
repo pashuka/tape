@@ -6,7 +6,7 @@ import ISecurity from '@material-ui/icons/Security';
 import INotifications from '@material-ui/icons/Notifications';
 
 import { useTranslation } from 'react-i18next';
-import CardWrapper from './wrapper';
+import CardWrapper from '../wrapper';
 import { useLocation } from 'react-router-dom';
 
 const LinkIcon = ({ name, color }: { name: string; color: string }) => {

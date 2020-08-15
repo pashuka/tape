@@ -2,10 +2,14 @@ import React from 'react';
 import { useRouteMatch } from 'react-router-dom';
 import { useRecoilValueLoadable } from 'recoil';
 
-import CardBasic from './basic';
-import { QSParamsType, ParamsKeyDialog, routes } from '../../../../constants';
-import { DialogType } from '../../../../hooks/recoil/dialog';
-import { membersByDialog } from '../../../../hooks/recoil/members';
+import CardBasic from '../basic';
+import {
+  QSParamsType,
+  ParamsKeyDialog,
+  routes,
+} from '../../../../../constants';
+import { DialogType } from '../../../../../hooks/recoil/dialog';
+import { membersByDialog } from '../../../../../hooks/recoil/members';
 
 type PropsType = {
   dialog: DialogType;

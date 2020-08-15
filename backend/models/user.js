@@ -30,16 +30,18 @@ class model extends Repository {
   }
 
   findMany({ query }) {
-    if (typeof query === "string" && query.length > 0 && query < 256) {
+    if (typeof query === "string" && query.length > 0 && query.length < 256) {
       return knex(this.table)
-        .select(allowed.select)
-        .whereRaw("username ilike ? or realname ilike ?", [
-          "%" + conditions.query + "%",
-          "%" + conditions.query + "%",
-        ])
+        .select(["username"]) //.select(allowed.select)
+        .where((builder) => {
+          builder
+            .where("username", "ilike", "%" + query + "%")
+            .orWhere("realname", "ilike", "%" + query + "%");
+        })
+        .andWhereNot({ id: this.user.id })
         .orderByRaw("length(username)")
         .offset(0)
-        .limit(20);
+        .limit(this.limit);
     } else {
       return [];
     }
@@ -364,5 +366,6 @@ class model extends Repository {
 
 module.exports = new model({
   table: tables.users,
+  limit: 10,
   allowed,
 });

@@ -46,7 +46,7 @@ const MessageLeft = ({
         <div className="message-row">
           <div className="d-flex align-items-center">
             <div className="message-content">
-              <h6 className="ml-3">
+              <h6>
                 {state === 'loading'
                   ? '@' + owner
                   : state === 'hasValue' && instanceOfUser(contents)

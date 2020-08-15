@@ -29,8 +29,8 @@ class model extends Repository {
     }
   }
 
-  findMany(conditions) {
-    if (typeof conditions === "object" && "query" in conditions) {
+  findMany({ query }) {
+    if (typeof query === "string" && query.length > 0 && query < 256) {
       return knex(this.table)
         .select(allowed.select)
         .whereRaw("username ilike ? or realname ilike ?", [
@@ -40,6 +40,8 @@ class model extends Repository {
         .orderByRaw("length(username)")
         .offset(0)
         .limit(20);
+    } else {
+      return [];
     }
   }
 

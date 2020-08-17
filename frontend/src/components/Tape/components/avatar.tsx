@@ -1,5 +1,6 @@
 import React from 'react';
 import IAccountCircle from '@material-ui/icons/AccountCircle';
+import ISupervisedUserCircleIcon from '@material-ui/icons/SupervisedUserCircle';
 import { routes } from '../../../constants';
 import Skeleton from '../../Skeleton';
 
@@ -21,6 +22,7 @@ type PropsType = {
   username?: string;
   size?: iconSizeType;
   color?: string;
+  group?: boolean;
 };
 
 const Avatar = ({
@@ -32,6 +34,7 @@ const Avatar = ({
   username,
   size,
   color,
+  group,
 }: PropsType) => {
   return (
     <div className={`card-avatar ${online ? 'online' : ''}`}>
@@ -48,6 +51,17 @@ const Avatar = ({
           alt={realname || username}
           width={size ? iconSize[size] : iconSize['md']}
           height={size ? iconSize[size] : iconSize['md']}
+        />
+      ) : group ? (
+        <ISupervisedUserCircleIcon
+          fontSize="inherit"
+          className={active ? 'text-white' : color || 'text-gray-400'}
+          style={
+            size && {
+              width: iconSize[size] + 'px',
+              height: iconSize[size] + 'px',
+            }
+          }
         />
       ) : (
         <IAccountCircle

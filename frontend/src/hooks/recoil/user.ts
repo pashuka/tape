@@ -2,15 +2,17 @@ import Recoil from 'recoil';
 import { request } from './request';
 import { searchQueryAtom } from './search';
 import { routes, getRoute } from '../../constants';
-import { limitSearchMax } from './constants';
-import { authState } from './auth';
+import { MemberType } from './member';
 
 type UserProfileType = {
   picture?: string;
 };
 
-export type UserType = {
+export type UserNameType = {
   username: string;
+};
+
+export type UserType = UserNameType & {
   realname: string | undefined;
   profile: UserProfileType;
 };
@@ -19,42 +21,45 @@ export function instanceOfUser(o: any): o is UserType {
   return o && 'username' in o;
 }
 
+type userInfoParamsType = {
+  username: string;
+  withDialog?: boolean;
+};
+
 export const userInfoQuery = Recoil.selectorFamily<
-  UserType | undefined,
-  string | undefined
+  UserType | MemberType | undefined,
+  userInfoParamsType
 >({
   key: 'userInfoQuery',
-  get: (username) => async () => {
-    return username
-      ? await request<UserType>(
-          getRoute(`get/${routes.user}/?username=${String(username)}`),
-        ).then(
-          (data) => data,
-          (reason) => {
-            throw reason;
-          },
-        )
-      : new Promise((resolve) => resolve());
+  get: ({ username, withDialog }) => async () => {
+    return await request<UserType | MemberType>(
+      getRoute(
+        `get/${routes.user}/?username=${String(username)}${
+          withDialog ? '&withDialog=true' : ''
+        }`,
+      ),
+    ).then(
+      (data) => (instanceOfUser(data) ? data : undefined),
+      (reason) => {
+        throw reason;
+      },
+    );
   },
 });
 
-export const UsersFilter = Recoil.selector<UserType[]>({
-  key: 'UsersFilter',
+export const usersFilter = Recoil.selector<UserNameType[]>({
+  key: 'usersFilter',
   get: async ({ get }) => {
-    const iam = get(authState);
     const query = get(searchQueryAtom);
     return query.length
-      ? await request<UserType[]>(
+      ? await request<UserNameType[]>(
           getRoute(`find/${routes.user}/?query=${String(query)}`),
         ).then(
-          (data) =>
-            data
-              .filter((_) => iam?.username !== _.username)
-              .slice(0, limitSearchMax),
+          (data) => (Array.isArray(data) ? data : ([] as UserNameType[])),
           (reason) => {
             throw reason;
           },
         )
-      : new Promise((resolve) => resolve([] as UserType[]));
+      : ([] as UserNameType[]);
   },
 });

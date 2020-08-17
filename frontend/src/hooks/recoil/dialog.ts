@@ -42,7 +42,8 @@ export const dialogsOffsetAtom = Recoil.atom<number>({
 
 export const dialogsByOffset = Recoil.selectorFamily<DialogType[], number>({
   key: 'dialogsByOffset',
-  get: (offset) => async () => {
+  get: (offset) => async ({ get }) => {
+    get(atomTrigger); // 'register' as a resetable dependency
     return await request<DialogType[]>(
       getRoute(`find/${routes.dialogs}/?offset=${offset}`),
     ).then(
@@ -51,6 +52,11 @@ export const dialogsByOffset = Recoil.selectorFamily<DialogType[], number>({
         throw reason;
       },
     );
+  },
+  set: (offset) => ({ set }, value) => {
+    if (value instanceof Recoil.DefaultValue) {
+      set(atomTrigger, (v) => v + 1);
+    }
   },
 });
 

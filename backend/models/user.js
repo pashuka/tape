@@ -5,7 +5,7 @@ const validator = require("validator");
 
 const config = require("../.env");
 const { BadRequest, NotFound } = require("../libraries/error");
-const { resources } = require("../constants");
+const { resources, lengths } = require("../constants");
 const { tables } = require("../constants");
 const Repository = require("./repository");
 const Mailer = require("../libraries/nodemailer");
@@ -47,6 +47,48 @@ class model extends Repository {
     }
   }
 
+  async findOne(conditions, allowed) {
+    const { username, email, withDialog } = conditions;
+    if (username && typeof username !== "string") {
+      throw new BadRequest([{ username: "Username must be not empty" }]);
+    }
+    if (email && typeof email !== "string") {
+      throw new BadRequest([{ email: "Email must be not empty" }]);
+    }
+    if (withDialog) {
+      const entity = await super.findOne(conditions, {
+        select: ["id", "username", "realname", "profile"],
+      });
+      if (!entity) {
+        throw new NotFound("Verification code not found");
+      }
+      const { id, ...member } = entity;
+      /**
+       * explain (analyze)
+       * select m1.dialog_id
+       * from members as m1
+       * left join members as m2 on m1.dialog_id = m2.dialog_id
+       * where m1.user_id=1295 and m2.user_id=1272;
+       */
+      const entityWithDialog = await knex
+        .select({ dialog_id: "m1.dialog_id" })
+        .from(`${tables.members} as m1`)
+        .leftJoin(`${tables.members} as m2`, "m1.dialog_id", "m2.dialog_id")
+        .whereRaw("?? = ??", ["m1.user_id", this.user.id])
+        .andWhereRaw("?? = ??", ["m2.user_id", id])
+        .first();
+
+      if (entityWithDialog) {
+        const { dialog_id } = entityWithDialog;
+        return { ...member, dialog_id };
+      } else {
+        return member;
+      }
+    } else {
+      return super.findOne(conditions, allowed);
+    }
+  }
+
   /**
    * Sign Up
    * @param {object} first param
@@ -54,8 +96,12 @@ class model extends Repository {
   async signup({ username, email, password }) {
     username = typeof username === "string" ? username.toLocaleLowerCase() : "";
 
-    if (username.length < 3 || username.length > 32) {
-      throw new BadRequest([{ username: "Username length must be between 3 and 32 characters" }]);
+    if (username.length < lengths.username.min || username.length > lengths.username.max) {
+      throw new BadRequest([
+        {
+          username: `Username length must be between ${lengths.username.min} and ${lengths.username.max} characters`,
+        },
+      ]);
     } else if (!/^[a-z0-9]+$/i.test(username)) {
       throw new BadRequest([{ username: "Username may only contain alphanumeric characters" }]);
     }
@@ -147,8 +193,12 @@ class model extends Repository {
       const username =
         typeof values.username === "string" ? values.username.toLocaleLowerCase() : "";
 
-      if (username.length < 3 || username.length > 32) {
-        throw new BadRequest([{ username: "Username length must be between 3 and 32 characters" }]);
+      if (username.length < lengths.username.min || username.length > lengths.username.max) {
+        throw new BadRequest([
+          {
+            username: `Username length must be between ${lengths.username.min} and ${lengths.username.max} characters`,
+          },
+        ]);
       } else if (!/^[a-z0-9]+$/i.test(username)) {
         throw new BadRequest([{ username: "Username may only contain alphanumeric characters" }]);
       }

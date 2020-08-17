@@ -19,13 +19,18 @@ class model extends Repository {
     if (!validator.isNumeric(offset) || offset < 0 || offset > Number.MAX_VALUE) {
       throw new BadRequest([{ offset: "Bad offset" }]);
     }
-    const qb = knex(this.table)
-      .select(`${this.table}.dialog_id`)
-      .select(["username", "realname", "profile"].map((c) => `${tables.users}.${c}`))
-      .leftJoin(tables.users, `${tables.users}.id`, `${this.table}.user_id`)
-      .whereNot(`${this.table}.user_id`, this.user.id)
-      .offset(offset)
-      .limit(this.limit);
+    /**
+     * explain (analyze)
+     * select m2.*,users.username, users.realname, users.profile
+     * from members as m1
+     * left join members as m2 on m1.dialog_id = m2.dialog_id
+     * left join users on users.id=m2.user_id
+     * where m1.user_id = 1295 and not m2.user_id = 1295;
+     */
+
+    const qb = knex
+      .select({ dialog_id: "m2.dialog_id" })
+      .select(["username", "realname", "profile"].map((c) => `${tables.users}.${c}`));
 
     if (dialog_id) {
       if (!validator.isNumeric(dialog_id)) {
@@ -42,12 +47,20 @@ class model extends Repository {
         throw new BadRequest([{ dialog_id: "Bad dialog id" }]);
       }
 
-      qb.where(`${this.table}.dialog_id`, dialog_id);
+      // qb.where(`${this.table}.dialog_id`, dialog_id);
+      qb.from(`${this.table} as m2`)
+        .leftJoin(tables.users, `${tables.users}.id`, "m2.user_id")
+        .whereRaw("?? = ?", ["m2.dialog_id", dialog_id])
+        .whereRaw("?? != ?", ["m2.user_id", this.user.id]);
     } else {
-      qb.orderBy(`${tables.users}.realname`, "asc");
+      qb.from(`${this.table} as m1`)
+        .leftJoin(`${this.table} as m2`, "m1.dialog_id", "m2.dialog_id")
+        .leftJoin(tables.users, `${tables.users}.id`, "m2.user_id")
+        .whereRaw("?? = ?", ["m1.user_id", this.user.id])
+        .whereRaw("?? != ?", ["m2.user_id", this.user.id])
+        .orderBy(`${tables.users}.realname`, "asc");
     }
-
-    return qb;
+    return qb.offset(offset).limit(this.limit);
   }
 
   findOne(conditions) {

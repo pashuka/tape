@@ -10,9 +10,6 @@ import { routes, getRoute } from '../../../constants';
 import { useResetRecoilState } from 'recoil';
 import { authState } from '../../../hooks/recoil/auth';
 import { request } from '../../../hooks/recoil/request';
-import { dialogsState } from '../../../hooks/recoil/dialog';
-import { membersState } from '../../../hooks/recoil/members';
-import { messagesState } from '../../../hooks/recoil/message';
 import Avatar from '../components/avatar';
 
 const iconSize = '24px';
@@ -61,9 +58,6 @@ const Navbar = () => {
   const [reset, setReset] = React.useState(false);
   const iam = useRecoilValue(authState);
   const resetAuth = useResetRecoilState(authState);
-  const resetDialogs = useResetRecoilState(dialogsState);
-  const resetMembers = useResetRecoilState(membersState);
-  const resetMessages = useResetRecoilState(messagesState);
   const { pathname } = useLocation();
 
   React.useEffect(() => {
@@ -78,9 +72,8 @@ const Navbar = () => {
       );
       if ('status' in result && result.status === 'ok') {
         resetAuth();
-        resetDialogs();
-        resetMembers();
-        resetMessages();
+        // TODO: deal with reset recoil SM atoms/selectors
+        window.location.reload();
       }
     };
 

@@ -21,7 +21,9 @@ type MessageLeftPropsType = {
 const MessageLeft = ({
   data: { created_at, owner, body },
 }: MessageLeftPropsType) => {
-  const { state, contents } = useRecoilValueLoadable(userInfoQuery(owner));
+  const { state, contents } = useRecoilValueLoadable(
+    userInfoQuery({ username: owner }),
+  );
   const [member, setMember] = React.useState<UserType | undefined>();
 
   React.useEffect(() => {
@@ -49,8 +51,8 @@ const MessageLeft = ({
               <h6>
                 {state === 'loading'
                   ? '@' + owner
-                  : state === 'hasValue' && instanceOfUser(contents)
-                  ? contents?.realname || <span>@{contents?.username}</span>
+                  : member
+                  ? member.realname || <span>@{member.username}</span>
                   : null}
               </h6>
               <div className="alert bg-gray-100 border-gray-200 mb-0 py-1 py-lg-2 px-lg-3 px-2">

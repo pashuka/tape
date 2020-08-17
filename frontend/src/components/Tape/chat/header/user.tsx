@@ -12,7 +12,9 @@ declare type PropsType = {
 };
 
 const DialogHeader = ({ username }: PropsType) => {
-  const { state, contents } = useRecoilValueLoadable(userInfoQuery(username));
+  const { state, contents } = useRecoilValueLoadable(
+    userInfoQuery({ username }),
+  );
   return (
     <div className="media-body align-self-center text-truncate">
       <h6 className="text-truncate mt-2">

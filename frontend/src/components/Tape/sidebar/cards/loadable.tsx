@@ -24,7 +24,9 @@ const CardLoadable = ({
   username,
   isCancelable,
 }: PropsType) => {
-  const { state, contents } = useRecoilValueLoadable(userInfoQuery(username));
+  const { state, contents } = useRecoilValueLoadable(
+    userInfoQuery({ username }),
+  );
   return (
     <CardWrapper active={active} to={to || ''}>
       {state === 'loading' && <Skeleton roundedCircle />}

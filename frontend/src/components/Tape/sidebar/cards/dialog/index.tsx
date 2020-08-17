@@ -9,7 +9,7 @@ import {
   routes,
 } from '../../../../../constants';
 import { DialogType } from '../../../../../hooks/recoil/dialog';
-import { membersByDialog } from '../../../../../hooks/recoil/members';
+import { membersByDialog } from '../../../../../hooks/recoil/member';
 
 type PropsType = {
   dialog: DialogType;

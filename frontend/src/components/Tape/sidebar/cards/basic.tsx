@@ -9,7 +9,7 @@ import { DialogType, instanceOfDialog } from '../../../../hooks/recoil/dialog';
 import Avatar, { iconSizeType } from '../../components/avatar';
 import { routes } from '../../../../constants';
 import CardWrapper from './wrapper';
-import { MemberType } from '../../../../hooks/recoil/members';
+import { MemberType } from '../../../../hooks/recoil/member';
 
 dayjs.extend(isToday);
 
@@ -74,6 +74,7 @@ const CardBasic = ({
           active={active}
           picture={dialog.profile?.picture}
           size={avaSize || 'md'}
+          group={members.length > 1}
         />
       );
     }

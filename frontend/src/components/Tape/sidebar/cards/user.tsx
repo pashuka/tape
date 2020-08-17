@@ -9,7 +9,7 @@ import {
   routes,
 } from '../../../../constants';
 import { UserType } from '../../../../hooks/recoil/user';
-import { MemberType, instanceOfMember } from '../../../../hooks/recoil/members';
+import { MemberType, instanceOfMember } from '../../../../hooks/recoil/member';
 
 type PropsType = {
   member: UserType | MemberType;

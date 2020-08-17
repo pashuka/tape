@@ -4,7 +4,7 @@ import dayjs from 'dayjs';
 
 import relativeTime from 'dayjs/plugin/relativeTime';
 import { useRecoilValueLoadable } from 'recoil';
-import { membersByDialog, MemberType } from '../../../../hooks/recoil/members';
+import { membersByDialog, MemberType } from '../../../../hooks/recoil/member';
 
 dayjs.extend(relativeTime);
 

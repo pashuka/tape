@@ -3,7 +3,6 @@ const knex = require("../libraries/knex");
 const { tables, lengths } = require("../constants");
 const Repository = require("./repository");
 const { BadRequest } = require("../libraries/error");
-const members = require("./members");
 const allowed = {
   schema: ["id", "dialog_id", "created_at", "owner_id", "body"],
   conditions: ["dialog_id"],
@@ -39,7 +38,7 @@ class model extends Repository {
       .select({ owner: `${tables.users}.username` })
       .leftJoin(tables.users, `${tables.users}.id`, `${this.table}.owner_id`)
       .where({ dialog_id: dialog.dialog_id })
-      .orderBy(`${this.table}.created_at`)
+      .orderBy(`${this.table}.created_at`, "desc")
       .offset(offset)
       .limit(this.limit);
     return records;

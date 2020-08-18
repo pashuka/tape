@@ -35,7 +35,7 @@ const messagesByOffset = Recoil.selectorFamily<MessageType[], OffsetType>({
         `find/${routes.messages}/?dialog_id=${dialog_id}&offset=${offset}`,
       ),
     ).then(
-      (data) => (Array.isArray(data) ? data : ([] as MessageType[])),
+      (data) => (Array.isArray(data) ? data.reverse() : ([] as MessageType[])),
       (reason) => {
         throw reason;
       },

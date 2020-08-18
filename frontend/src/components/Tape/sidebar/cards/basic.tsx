@@ -64,19 +64,19 @@ const CardBasic = ({
     avatar = getMemberAvatar(members, active, avaSize);
     title = getMemberTitle(members);
   } else if (Array.isArray(members)) {
-    if (members.length === 1 && instanceOfUser(members[0])) {
-      title = getMemberTitle(members[0]);
-      avatar = getMemberAvatar(members[0], active, avaSize);
-    } else if (dialog && members.length > 1) {
+    if (dialog && dialog.dialog_type === 'group') {
       title = dialog.profile?.title;
       avatar = (
         <Avatar
           active={active}
           picture={dialog.profile?.picture}
           size={avaSize || 'md'}
-          group={members.length > 1}
+          group={true}
         />
       );
+    } else if (members.length === 1 && instanceOfUser(members[0])) {
+      title = getMemberTitle(members[0]);
+      avatar = getMemberAvatar(members[0], active, avaSize);
     }
   }
 

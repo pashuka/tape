@@ -1,12 +1,7 @@
 import React from 'react';
 import { useRouteMatch } from 'react-router-dom';
 
-import {
-  ParamsKeyUser,
-  routes,
-  QSParamsType,
-  ParamsKeyDialog,
-} from '../../../../../constants';
+import { ParamsKeyUser, routes, QSParamsType } from '../../../../../constants';
 import CardWrapper from '../wrapper';
 import { useRecoilValueLoadable } from 'recoil';
 import {
@@ -42,7 +37,7 @@ const CardMember = ({ username, route }: PropsType) => {
       active={record && params[ParamsKeyUser] === record.username}
       to={`/${routes.tape}/${route}/${
         record && instanceOfMember(record)
-          ? `${ParamsKeyDialog}/${record.dialog_id}`
+          ? `${record.dialog_id}`
           : `${ParamsKeyUser}/${username}`
       }`}
     >
@@ -58,7 +53,7 @@ const CardMember = ({ username, route }: PropsType) => {
         <div className={`d-flex align-items-center py-2 my-2`}>
           <h6 className="text-truncate mb-0 mr-auto">
             {state === 'loading' ? (
-              <Skeleton width="100%" />
+              <Skeleton width="128px" />
             ) : record ? (
               record.realname || <span>@{record.username}</span>
             ) : null}

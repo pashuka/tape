@@ -13,6 +13,7 @@ export type DialogProfileType = {
 
 export type DialogType = {
   id: DialogIdType;
+  dialog_type: 'direct' | 'group';
   created_at: string;
   last_message_body: string;
   last_message_created_at: string;

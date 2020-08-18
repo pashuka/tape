@@ -1,19 +1,19 @@
 import React, { Fragment } from 'react';
 import { useRecoilValueLoadable, useRecoilState } from 'recoil';
 
+import CardMember from './cards/member/index';
 import CardUser from './cards/user';
-import CardNew from './cards/new';
 import Header from './header';
 import CardHeader from './cards/header';
 import { searchQueryAtom } from '../../../hooks/recoil/search';
-import { UsersFilter } from '../../../hooks/recoil/user';
+import { usersFilter } from '../../../hooks/recoil/user';
 import { useRouteMatch } from 'react-router-dom';
-import { QSParamsType, ParamsKeyUser } from '../../../constants';
+import { QSParamsType, ParamsKeyUser, routes } from '../../../constants';
 import {
   membersState,
   membersOffsetAtom,
   MemberType,
-} from '../../../hooks/recoil/members';
+} from '../../../hooks/recoil/member';
 import Overlay from '../../Overlay';
 import { limitFetchMax } from '../../../hooks/recoil/constants';
 
@@ -31,7 +31,7 @@ const Participants = ({ scrollBottom }: PropsType) => {
   );
 
   const [searchQuery, setSearchQuery] = useRecoilState(searchQueryAtom);
-  const filteredUsers = useRecoilValueLoadable(UsersFilter);
+  const filteredUsers = useRecoilValueLoadable(usersFilter);
 
   React.useEffect(() => {
     if (scrollBottom && offset + limitFetchMax === records.length) {
@@ -59,28 +59,41 @@ const Participants = ({ scrollBottom }: PropsType) => {
             />
 
             <nav className="nav nav-dialog d-block">
-              <CardHeader title="Participants" />
               {ParamsKeyUser in params && (
-                <CardNew username={params[ParamsKeyUser] || ''} />
+                <CardMember
+                  key={params[ParamsKeyUser]}
+                  route={routes.participants}
+                  username={params[ParamsKeyUser] || ''}
+                />
               )}
-              {records.map((_) => (
-                <CardUser key={_.username} member={_} />
-              ))}
+              {searchQuery.length > 0 && (
+                <Fragment>
+                  {state === 'loading' || filteredUsers.state === 'loading' ? (
+                    <div className="d-flex justify-content-center p-2">
+                      <Overlay size="sm" badge={true} />
+                    </div>
+                  ) : (
+                    <Fragment>
+                      <CardHeader title="Search" />
+                      {filteredUsers.state === 'hasValue' &&
+                        filteredUsers.contents.map(({ username }) => (
+                          <CardMember
+                            key={username}
+                            route={routes.participants}
+                            username={username}
+                          />
+                        ))}
+                    </Fragment>
+                  )}
+                </Fragment>
+              )}
+              {searchQuery.length === 0 &&
+                records.map((_) => <CardUser key={_.username} member={_} />)}
               {state === 'loading' && (
                 <div className="d-flex justify-content-center p-2">
                   <Overlay size="sm" badge={true} />
                 </div>
               )}
-              {searchQuery.length > 0 &&
-                filteredUsers.state === 'hasValue' &&
-                Array.isArray(filteredUsers.contents) && (
-                  <Fragment>
-                    <CardHeader title="Search" />
-                    {filteredUsers.contents.map((_) => (
-                      <CardUser key={_.username} member={_} />
-                    ))}
-                  </Fragment>
-                )}
             </nav>
           </div>
         </div>

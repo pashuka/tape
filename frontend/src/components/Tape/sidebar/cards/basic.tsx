@@ -108,7 +108,7 @@ const CardBasic = ({
         {instanceOfDialog(dialog) && (
           <div className="d-flex align-items-center pb-2">
             <div className="small text-muted text-truncate text-left mr-auto">
-              {dialog.last_message_body}
+              {dialog.last_message_body || '...'}
             </div>
             {/* <div className="badge badge-pill badge-primary ml-3">
                   {compactNumber(9)}

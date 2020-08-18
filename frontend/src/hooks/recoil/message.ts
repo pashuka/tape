@@ -29,6 +29,7 @@ type OffsetType = {
 const messagesByOffset = Recoil.selectorFamily<MessageType[], OffsetType>({
   key: 'messagesByOffset',
   get: ({ dialog_id, offset }) => async ({ get }) => {
+    get(atomTrigger); // 'register' as a resetable dependency
     return await request<MessageType[]>(
       getRoute(
         `find/${routes.messages}/?dialog_id=${dialog_id}&offset=${offset}`,
@@ -39,6 +40,11 @@ const messagesByOffset = Recoil.selectorFamily<MessageType[], OffsetType>({
         throw reason;
       },
     );
+  },
+  set: (offset) => ({ set }, value) => {
+    if (value instanceof Recoil.DefaultValue) {
+      set(atomTrigger, (v) => v + 1);
+    }
   },
 });
 

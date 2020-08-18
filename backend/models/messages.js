@@ -1,13 +1,14 @@
 const validator = require("validator");
 const knex = require("../libraries/knex");
-const { tables } = require("../constants");
+const { tables, lengths } = require("../constants");
 const Repository = require("./repository");
 const { BadRequest } = require("../libraries/error");
+const members = require("./members");
 const allowed = {
   schema: ["id", "dialog_id", "created_at", "owner_id", "body"],
   conditions: ["dialog_id"],
   select: ["dialog_id", "created_at", "body"],
-  insert: ["dialog_id", "owner", "body"],
+  insert: ["dialog_id", "owner_id", "body"],
   update: ["owner_id", "body"],
 };
 
@@ -48,69 +49,87 @@ class model extends Repository {
     return;
   }
 
-  async insert(values) {
-    const { dialog_id, username, message } = values;
+  async insert({ dialog_id, username, message }) {
     let dialog;
     if (typeof message !== "string") {
       throw new BadRequest([{ message: "Bad message" }]);
     }
-    if (message.length > 2 * 1024) {
-      throw new BadRequest([{ message: "Too long message" }]);
+    if (message.length < lengths.message.min && message.length > lengths.message.max) {
+      throw new BadRequest([
+        {
+          message: `Message length must be between ${lengths.message.min} and ${lengths.message.max} characters`,
+        },
+      ]);
     }
     if (username && !dialog_id) {
+      username = typeof username === "string" ? username.toLocaleLowerCase() : "";
+      if (username.length < lengths.username.min || username.length > lengths.username.max) {
+        throw new BadRequest([
+          {
+            username: `Username length must be between ${lengths.username.min} and ${lengths.username.max} characters`,
+          },
+        ]);
+      } else if (!/^[a-z0-9]+$/i.test(username)) {
+        throw new BadRequest([{ username: "Username may only contain alphanumeric characters" }]);
+      }
+
       const participant = await knex(tables.users)
         .select(["id", "username"])
         .where({ username })
         .first();
+
       if (!participant) {
-        return;
+        throw new BadRequest([{ username: `Username ${username} is not exist` }]);
       }
       // TODO: check on duplicate end to end dialogs if we only have username and dialog_id is undefined
-      dialog = await knex(tables.dialogs)
-        .select("dialog_id")
-        .whereRaw("jsonb_array_length(participants) = 2")
-        .whereRaw("(participants)::jsonb \\? ?", [this.user.username])
-        .whereRaw("(participants)::jsonb \\? ?", [participant.username])
+      /**
+       * explain (analyze)
+       * select m2.*
+       * from members as m1
+       * left join members as m2 on m1.dialog_id = m2.dialog_id and m2.dialog_type='direct'
+       * where m1.dialog_type='direct' and m1.user_id=1151 and m2.user_id=1132;
+       */
+      dialog = await knex
+        .select({ dialog_id: "m2.dialog_id" })
+        .from(`${tables.members} as m1`)
+        .leftJoin(`${tables.members} as m2`, (builder) => {
+          builder.on("m1.dialog_id", "m2.dialog_id").andOn("m2.dialog_type", knex.raw("'direct'"));
+        })
+        .where("m2.dialog_type", knex.raw("'direct'"))
+        .whereRaw("?? = ?", ["m1.user_id", this.user.id])
+        .whereRaw("?? = ?", ["m2.user_id", participant.id])
         .first();
+
       if (dialog) {
         // throw because we try to create new dialog with new user, but dialog is exists
         // it means that we need to send dialog_id instead just username
-        throw new BadRequest([{ username: "Bad username" }]);
+        throw new BadRequest([{ username: "Dialog with this username exist" }]);
       }
 
-      dialog = await knex(tables.dialogs)
-        .insert({
-          owners: JSON.stringify([this.user.username, participant.username]),
-          participants: JSON.stringify([this.user.username, participant.username]),
-        })
-        .returning(["dialog_id", "participants"]);
-      dialog = dialog[0];
+      // TODO: impl group dialog type creation
+      // TODO: impl transactional solution
+      // const trx = await knex.transaction();
+      dialog = await knex(tables.dialogs).insert({ last_message_id: null }).returning(["id"]);
+      dialog_id = dialog[0].id;
+      const members = [
+        { dialog_id, user_id: this.user.id },
+        { dialog_id, user_id: participant.id },
+      ];
+      await knex(tables.admins).insert(members);
+      await knex(tables.members).insert(members);
     } else if (dialog_id) {
       if (!validator.isNumeric(dialog_id)) {
         throw new BadRequest([{ dialog_id: "Bad dialog_id" }]);
       }
-      dialog = await knex(tables.dialogs)
-        .select(["dialog_id", "participants"])
-        .where({ dialog_id })
-        .first();
-
-      dialog = await knex(tables.dialogs)
-        .select(["id"])
-        .leftJoin(tables.members, `${this.table}.id`, `${tables.members}.dialog_id`)
-        .where(`${tables.members}.user_id`, this.user.id)
-        .where(`${tables.members}.dialog_id`, this.user.id)
-        .first();
+      dialog = await knex(tables.dialogs).select(["id"]).where({ id: dialog_id }).first();
+      if (!dialog) {
+        throw new BadRequest([{ dialog: "Bad dialog" }]);
+      }
     } else {
       throw new BadRequest([{ values: "Bad command" }]);
     }
-    if (!dialog) {
-      throw new BadRequest([{ dialog: "Bad dialog" }]);
-    }
 
-    // if (!dialog.participants.includes(this.user.username)) {
-    //   return;
-    // }
-    return super.insert({ dialog_id: dialog.dialog_id, body: message, owner: this.user.username });
+    return super.insert({ dialog_id, body: message, owner_id: this.user.id });
   }
 
   update(conditions, values) {

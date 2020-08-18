@@ -1,4 +1,4 @@
-const { tables, lengths } = require("../../constants");
+const { tables, lengths, dialogTypes } = require("../../constants");
 
 exports.up = (knex) =>
   knex.schema
@@ -8,6 +8,9 @@ exports.up = (knex) =>
       t.increments("id").unsigned().primary();
       t.dateTime("created_at").notNull().defaultTo(knex.fn.now(6)).comment("Created at date");
       t.dateTime("updated_at").nullable().comment("Updated at date");
+
+      t.enu("dialog_type", dialogTypes).defaultTo("direct");
+      t.index("dialog_type");
 
       t.jsonb("profile").defaultTo(knex.raw("'{}'::json")).comment("Dialog profile");
 

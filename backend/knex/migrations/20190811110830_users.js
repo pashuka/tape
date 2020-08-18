@@ -10,6 +10,7 @@ exports.up = (knex) =>
       t.dateTime("updated_at").nullable().comment("Updated at date");
 
       t.string("realname").nullable().comment("Real name");
+      t.index("realname");
 
       t.string("username", lengths.username.max).notNull().comment("User name");
       t.unique("username");

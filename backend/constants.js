@@ -11,7 +11,13 @@ const lengths = {
     min: 4,
     max: 64,
   },
+  message: {
+    min: 1,
+    max: 2 * 1024,
+  },
 };
+
+const dialogTypes = ["direct", "group", "channel"];
 
 const coreUser = { id: 0, email: "core@email" };
 
@@ -99,4 +105,5 @@ module.exports = {
   roles,
   grants,
   lengths,
+  dialogTypes,
 };

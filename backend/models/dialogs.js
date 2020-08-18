@@ -6,13 +6,21 @@ const allowed = {
   schema: [
     "id",
     "created_at",
+    "dialog_type",
     "last_message_owner_id",
     "last_message_body",
     "last_message_created_at",
     "profile",
   ],
   conditions: ["created_at"],
-  select: ["id", "created_at", "last_message_body", "last_message_created_at", "profile"],
+  select: [
+    "id",
+    "created_at",
+    "dialog_type",
+    "last_message_body",
+    "last_message_created_at",
+    "profile",
+  ],
   insert: ["profile"],
   update: ["profile"],
 };

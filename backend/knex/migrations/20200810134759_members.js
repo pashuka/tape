@@ -1,8 +1,10 @@
-const { tables } = require("../../constants");
+const { tables, dialogTypes } = require("../../constants");
 
 exports.up = (knex) =>
   knex.schema.createTable(tables.members, (t) => {
     t.comment("Dialog members");
+
+    t.enu("dialog_type", dialogTypes).defaultTo("direct");
 
     t.integer("dialog_id").unsigned().notNullable();
     t.foreign("dialog_id").references("id").inTable(tables.dialogs).onDelete("CASCADE");

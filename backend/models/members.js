@@ -54,7 +54,9 @@ class model extends Repository {
         .whereRaw("?? != ?", ["m2.user_id", this.user.id]);
     } else {
       qb.from(`${this.table} as m1`)
-        .leftJoin(`${this.table} as m2`, "m1.dialog_id", "m2.dialog_id")
+        .leftJoin(`${this.table} as m2`, (builder) => {
+          builder.on("m1.dialog_id", "m2.dialog_id").andOn("m2.dialog_type", knex.raw("'direct'"));
+        })
         .leftJoin(tables.users, `${tables.users}.id`, "m2.user_id")
         .whereRaw("?? = ?", ["m1.user_id", this.user.id])
         .whereRaw("?? != ?", ["m2.user_id", this.user.id])

@@ -75,7 +75,7 @@ exports.seed = async (knex) => {
     await Promise.all(
       messages.map(async (message) => {
         // We use fixture delay for some creation datetime offset
-        await delay(100 * (Math.floor(Math.random() * 10) + 1));
+        await delay(10 * (Math.floor(Math.random() * 10) + 1));
         return await knex(tables.messages).insert(message);
       })
     );

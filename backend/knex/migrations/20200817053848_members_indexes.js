@@ -5,6 +5,7 @@ exports.up = (knex) =>
     t.index("dialog_id");
     t.index("user_id");
     t.index(["user_id", "dialog_id"]);
+    t.index(["dialog_id", "dialog_type", "user_id"]);
   });
 
 exports.down = (knex) =>
@@ -12,4 +13,5 @@ exports.down = (knex) =>
     t.dropIndex("dialog_id");
     t.dropIndex("user_id");
     t.dropIndex(["user_id", "dialog_id"]);
+    t.dropIndex(["dialog_id", "dialog_type", "user_id"]);
   });

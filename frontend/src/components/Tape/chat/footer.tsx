@@ -102,7 +102,7 @@ const Footer = () => {
           <div className="col">
             <div className="input-group">
               {/* Emoji */}
-              <div className="input-group-prepend">
+              {/* <div className="input-group-prepend">
                 <button
                   className="btn btn-secondary bg-light text-muted border-0"
                   type="button"
@@ -126,7 +126,7 @@ const Footer = () => {
                     <line x1="15" y1="9" x2="15.01" y2="9"></line>
                   </svg>
                 </button>
-              </div>
+              </div> */}
               {/* Textarea */}
               <textarea
                 ref={ref}

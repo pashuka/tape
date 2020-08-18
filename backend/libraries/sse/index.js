@@ -1,5 +1,7 @@
 const stream = require("stream");
 const Transform = stream.Transform;
+// const events = require("events");
+// const dispatcher = new events.EventEmitter();
 
 class SSETransform extends Transform {
   constructor(ctx, opts) {
@@ -20,6 +22,7 @@ class SSETransform extends Transform {
       "X-Accel-Buffering": "no",
     });
     this.send(":ok");
+    // dispatcher.on("message", this.send);
   }
   /**
    *
@@ -33,9 +36,11 @@ class SSETransform extends Transform {
    * @param {function} callback same as the write method callback
    */
   send(data, encoding, callback) {
+    // console.log("messae from ---->", data);
     if (arguments.length === 0 || this.ended) return false;
     Transform.prototype.write.call(this, data, encodeURI, callback);
   }
+
   /**
    *
    * @param {String} data sse data to send, if it's a string, an anonymous event will be sent.
@@ -59,6 +64,7 @@ class SSETransform extends Transform {
     this.ended = true;
     Transform.prototype.end.call(this, data, encodeURI, callback);
   }
+
   end() {
     if (!this.ended) {
       this.ended = true;
@@ -136,15 +142,15 @@ const DEFAULT_OPTS = {
  */
 module.exports = function sse(opts = {}) {
   opts = Object.assign({}, DEFAULT_OPTS, opts);
-  const ssePool = [];
+  const pool = [];
 
-  let interval = setInterval(() => {
-    let ts = +new Date();
-    if (ssePool.length > 0) {
-      ssePool.forEach((s) => s.send(":"));
-      // console.log("SSE run ping: for " + ssePool.length + " clients");
-    }
-  }, opts.pingInterval);
+  // let interval = setInterval(() => {
+  //   let ts = +new Date();
+  //   if (pool.length > 0) {
+  //     pool.forEach((s) => s.send(":"));
+  //     // console.log("SSE run ping: for " + pool.length + " clients");
+  //   }
+  // }, opts.pingInterval);
 
   return async function (ctx, next) {
     if (ctx.res.headersSent) {
@@ -153,7 +159,7 @@ module.exports = function sse(opts = {}) {
       }
       return await next();
     }
-    if (ssePool.length >= opts.maxClients) {
+    if (pool.length >= opts.maxClients) {
       console.error(
         "SSE sse client number more than the maximum, Unable to create the sse response"
       );
@@ -162,15 +168,21 @@ module.exports = function sse(opts = {}) {
     if (opts.matchQuery && typeof ctx.query[opts.matchQuery] === "undefined") {
       return await next();
     }
+
     let sse = new SSETransform(ctx, opts);
-    ssePool.push(sse);
+
+    pool.push(sse);
     sse.on("close", function () {
-      ssePool.splice(ssePool.indexOf(sse), 1);
+      // dispatcher.removeListener("message", sse.send);
+      pool.splice(pool.indexOf(sse), 1);
     });
+
     ctx.sse = ctx.response.sse = sse;
+
     await next();
+
     // if (!ctx.sse) {
-    //     ssePool.splice(ssePool.indexOf(sse), 1);
+    //     pool.splice(pool.indexOf(sse), 1);
     //     sse.destroy();
     //     return;
     // }

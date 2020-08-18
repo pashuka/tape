@@ -16,8 +16,8 @@ const Sentry = require("@sentry/node");
 const config = require("./.env");
 const { mogranPredefinedFormats } = require("./libraries/utils");
 const errorHandler = require("./libraries/error_handler");
-// const sse = require("./libraries/sse");
-// const { api, resources } = require("./constants");
+const sse = require("./libraries/sse/index");
+const { resources } = require("./constants");
 
 if (process.env.NODE_ENV == "production") {
   Sentry.init(config.sentry);
@@ -36,6 +36,16 @@ if (mogranPredefinedFormats[process.env.NODE_ENV]) {
 
 // enable cors
 app.use(cors());
+
+/**
+ * koa sse middleware
+ * @param {Object} opts
+ * @param {Number} opts.maxClients max client number, default is 10000
+ * @param {Number} opts.pingInterval heartbeat sending interval time(ms), default 60s
+ * @param {String} opts.closeEvent if not provide end([data]), send default close event to client, default event name is "close"
+ * @param {String} opts.matchQuery when set matchQuery, only has query (whatever the value) , sse will create
+ */
+// app.use(sse({ matchQuery: resources.events }));
 
 // static files
 app.use(require("koa-static")("./public"));
@@ -93,25 +103,17 @@ app.on("error", (err) => {
   // console.error("Server error", err);
 });
 
-/**
- * koa sse middleware
- * @param {Object} opts
- * @param {Number} opts.maxClients max client number, default is 10000
- * @param {Number} opts.pingInterval heartbeat sending interval time(ms), default 60s
- * @param {String} opts.closeEvent if not provide end([data]), send default close event to client, default event name is "close"
- * @param {String} opts.matchQuery when set matchQuery, only has query (whatever the value) , sse will create
- */
-// app.use(
-//   sse({
-//     // matchQuery: `/${api.v4}/${resources.events}`,
-//     matchQuery: resources.events,
-//   })
-// );
-
 // app.use(async (ctx) => {
-//   // ctx.sse is a writable stream and has extra method 'send'
-//   ctx.sse.send("a notice");
-//   // ctx.sse.sendEnd();
+//   let n = 0;
+//   let interval = setInterval(() => {
+//     ctx.sse.send(new Date().toString());
+//     n++;
+//     if (n >= 50) {
+//       ctx.sse.end();
+//       clearInterval(interval);
+//     }
+//   }, 10000);
+//   ctx.sse.on("finish", () => clearInterval(interval));
 // });
 
 module.exports = app;

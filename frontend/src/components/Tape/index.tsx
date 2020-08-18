@@ -8,7 +8,13 @@ import ParticipantsBar from './sidebar/participants';
 import SettingsBar from './sidebar/settings';
 import Chat from './chat/index';
 import useUserAgent from '../../hooks/useUserAgent';
-import { QSParamsType, ParamsKeyUser, ParamsKeyDialog } from '../../constants';
+import {
+  QSParamsType,
+  ParamsKeyUser,
+  ParamsKeyDialog,
+  getRoute,
+  routes,
+} from '../../constants';
 import { MessengerAtom } from '../../hooks/recoil/messenger';
 import { currentDialogIdState } from '../../hooks/recoil/dialog';
 import SettingsContent from './settings/index';
@@ -56,8 +62,13 @@ const Messenger = ({ tab, route }: PropsType) => {
   // The second argument is an array of values (usually props).
   // When it's an empty list, the callback will only be fired once, similar to componentDidMount.
   React.useEffect(() => {
-    // const eventSource = new EventSource('/'+apis.version+'/?'+routes.events+'=subscribe',{withCredentials: true});
-    // eventSource.onmessage = (es) => {console.log('message', es);};
+    const eventSource = new EventSource(
+      getRoute('?' + routes.events + '=subscribe'),
+      { withCredentials: true },
+    );
+    eventSource.onmessage = (es) => {
+      // console.log('message', es);
+    };
 
     // Set specifics to messenger css styles
     document.body.style.height = '100%';

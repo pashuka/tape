@@ -4,9 +4,9 @@ const { tables } = require("../../constants");
 
 const counts = {
   // How many fixtures users we should generate
-  users: 128,
+  users: 32,
   // How many fixtures messages range per one peer dialog we should generate
-  messages: { min: 1, max: 256 },
+  messages: { min: 1, max: 64 },
 };
 const fixtureUUID = "00000000-0000-0000-0000-000000000000";
 const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
@@ -56,7 +56,7 @@ exports.seed = async (knex) => {
   for (const i in peers) {
     const dialog = await knex(tables.dialogs).insert({ last_message_id: null }).returning(["id"]);
     const dialog_id = dialog[0].id;
-    // add dialog admins and members into tables
+    // add dialog admins and members
     const dialogPeers = peers[i].map((user_id) => ({ user_id, dialog_id }));
     await knex(tables.admins).insert(dialogPeers);
     await knex(tables.members).insert(dialogPeers);
@@ -71,14 +71,20 @@ exports.seed = async (knex) => {
       });
     });
 
-    // Push messages into database
-    await Promise.all(
-      messages.map(async (message) => {
-        // We use fixture delay for some creation datetime offset
-        await delay(10 * (Math.floor(Math.random() * 10) + 1));
-        return await knex(tables.messages).insert(message);
-      })
-    );
+    // Push messages
+    // await Promise.all(
+    //   messages.map(async (message) => {
+    //     // We use fixture delay for some creation datetime offset
+    //     await delay(10 * (Math.floor(Math.random() * 10) + 1));
+    //     return await knex(tables.messages).insert(message);
+    //   })
+    // );
+    // messages.forEach((message) => {
+    for await (const message of messages) {
+      // We use fixture delay for some creation datetime offset
+      await delay(10 * (Math.floor(Math.random() * 10) + 1));
+      await knex(tables.messages).insert(message);
+    }
   }
   return knex(tables.users);
 };

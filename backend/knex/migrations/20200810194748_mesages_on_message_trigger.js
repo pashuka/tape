@@ -14,6 +14,23 @@ exports.up = (knex) =>
             last_message_created_at = new.created_at
           where id = new.dialog_id
         ;
+        -- New message move unread cursor for sender and set unread count to 0
+        update members
+          set
+            unread_count = 0,
+            unread_cursor = new.id
+          where
+            dialog_id = new.dialog_id
+          and user_id = new.owner_id
+        ;
+        -- New message increments unread counter for all members except sender
+        update members
+          set
+            unread_count = unread_count + 1
+          where
+            dialog_id = new.dialog_id
+          and user_id != new.owner_id
+        ;
         return null;
       end; $${functionName}$
       language 'plpgsql'

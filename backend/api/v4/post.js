@@ -5,6 +5,8 @@ const { checkPerms } = require("../../libraries/accesscontrol");
 const { api } = require("../../constants");
 const { BadRequest } = require("../../libraries/error");
 const { model } = require("../../libraries/utils");
+// const events = require("events");
+// const dispatcher = new events.EventEmitter();
 
 /**
  * @api {post} /v4/post/:resource+/?query=params Create
@@ -41,6 +43,9 @@ router.post(`/${api.v4}/post/:resource+/`, Auth, async (ctx) => {
     throw new BadRequest([{ id: "Invalid" }]);
   }
   ctx.body = entity[0];
+  // console.log('dispatcher.emit("message", ctx.body);');
+  // dispatcher.emit("message", ctx.body);
+  // ctx.sse.send("new message");
 });
 
 module.exports = router;

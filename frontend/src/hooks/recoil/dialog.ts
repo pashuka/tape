@@ -11,6 +11,10 @@ export type DialogProfileType = {
   description?: string;
 };
 
+export type DialogSettingsType = {
+  mute?: boolean;
+};
+
 export type DialogType = {
   id: DialogIdType;
   dialog_type: 'direct' | 'group';
@@ -19,7 +23,9 @@ export type DialogType = {
   last_message_created_at: string;
   last_message_owner: string;
   profile: DialogProfileType;
-  participants: string[];
+  settings: DialogSettingsType;
+  unread_count: number;
+  unread_cursor: number;
 };
 
 export function instanceOfDialog(o: any): o is DialogType {
@@ -88,21 +94,5 @@ export const getDialog = Recoil.selectorFamily<
     return dialogID
       ? get(dialogsState).find(({ id }) => id.toString() === dialogID)
       : undefined;
-  },
-});
-
-export const DialogsFilter = Recoil.selector({
-  key: 'DialogsFilter',
-  get: ({ get }) => {
-    // const query = get(searchQueryAtom);
-    // const records = get(DialogsState);
-    // return query.length && records
-    //   ? records
-    //       .filter(({ participants }) =>
-    //         participants.find((_) => _.includes(query)),
-    //       )
-    //       .slice(0, limitSearchMax)
-    //   : ([] as DialogType[]);
-    return [] as DialogType[];
   },
 });

@@ -110,9 +110,11 @@ const CardBasic = ({
             <div className="small text-muted text-truncate text-left mr-auto">
               {dialog.last_message_body || '...'}
             </div>
-            {/* <div className="badge badge-pill badge-primary ml-3">
-                  {compactNumber(9)}
-                </div> */}
+            {dialog.unread_count > 0 && (
+              <div className="badge badge-pill badge-primary ml-3">
+                {dialog.unread_count}
+              </div>
+            )}
           </div>
         )}
       </div>

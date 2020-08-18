@@ -36,6 +36,7 @@ class model extends Repository {
     }
     return knex(this.table)
       .select(allowed.select.map((c) => `${this.table}.${c}`))
+      .select(["settings", "unread_count", "unread_cursor"].map((c) => `${tables.members}.${c}`))
       .select({ last_message_owner: `${tables.users}.username` })
       .leftJoin(tables.members, `${this.table}.id`, `${tables.members}.dialog_id`)
       .leftJoin(tables.users, `${this.table}.last_message_owner_id`, `${tables.users}.id`)

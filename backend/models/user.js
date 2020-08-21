@@ -89,6 +89,14 @@ class model extends Repository {
     }
   }
 
+  insert(values) {
+    return;
+  }
+
+  update(conditions, values) {
+    return;
+  }
+
   /**
    * Sign Up
    * @param {object} first param
@@ -133,7 +141,7 @@ class model extends Repository {
 
     // TODO: check if email not confirmed, send activation link again
     // TODO: some other checks
-    let entity = await this.insert(
+    let entity = await super.insert(
       {
         username,
         realname: username,

@@ -7,6 +7,8 @@ export const request = <T>(
       headers: new Headers({
         Accept: 'application/json',
         'Content-Type': 'application/json',
+        'Client-Type': 'browser',
+        'Client-Version': process.env.REACT_APP_VERSION || 'undefined',
       }),
       ...init,
     })

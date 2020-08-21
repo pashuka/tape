@@ -168,14 +168,4 @@ module.exports = class Repository {
       .update(this.filterBeforeSendToKnex(values, (_) => allowed.update.includes(_)))
       .returning(allowed.select);
   }
-
-  /**
-   * Increment column
-   * @param {number} conditions - query object conditions
-   * @param {object} values - data to update
-   */
-  increment(conditions, column = "counter", amount = 1, allowed = this.allowed) {
-    allowed = Object.assign({}, this.allowed, allowed);
-    return knex(this.table).where(conditions).increment(column, amount).returning(allowed.select);
-  }
 };

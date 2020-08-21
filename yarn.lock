@@ -1859,6 +1859,11 @@
   resolved "https://registry.yarnpkg.com/@types/events/-/events-3.0.0.tgz#2862f3f58a9a7f7c3e78d79f130dd4d71c25c2a7"
   integrity sha512-EaObqwIvayI5a8dCzhFrjKzVwKLxjoG9T6Ppd5CEo07LRKfQ8Yokw54r5+Wq7FaBQ+yXRvQAYPrHwya1/UFt9g==
 
+"@types/eventsource@^1.1.3":
+  version "1.1.3"
+  resolved "https://registry.yarnpkg.com/@types/eventsource/-/eventsource-1.1.3.tgz#bdecab7f40665b54e4631a786a91c016f8729072"
+  integrity sha512-mPmNy7TQLNHTCttqgKusHNvkwG34ulsZESF2HXUEkLqUofIMy+i8tgbQkuAW86ScjP1ikWM755Pb/rJ9dPM6HA==
+
 "@types/express-serve-static-core@*":
   version "4.17.9"
   resolved "https://registry.yarnpkg.com/@types/express-serve-static-core/-/express-serve-static-core-4.17.9.tgz#2d7b34dcfd25ec663c25c85d76608f8b249667f1"
@@ -7362,6 +7367,11 @@ http-errors@~1.6.2:
     inherits "2.0.3"
     setprototypeof "1.1.0"
     statuses ">= 1.4.0 < 2"
+
+http-event-stream@^0.2.0:
+  version "0.2.0"
+  resolved "https://registry.yarnpkg.com/http-event-stream/-/http-event-stream-0.2.0.tgz#235856fe58bda005ba0bb74c412ef34bda2cbe8b"
+  integrity sha512-gk7/tj887DXFixfgHHzkDATnpqVKNuekt2M82w/+N6shK6FX7EVMUoSia2NkUg9gabp2DM3/dnFCuGw2NV6c/Q==
 
 http-parser-js@>=0.5.1:
   version "0.5.2"

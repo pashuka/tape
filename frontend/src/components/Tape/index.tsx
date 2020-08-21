@@ -45,6 +45,10 @@ const Messenger = ({ tab, route }: PropsType) => {
 
   const { params } = useRouteMatch<QSParamsType>();
 
+  const [eventSource, setEventSource] = React.useState<
+    EventSource | undefined
+  >();
+
   // TODO: slicing dialog items in sidebar using scrollTop/Bottom variables
   // TODO: onSelect dialog scroll sidebar visible part to see selected dialog item
   const handleScroll = (e: React.UIEvent<HTMLElement>) => {
@@ -62,13 +66,9 @@ const Messenger = ({ tab, route }: PropsType) => {
   // The second argument is an array of values (usually props).
   // When it's an empty list, the callback will only be fired once, similar to componentDidMount.
   React.useEffect(() => {
-    const eventSource = new EventSource(
-      getRoute('?' + routes.events + '=subscribe'),
-      { withCredentials: true },
+    setEventSource(
+      new EventSource(getRoute(routes.events), { withCredentials: true }),
     );
-    eventSource.onmessage = (es) => {
-      // console.log('message', es);
-    };
 
     // Set specifics to messenger css styles
     document.body.style.height = '100%';
@@ -85,6 +85,8 @@ const Messenger = ({ tab, route }: PropsType) => {
       // Unset specifics to messenger css styles
       document.body.style.height = '';
       document.documentElement.style.height = '';
+
+      eventSource?.close();
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -94,6 +96,13 @@ const Messenger = ({ tab, route }: PropsType) => {
     resetMessagesOffset();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [params]);
+
+  React.useEffect(() => {
+    eventSource?.addEventListener('message', (ev: MessageEvent) => {
+      console.log(ev.data);
+      console.dir(ev);
+    });
+  }, [eventSource]);
 
   let sidebarComponent = null;
   let mainComponent = null;

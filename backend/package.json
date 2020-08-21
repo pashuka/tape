@@ -22,6 +22,7 @@
     "gulp": "^4.0.2",
     "gulp-livereload": "^4.0.1",
     "gulp-nodemon": "^2.4.2",
+    "http-event-stream": "^0.2.0",
     "knex": "^0.19.1",
     "koa": "^2.7.0",
     "koa-body": "^4.1.0",
@@ -56,7 +57,9 @@
     "dev": "NODE_ENV=development gulp",
     "prod": "NODE_ENV=production node server.js",
     "migrate:dev": "NODE_ENV=development knex migrate:latest",
-    "specs": "npx jest"
+    "specs": "npx jest",
+    "redis-start": "brew services start redis",
+    "redis-stop": "brew services stop redis"
   },
   "jest": {
     "globals": {

@@ -66,6 +66,7 @@ const Messenger = ({ tab, route }: PropsType) => {
   // The second argument is an array of values (usually props).
   // When it's an empty list, the callback will only be fired once, similar to componentDidMount.
   React.useEffect(() => {
+    // TODO: add client version headers
     setEventSource(
       new EventSource(getRoute(routes.events), { withCredentials: true }),
     );

@@ -19,6 +19,13 @@ const lengths = {
 
 const dialogTypes = ["direct", "group", "channel"];
 
+const tapeEvents = {
+  message: "new-message",
+  online: "online",
+  offline: "offline",
+  typing: "typing",
+};
+
 const coreUser = { id: 0, email: "core@email" };
 
 const api = {
@@ -106,4 +113,5 @@ module.exports = {
   grants,
   lengths,
   dialogTypes,
+  tapeEvents,
 };

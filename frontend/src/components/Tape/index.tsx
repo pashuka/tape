@@ -8,17 +8,12 @@ import ParticipantsBar from './sidebar/participants';
 import SettingsBar from './sidebar/settings';
 import Chat from './chat/index';
 import useUserAgent from '../../hooks/useUserAgent';
-import {
-  QSParamsType,
-  ParamsKeyUser,
-  ParamsKeyDialog,
-  getRoute,
-  routes,
-} from '../../constants';
+import { QSParamsType, ParamsKeyUser, ParamsKeyDialog } from '../../constants';
 import { MessengerAtom } from '../../hooks/recoil/messenger';
 import { currentDialogIdState } from '../../hooks/recoil/dialog';
 import SettingsContent from './settings/index';
 import { messagesOffsetAtom } from '../../hooks/recoil/message';
+import { useTapeEvents } from '../../hooks/recoil/events';
 
 export enum TabEnum {
   Dialogs,
@@ -39,15 +34,12 @@ const Messenger = ({ tab, route }: PropsType) => {
   );
   const refNavbar = React.createRef<HTMLDivElement>();
 
+  const [tapeEvents, tapeEventsStatus] = useTapeEvents();
   const [messenger] = useRecoilState(MessengerAtom);
   const setDialogId = useSetRecoilState(currentDialogIdState);
   const resetMessagesOffset = useResetRecoilState(messagesOffsetAtom);
 
   const { params } = useRouteMatch<QSParamsType>();
-
-  const [eventSource, setEventSource] = React.useState<
-    EventSource | undefined
-  >();
 
   // TODO: slicing dialog items in sidebar using scrollTop/Bottom variables
   // TODO: onSelect dialog scroll sidebar visible part to see selected dialog item
@@ -66,11 +58,6 @@ const Messenger = ({ tab, route }: PropsType) => {
   // The second argument is an array of values (usually props).
   // When it's an empty list, the callback will only be fired once, similar to componentDidMount.
   React.useEffect(() => {
-    // TODO: add client version headers
-    setEventSource(
-      new EventSource(getRoute(routes.events), { withCredentials: true }),
-    );
-
     // Set specifics to messenger css styles
     document.body.style.height = '100%';
     document.documentElement.style.height = '100%';
@@ -86,8 +73,6 @@ const Messenger = ({ tab, route }: PropsType) => {
       // Unset specifics to messenger css styles
       document.body.style.height = '';
       document.documentElement.style.height = '';
-
-      eventSource?.close();
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -97,13 +82,6 @@ const Messenger = ({ tab, route }: PropsType) => {
     resetMessagesOffset();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [params]);
-
-  React.useEffect(() => {
-    eventSource?.addEventListener('message', (ev: MessageEvent) => {
-      console.log(ev.data);
-      console.dir(ev);
-    });
-  }, [eventSource]);
 
   let sidebarComponent = null;
   let mainComponent = null;

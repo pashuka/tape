@@ -23,6 +23,7 @@
     "gulp-livereload": "^4.0.1",
     "gulp-nodemon": "^2.4.2",
     "http-event-stream": "^0.2.0",
+    "ioredis": "^4.17.3",
     "knex": "^0.19.1",
     "koa": "^2.7.0",
     "koa-body": "^4.1.0",

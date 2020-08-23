@@ -36,9 +36,9 @@ const Footer = () => {
   );
   React.useEffect(() => {
     if (!isPending && data) {
-      resetMessages();
-      resetMessagesOffset();
-      resetDialogs();
+      // resetMessages();
+      // resetMessagesOffset();
+      // resetDialogs();
       if (params[ParamsKeyUser]) {
         history.push(`/${routes.tape}/${routes.dialogs}/${data.dialog_id}/`);
       }

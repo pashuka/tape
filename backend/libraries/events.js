@@ -1,6 +1,9 @@
 const { streamEvents } = require("http-event-stream");
 const uuid = require("uuid");
-// const events = require("./some-event-emitter");
+const { subscriber } = require("./ioredis");
+const knex = require("./knex");
+const { tryParseJSON } = require("./utils");
+const { tapeEvents, tables } = require("../constants");
 
 const streamTapeEvents = (req, res) => {
   const fetchEventsSince = async (lastEventId) => {
@@ -13,29 +16,34 @@ const streamTapeEvents = (req, res) => {
       // This method is mandatory to replay missed events after a re-connect
       return fetchEventsSince(lastEventId);
     },
-    stream(stream) {
-      const listener = (counter = 0) => {
-        stream.sendEvent({
+    stream(streamContext) {
+      const listener = (event, data) => {
+        streamContext.sendEvent({
           id: uuid.v4(),
-          event: "message",
-          data: JSON.stringify({
-            counter,
-            now: new Date().toISOString(),
-          }),
+          event,
+          data,
         });
       };
+      subscriber.on("message", async (channel, message) => {
+        const data = tryParseJSON(message);
+        switch (channel) {
+          case tapeEvents.message:
+            const user_id = req.user.id;
+            const { dialog_id } = data;
+            const isMember = await knex(tables.members)
+              .select("dialog_id")
+              .where({ dialog_id, user_id })
+              .first();
+            if (isMember) {
+              listener(channel, message);
+            }
+            break;
 
-      // Subscribe to some sample event emitter
-      // events.addEventListener("data", listener);
-      let counter = 100;
-      const t = setInterval(() => {
-        listener(counter);
-        counter--;
-        if (counter === 0) {
-          clearInterval(t);
+          default:
+            break;
         }
-      }, 200);
-      // listener(1);
+      });
+
       // Return an unsubscribe function, so the stream can be terminated properly
       const unsubscribe = () => {
         // events.removeEventListener("data", listener);

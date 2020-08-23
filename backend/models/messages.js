@@ -1,6 +1,6 @@
 const validator = require("validator");
 const knex = require("../libraries/knex");
-const { tables, lengths } = require("../constants");
+const { tables, lengths, tapeEvents } = require("../constants");
 const Repository = require("./repository");
 const { BadRequest } = require("../libraries/error");
 const allowed = {
@@ -10,6 +10,7 @@ const allowed = {
   insert: ["dialog_id", "owner_id", "body"],
   update: ["owner_id", "body"],
 };
+const { subscriber, publisher } = require("../libraries/ioredis");
 
 class model extends Repository {
   async findMany(conditions) {
@@ -128,7 +129,11 @@ class model extends Repository {
       throw new BadRequest([{ values: "Bad command" }]);
     }
 
-    return super.insert({ dialog_id, body: message, owner_id: this.user.id });
+    const result = await super.insert({ dialog_id, body: message, owner_id: this.user.id });
+    if (result) {
+      publisher.publish(tapeEvents.message, JSON.stringify(result[0]));
+      return result;
+    }
   }
 
   update(conditions, values) {

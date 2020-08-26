@@ -18,7 +18,7 @@ import { getDialog, instanceOfDialog } from '../../../hooks/recoil/dialog';
 const Chat = () => {
   const { params } = useRouteMatch<QSParamsType>();
   const iam = useRecoilValue(authState);
-  const { state, contents: dialog } = useRecoilValueLoadable(
+  const { state, contents } = useRecoilValueLoadable(
     getDialog(params[ParamsKeyDialog]),
   );
 
@@ -34,8 +34,8 @@ const Chat = () => {
       <div className="chat-body bg-white">
         <Header
           dialog={
-            state === 'hasValue' && instanceOfDialog(dialog)
-              ? dialog
+            state === 'hasValue' && instanceOfDialog(contents)
+              ? contents
               : undefined
           }
           // username={params[ParamsKeyUser]}

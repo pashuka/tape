@@ -1,14 +1,14 @@
 import React from 'react';
 
 import { MessageType } from '../../../../hooks/recoil/message';
-import { UserType } from '../../../../hooks/recoil/user';
+import { UserNameType } from '../../../../hooks/recoil/user';
 import MessageRight from './messageright';
 import MessageLeft from './messageleft';
 import Day from '../day';
 
 type PropsType = {
   messages: MessageType[];
-  iam: UserType;
+  iam: UserNameType;
 };
 
 const Messages = ({ messages, iam }: PropsType) => {
@@ -19,7 +19,7 @@ const Messages = ({ messages, iam }: PropsType) => {
         const { owner, created_at } = _;
         const message =
           iam.username === owner ? (
-            <MessageRight user={iam} data={_} />
+            <MessageRight iam={iam} data={_} />
           ) : (
             <MessageLeft data={_} />
           );

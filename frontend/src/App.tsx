@@ -42,9 +42,10 @@ const App = () => {
   const { state, contents } = useRecoilValueLoadable(authState);
   const isAuthorized = state === 'hasValue' && instanceOfUser(contents);
 
-  if (state === 'loading' || contents === undefined) {
+  if (state === 'loading') {
     return <Overlay />;
   }
+
   return (
     <ErrorBoundary>
       <BrowserRouter>

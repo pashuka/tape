@@ -7,12 +7,12 @@ import {
   MessageType,
 } from '../../../hooks/recoil/message';
 import Messages from './message';
-import { UserType } from '../../../hooks/recoil/user';
+import { UserNameType } from '../../../hooks/recoil/user';
 import Overlay from '../../Overlay';
 import { limitFetchMax } from '../../../hooks/recoil/constants';
 
 type ContentPropsType = {
-  iam: UserType;
+  iam: UserNameType;
 };
 
 const Content = ({ iam }: ContentPropsType) => {

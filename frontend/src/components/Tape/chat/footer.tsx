@@ -84,7 +84,7 @@ const Footer = () => {
 
   return (
     <div className="chat-footer bg-light py-2 py-lg-3 px-2 px-lg-4">
-      <div className="container-xxl">
+      <div className="">
         <div className="form-row align-items-center">
           <div className="col">
             <div className="input-group">

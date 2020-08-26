@@ -21,6 +21,7 @@ type PropsType = {
   size?: iconSizeType;
   color?: string;
   group?: boolean;
+  styles?: string;
 };
 
 const Avatar = ({
@@ -31,9 +32,10 @@ const Avatar = ({
   size,
   color,
   group,
+  styles = '',
 }: PropsType) => {
   return (
-    <div className={`card-avatar ${online ? 'online' : ''}`}>
+    <div className={`card-avatar ${online ? 'online' : ''} ${styles}`}>
       {pending ? (
         <Skeleton
           width={size ? iconSize[size] + 'px' : '48px'}

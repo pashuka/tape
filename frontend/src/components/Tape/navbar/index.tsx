@@ -3,7 +3,7 @@ import ISettings from '@material-ui/icons/Settings';
 import IChat from '@material-ui/icons/Chat';
 import IPeople from '@material-ui/icons/People';
 import IMeetingRoom from '@material-ui/icons/MeetingRoom';
-import { useRecoilValue } from 'recoil';
+import { useRecoilValue, useRecoilValueLoadable } from 'recoil';
 
 import { Link, useLocation } from 'react-router-dom';
 import { routes, getRoute } from '../../../constants';
@@ -11,6 +11,7 @@ import { useResetRecoilState } from 'recoil';
 import { authState } from '../../../hooks/recoil/auth';
 import { request } from '../../../hooks/recoil/request';
 import Avatar from '../components/avatar';
+import { userInfoQuery, instanceOfUser } from '../../../hooks/recoil/user';
 
 const iconSize = '24px';
 
@@ -57,6 +58,9 @@ const navItems: NavItemPropsType[] = [
 const Navbar = () => {
   const [reset, setReset] = React.useState(false);
   const iam = useRecoilValue(authState);
+  const { state, contents } = useRecoilValueLoadable(
+    userInfoQuery({ username: iam?.username || '' }),
+  );
   const resetAuth = useResetRecoilState(authState);
   const { pathname } = useLocation();
 
@@ -72,7 +76,6 @@ const Navbar = () => {
       );
       if ('status' in result && result.status === 'ok') {
         resetAuth();
-        // TODO: deal with reset recoil SM atoms/selectors
         window.location.reload();
       }
     };
@@ -91,7 +94,8 @@ const Navbar = () => {
           to={`/${routes.tape}/${routes.settings.profile}/`}
         >
           <Avatar
-            picture={iam?.profile?.picture}
+            pending={state === 'loading'}
+            picture={instanceOfUser(contents) ? contents.profile.picture : ''}
             size="xs"
             color="text-muted"
           />

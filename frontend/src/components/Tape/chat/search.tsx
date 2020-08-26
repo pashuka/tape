@@ -1,9 +1,9 @@
-import React from "react";
+import React from 'react';
 
 const Chat = () => {
   return (
     <div className="collapse border-bottom px-lg-8">
-      <div className="container-xxl py-4 py-lg-6">
+      <div className="py-4 py-lg-6">
         <div className="input-group">
           <input
             type="text"
@@ -13,7 +13,10 @@ const Chat = () => {
           />
 
           <div className="input-group-append">
-            <button className="btn btn-lg btn-ico btn-secondary btn-minimal" type="submit">
+            <button
+              className="btn btn-lg btn-ico btn-secondary btn-minimal"
+              type="submit"
+            >
               <i className="fe-search"></i>
             </button>
           </div>

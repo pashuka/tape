@@ -17,7 +17,7 @@ const Header = ({ title }: PropsType) => {
 
   return (
     <div className="chat-header bg-light py-2 py-lg-3 px-2 px-lg-4">
-      <div className="container-xxl">
+      <div className="">
         <div className="row align-items-center">
           <div className="col-2 d-xl-none">
             <ul className="list-inline mb-0">

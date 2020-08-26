@@ -42,7 +42,6 @@ const Messenger = ({ tab, route }: PropsType) => {
 
   const { params } = useRouteMatch<QSParamsType>();
 
-  // TODO: slicing dialog items in sidebar using scrollTop/Bottom variables
   // TODO: onSelect dialog scroll sidebar visible part to see selected dialog item
   const handleScroll = (e: React.UIEvent<HTMLElement>) => {
     const el = e.currentTarget;

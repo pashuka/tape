@@ -6,7 +6,7 @@ const { model } = require("../../libraries/utils");
 const { coreUser, api, resources, lengths } = require("../../constants");
 const { BadRequest, Unauthorized, NotFound } = require("../../libraries/error");
 const Auth = require("../../middlewares/auth");
-const publicUserObject = ({ username, realname, profile }) => ({ username, realname, profile });
+const publicUserObject = ({ username, realname, profile }) => ({ username });
 
 router
   /**

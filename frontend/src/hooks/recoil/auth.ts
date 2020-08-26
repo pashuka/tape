@@ -1,5 +1,5 @@
 import Recoil from 'recoil';
-import { UserType, instanceOfUser } from './user';
+import { instanceOfUser, UserNameType } from './user';
 import { request } from './request';
 import { routes, getRoute } from '../../constants';
 import { dialogsState, dialogsOffsetAtom } from './dialog';
@@ -11,16 +11,17 @@ const atomTrigger = Recoil.atom({
   default: 0,
 });
 
-export const authState = Recoil.selector<UserType | undefined>({
+export const authState = Recoil.selector<UserNameType | undefined>({
   key: 'authState',
   get: async ({ get }) => {
     get(atomTrigger);
-    return await request<UserType>(getRoute(routes.auth.status)).then(
-      (data) => data,
+    const iam = await request<UserNameType>(getRoute(routes.auth.status)).then(
+      (data) => (instanceOfUser(data) ? data : undefined),
       (reason) => {
         return reason;
       },
     );
+    return iam;
   },
   set: ({ set, reset }, value) => {
     if (value instanceof Recoil.DefaultValue || instanceOfUser(value)) {

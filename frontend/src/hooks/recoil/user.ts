@@ -39,18 +39,20 @@ export const userInfoQuery = Recoil.selectorFamily<
   key: 'userInfoQuery',
   get: ({ username, withDialog }) => async ({ get }) => {
     get(atomTrigger(username)); // 'register' as a resetable dependency
-    return await request<UserType | MemberType>(
-      getRoute(
-        `get/${routes.user}/?username=${String(username)}${
-          withDialog ? '&withDialog=true' : ''
-        }`,
-      ),
-    ).then(
-      (data) => (instanceOfUser(data) ? data : undefined),
-      (reason) => {
-        throw reason;
-      },
-    );
+    return username.length
+      ? await request<UserType | MemberType>(
+          getRoute(
+            `get/${routes.user}/?username=${String(username)}${
+              withDialog ? '&withDialog=true' : ''
+            }`,
+          ),
+        ).then(
+          (data) => (instanceOfUser(data) ? data : undefined),
+          (reason) => {
+            throw reason;
+          },
+        )
+      : undefined;
   },
   set: ({ username, withDialog }) => ({ set }, value) => {
     if (value instanceof Recoil.DefaultValue) {

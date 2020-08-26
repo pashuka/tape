@@ -5,11 +5,6 @@ import { DialogIdType } from './dialog';
 import { UserType } from './user';
 import { limitFetchMax } from './constants';
 
-type MemberParamsType = {
-  dialog_id?: number;
-  offset?: number;
-};
-
 export type MemberType = UserType & {
   dialog_id: DialogIdType;
 };
@@ -57,30 +52,5 @@ export const membersState = Recoil.selector<MemberType[]>({
     if (value instanceof Recoil.DefaultValue) {
       set(atomTrigger, (v) => v + 1);
     }
-  },
-});
-
-export const membersByDialog = Recoil.selectorFamily<
-  MemberType[] | undefined,
-  MemberParamsType
->({
-  key: 'membersByDialog',
-  get: ({ dialog_id, offset }) => async () => {
-    return await request<MemberType[]>(
-      getRoute(
-        `find/${routes.members}/?dialog_id=${dialog_id}&offset=${offset}`,
-      ),
-    ).then(
-      (data) => data,
-      (reason) => {
-        throw reason;
-      },
-    );
-  },
-  set: (params) => ({ set }, value) => {
-    if (value instanceof Recoil.DefaultValue) {
-      set(atomTrigger, (v) => v + 1);
-    }
-    console.log('newValue', value);
   },
 });

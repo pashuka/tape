@@ -2,6 +2,7 @@ import Recoil from 'recoil';
 import { request } from './request';
 import { routes, getRoute } from '../../constants';
 import { limitFetchMax } from './constants';
+import { UserNameType } from './user';
 
 export declare type DialogIdType = number;
 
@@ -29,7 +30,7 @@ export type DialogType = {
 };
 
 export function instanceOfDialog(o: any): o is DialogType {
-  return o && 'id' in o;
+  return o && 'id' in o && 'dialog_type' in o;
 }
 
 export const currentDialogIdState = Recoil.atom<string | undefined>({
@@ -94,5 +95,35 @@ export const getDialog = Recoil.selectorFamily<
     return dialogID
       ? get(dialogsState).find(({ id }) => id.toString() === dialogID)
       : undefined;
+  },
+});
+
+type dialogMembersType = {
+  dialog_id: DialogIdType;
+  offset: number;
+};
+
+export const dialogMembersSelector = Recoil.selectorFamily<
+  UserNameType[] | undefined,
+  dialogMembersType
+>({
+  key: 'dialogMembersSelector',
+  get: ({ dialog_id, offset }) => async ({ get }) => {
+    get(atomTrigger); // 'register' as a resetable dependency
+    return await request<UserNameType[]>(
+      getRoute(
+        `find/${routes.members}/?dialog_id=${dialog_id}&offset=${offset}`,
+      ),
+    ).then(
+      (data) => data,
+      (reason) => {
+        throw reason;
+      },
+    );
+  },
+  set: () => ({ set }, value) => {
+    if (value instanceof Recoil.DefaultValue) {
+      set(atomTrigger, (v) => v + 1);
+    }
   },
 });

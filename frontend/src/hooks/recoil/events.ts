@@ -34,10 +34,8 @@ export function useTapeEvents(
   const resetMessagesOffset = Recoil.useResetRecoilState(messagesOffsetAtom);
   const resetDialogs = Recoil.useResetRecoilState(dialogsState);
   const resetUserInfo = Recoil.useRecoilCallback(
-    ({ set }) => async (user: UserType) => {
-      console.log('should reset', user);
-      set(userInfoQuery({ username: user.username }), user);
-      // snapshot.getPromise(userInfoQuery(username));
+    ({ reset }) => async (username: string) => {
+      reset(userInfoQuery({ username }));
     },
   );
 
@@ -66,7 +64,8 @@ export function useTapeEvents(
   const userInfoListener = function (ev: any) {
     const event = tryParseJSON(ev.data);
     if ('username' in event) {
-      resetUserInfo(event as UserType);
+      const user = event as UserType;
+      resetUserInfo(user.username);
     }
   };
 

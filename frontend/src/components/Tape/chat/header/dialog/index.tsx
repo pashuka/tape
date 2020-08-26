@@ -1,48 +1,55 @@
 import React from 'react';
-import { useRecoilValueLoadable } from 'recoil';
-
 import {
   DialogType,
   dialogMembersSelector,
 } from '../../../../../hooks/recoil/dialog';
-import CardDialogDirect from './direct';
+import dayjs from 'dayjs';
+import relativeTime from 'dayjs/plugin/relativeTime';
+import { useRecoilValueLoadable } from 'recoil';
 import { UserNameType } from '../../../../../hooks/recoil/user';
-import CardDialogGroup from './group';
+import HeaderDialogDirect from './direct';
+import HeaderDialogGroup from './group';
 
-type PropsType = {
+dayjs.extend(relativeTime);
+
+declare type PropsType = {
   dialog: DialogType;
 };
 
-const CardDialog = ({ dialog }: PropsType) => {
+const HeaderDialog = ({ dialog }: PropsType) => {
   const { state, contents } = useRecoilValueLoadable(
     dialogMembersSelector({ dialog_id: dialog.id, offset: 0 }),
   );
-
   const [members, setMembers] = React.useState<UserNameType[]>(
     [] as UserNameType[],
   );
+
   React.useEffect(() => {
     if (state === 'hasValue' && Array.isArray(contents)) {
       setMembers(contents);
     }
   }, [state, contents]);
 
+  let headerComponent = null;
+
   switch (dialog.dialog_type) {
     case 'direct':
       if (members.length) {
-        return (
-          <CardDialogDirect
+        headerComponent = (
+          <HeaderDialogDirect
             dialog={dialog}
             username={members.length ? members[0].username : ''}
           />
         );
       }
-      return null;
+      break;
     case 'group':
-      return <CardDialogGroup dialog={dialog} />;
+      headerComponent = <HeaderDialogGroup dialog={dialog} />;
+      break;
     default:
-      return null;
+      break;
   }
-};
 
-export default CardDialog;
+  return <div className="col-8 col-xl-8">{headerComponent}</div>;
+};
+export default HeaderDialog;

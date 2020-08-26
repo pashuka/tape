@@ -33,13 +33,12 @@ const Chat = () => {
     <div className="chat">
       <div className="chat-body bg-white">
         <Header
-          iam={iam}
           dialog={
             state === 'hasValue' && instanceOfDialog(dialog)
               ? dialog
               : undefined
           }
-          username={params[ParamsKeyUser]}
+          // username={params[ParamsKeyUser]}
         />
         <SearchBar />
         <Content iam={iam} />

@@ -2,30 +2,24 @@ import React from 'react';
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
 import IChevronLeft from '@material-ui/icons/ChevronLeft';
-import { useRecoilState, useRecoilValueLoadable } from 'recoil';
+import { useRecoilState } from 'recoil';
 
 import { Link } from 'react-router-dom';
 import { routes } from '../../../../constants';
-import Skeleton from '../../../Skeleton';
-import { DialogType, dialogsState } from '../../../../hooks/recoil/dialog';
+
+import { DialogType } from '../../../../hooks/recoil/dialog';
 import { MessengerAtom } from '../../../../hooks/recoil/messenger';
-import { UserType } from '../../../../hooks/recoil/user';
-import DialogHeader from './dialog';
-import UserHeader from './user';
+import HeaderDialog from './dialog';
 import SideBar from './sidebar';
 
 dayjs.extend(relativeTime);
 
 declare type HeaderPropsType = {
   dialog: DialogType | undefined;
-  iam: UserType;
-  username: string | undefined;
 };
 
-// TODO: split dialog header into user/group headers
-const Header = ({ dialog, iam, username }: HeaderPropsType) => {
+const Header = ({ dialog }: HeaderPropsType) => {
   const [messenger, setMessenger] = useRecoilState(MessengerAtom);
-  const { state } = useRecoilValueLoadable(dialogsState);
 
   return (
     <div className="chat-header bg-light py-2 py-lg-3 px-2 px-lg-4">
@@ -50,38 +44,8 @@ const Header = ({ dialog, iam, username }: HeaderPropsType) => {
               </li>
             </ul>
           </div>
-
-          <div className="col-8 col-xl-8">
-            <div className="media text-center text-xl-left">
-              <div className="d-none d-xl-inline-block text-center mr-3">
-                {state === 'loading' && <Skeleton roundedCircle />}
-                {/* {state === 'hasValue' && instanceOfUser(participant) && (
-                  <Avatar
-                    picture={participant.profile?.picture}
-                    realname={participant.realname}
-                    username={participant.username}
-                    size="md"
-                  />
-                )} */}
-              </div>
-              {state === 'loading' && (
-                <div className="media-body align-self-center text-truncate">
-                  <h6 className="mb-1">
-                    <Skeleton width="128px" />
-                  </h6>
-                  <small>
-                    <Skeleton width="256px" />
-                  </small>
-                </div>
-              )}
-              {username ? (
-                <UserHeader username={username} />
-              ) : (
-                dialog && <DialogHeader dialog={dialog} />
-              )}
-            </div>
-          </div>
-          <SideBar isPending={state === 'loading' || true} />
+          {dialog && <HeaderDialog dialog={dialog} />}
+          <SideBar isPending={true} />
         </div>
       </div>
     </div>

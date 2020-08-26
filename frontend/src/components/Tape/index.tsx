@@ -34,7 +34,8 @@ const Messenger = ({ tab, route }: PropsType) => {
   );
   const refNavbar = React.createRef<HTMLDivElement>();
 
-  const [tapeEvents, tapeEventsStatus] = useTapeEvents();
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [tapeEvents] = useTapeEvents();
   const [messenger] = useRecoilState(MessengerAtom);
   const setDialogId = useSetRecoilState(currentDialogIdState);
   const resetMessagesOffset = useResetRecoilState(messagesOffsetAtom);

@@ -1,15 +1,19 @@
 import { useEffect, useRef, useState } from 'react';
 import Recoil from 'recoil';
 import { routes, getRoute } from '../../constants';
-import { tryParseJSON } from '../../utils';
+// import { tryParseJSON } from '../../utils';
 import { messagesState, messagesOffsetAtom } from './message';
 import { dialogsState } from './dialog';
+import { userInfoQuery, UserType } from './user';
+import { tryParseJSON } from '../../utils';
 
+/*eslint no-useless-computed-key: "off"*/
 const tapeEvents = {
-  message: 'new-message',
-  online: 'online',
-  offline: 'offline',
-  typing: 'typing',
+  ['message-in-dialog']: 'message-in-dialog',
+  ['user-info-changed']: 'user-info-changed',
+  ['user-online']: 'user-online',
+  ['user-offline']: 'user-offline',
+  ['user-typing']: 'user-typing',
 };
 
 type EventSourceConstructor = {
@@ -29,6 +33,13 @@ export function useTapeEvents(
   const resetMessages = Recoil.useResetRecoilState(messagesState);
   const resetMessagesOffset = Recoil.useResetRecoilState(messagesOffsetAtom);
   const resetDialogs = Recoil.useResetRecoilState(dialogsState);
+  const resetUserInfo = Recoil.useRecoilCallback(
+    ({ set }) => async (user: UserType) => {
+      console.log('should reset', user);
+      set(userInfoQuery({ username: user.username }), user);
+      // snapshot.getPromise(userInfoQuery(username));
+    },
+  );
 
   useEffect(() => {
     // TODO: add client version headers
@@ -47,23 +58,40 @@ export function useTapeEvents(
   }, [EventSourceInstance]);
 
   const newMessageListener = function (ev: any) {
-    // const msg = tryParseJSON(ev.data);
-    // console.log('EventSource:', msg);
     resetMessages();
     resetMessagesOffset();
     resetDialogs();
   };
 
+  const userInfoListener = function (ev: any) {
+    const event = tryParseJSON(ev.data);
+    if ('username' in event) {
+      resetUserInfo(event as UserType);
+    }
+  };
+
   // Predefine processing tape events
   useEffect(() => {
-    source.current?.addEventListener(tapeEvents.message, newMessageListener);
+    source.current?.addEventListener(
+      tapeEvents['message-in-dialog'],
+      newMessageListener,
+    );
+    source.current?.addEventListener(
+      tapeEvents['user-info-changed'],
+      userInfoListener,
+    );
 
     return () => {
       source.current?.removeEventListener(
-        tapeEvents.message,
+        tapeEvents['message-in-dialog'],
         newMessageListener,
       );
+      source.current?.removeEventListener(
+        tapeEvents['user-info-changed'],
+        userInfoListener,
+      );
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [source]);
 
   return [source.current, status] as const;

@@ -9,23 +9,13 @@ import {
   getRoute,
 } from '../../../constants';
 import { useRouteMatch, useHistory } from 'react-router-dom';
-import {
-  MessageType,
-  messagesState,
-  messagesOffsetAtom,
-} from '../../../hooks/recoil/message';
-import { useResetRecoilState } from 'recoil';
-import { dialogsState } from '../../../hooks/recoil/dialog';
+import { MessageType } from '../../../hooks/recoil/message';
 
 const Footer = () => {
   const history = useHistory();
   const { params } = useRouteMatch<QSParamsType>();
   const [message, setMessage] = React.useState<string>('');
   const [isShiftEnter, setIsShiftEnter] = React.useState(false);
-
-  const resetMessages = useResetRecoilState(messagesState);
-  const resetMessagesOffset = useResetRecoilState(messagesOffsetAtom);
-  const resetDialogs = useResetRecoilState(dialogsState);
 
   const { data, isPending, run: sendMessage } = useFetch<MessageType>(
     getRoute(`post/${routes.messages}/`),
@@ -36,9 +26,6 @@ const Footer = () => {
   );
   React.useEffect(() => {
     if (!isPending && data) {
-      // resetMessages();
-      // resetMessagesOffset();
-      // resetDialogs();
       if (params[ParamsKeyUser]) {
         history.push(`/${routes.tape}/${routes.dialogs}/${data.dialog_id}/`);
       }

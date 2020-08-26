@@ -34,8 +34,6 @@ const getMemberAvatar = (
   <Avatar
     active={active}
     picture={m?.profile?.picture}
-    realname={m?.realname}
-    username={m?.username}
     size={avaSize || 'md'}
   />
 );

@@ -3,7 +3,7 @@ import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
 
 import { DialogType } from '../../../../../hooks/recoil/dialog';
-import Avatar2 from '../../../components/avatar2';
+import Avatar from '../../../components/avatar';
 
 dayjs.extend(relativeTime);
 
@@ -17,7 +17,7 @@ const HeaderDialogGroup = ({ dialog }: PropsType) => {
   return (
     <div className="media text-center text-xl-left">
       <div className="d-none d-xl-inline-block text-center mr-3">
-        <Avatar2 picture={dialog.profile.picture} size="md" group={true} />
+        <Avatar picture={dialog.profile.picture} size="md" group={true} />
       </div>
       <div className="media-body align-self-center text-truncate">
         <h6 className="text-truncate m-0">{title}</h6>

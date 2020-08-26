@@ -92,8 +92,6 @@ const Navbar = () => {
         >
           <Avatar
             picture={iam?.profile?.picture}
-            realname={iam?.realname}
-            username={iam?.username}
             size="xs"
             color="text-muted"
           />

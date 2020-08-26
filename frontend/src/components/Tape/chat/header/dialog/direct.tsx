@@ -7,7 +7,7 @@ import {
   instanceOfUser,
   userInfoQuery,
 } from '../../../../../hooks/recoil/user';
-import Avatar2 from '../../../components/avatar2';
+import Avatar from '../../../components/avatar';
 import Skeleton from '../../../../Skeleton';
 
 dayjs.extend(relativeTime);
@@ -33,7 +33,7 @@ const HeaderDialogDirect = ({ dialog, username }: PropsType) => {
   return (
     <div className="media text-center text-xl-left">
       <div className="d-none d-xl-inline-block text-center mr-3">
-        <Avatar2
+        <Avatar
           pending={state === 'loading'}
           picture={instanceOfUser(contents) ? contents.profile?.picture : ''}
           size="md"

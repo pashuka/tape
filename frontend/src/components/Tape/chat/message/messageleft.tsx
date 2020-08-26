@@ -38,8 +38,6 @@ const MessageLeft = ({
         <Avatar
           pending={state === 'loading'}
           picture={member?.profile?.picture}
-          realname={member?.realname}
-          username={member?.username}
           size="sm"
         />
       </a>

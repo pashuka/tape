@@ -18,8 +18,6 @@ type PropsType = {
   active?: boolean;
   online?: boolean;
   picture?: string;
-  realname?: string;
-  username?: string;
   size?: iconSizeType;
   color?: string;
   group?: boolean;
@@ -30,8 +28,6 @@ const Avatar = ({
   active,
   online,
   picture,
-  realname,
-  username,
   size,
   color,
   group,
@@ -47,8 +43,10 @@ const Avatar = ({
       ) : picture ? (
         <img
           className="rounded-circle"
-          src={`${process.env.REACT_APP_IMG_HOST}/${routes.user}/thumb-${picture}`}
-          alt={realname || username}
+          src={`${process.env.REACT_APP_IMG_HOST}/${
+            group ? routes.dialogs : routes.user
+          }/${size === 'lg' ? '' : 'thumb-'}${picture}`}
+          alt="ava"
           width={size ? iconSize[size] : iconSize['md']}
           height={size ? iconSize[size] : iconSize['md']}
         />

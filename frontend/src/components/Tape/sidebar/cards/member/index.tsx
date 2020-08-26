@@ -44,8 +44,6 @@ const CardMember = ({ username, route }: PropsType) => {
       <Avatar
         pending={state === 'loading'}
         picture={record?.profile?.picture}
-        realname={record?.realname}
-        username={record?.username}
         size="md"
       />
 

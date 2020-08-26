@@ -34,8 +34,6 @@ const CardLoadable = ({
         <Avatar
           active={active}
           picture={contents.profile?.picture}
-          realname={contents.realname}
-          username={contents.username}
           size={avaSize || 'md'}
         />
       )}

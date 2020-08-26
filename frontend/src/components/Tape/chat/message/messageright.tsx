@@ -20,12 +20,7 @@ const MessageRight = ({
 }: MessageRightPropsType) => (
   <div className="message message-right">
     <div className="message-avatar ml-2 ml-lg-4 d-none d-lg-block">
-      <Avatar
-        picture={user.profile?.picture}
-        realname={user.realname}
-        username={user.username}
-        size="sm"
-      />
+      <Avatar picture={user.profile?.picture} size="sm" />
     </div>
 
     <div className="message-body">

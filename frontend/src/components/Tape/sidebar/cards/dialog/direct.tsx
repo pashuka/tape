@@ -15,7 +15,7 @@ import {
   instanceOfUser,
   userInfoQuery,
 } from '../../../../../hooks/recoil/user';
-import Avatar2 from '../../../components/avatar2';
+import Avatar from '../../../components/avatar';
 import Skeleton from '../../../../Skeleton';
 
 dayjs.extend(isToday);
@@ -50,7 +50,7 @@ const CardDialogDirect = ({ dialog, username }: PropsType) => {
       active={active}
       to={`/${routes.tape}/${routes.dialogs}/${dialog.id}`}
     >
-      <Avatar2
+      <Avatar
         active={active}
         pending={state === 'loading'}
         picture={instanceOfUser(contents) ? contents.profile?.picture : ''}

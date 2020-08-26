@@ -10,7 +10,7 @@ const allowed = {
   insert: ["dialog_id", "owner_id", "body"],
   update: ["owner_id", "body"],
 };
-const { subscriber, publisher } = require("../libraries/ioredis");
+const { publisher } = require("../libraries/ioredis");
 
 class model extends Repository {
   async findMany(conditions) {
@@ -131,7 +131,7 @@ class model extends Repository {
 
     const result = await super.insert({ dialog_id, body: message, owner_id: this.user.id });
     if (result) {
-      publisher.publish(tapeEvents.message, JSON.stringify(result[0]));
+      publisher.publish(tapeEvents["message-in-dialog"], JSON.stringify(result[0]));
       return result;
     }
   }

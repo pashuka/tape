@@ -5,11 +5,12 @@ const validator = require("validator");
 
 const config = require("../.env");
 const { BadRequest, NotFound } = require("../libraries/error");
-const { resources, lengths } = require("../constants");
+const { resources, lengths, tapeEvents } = require("../constants");
 const { tables } = require("../constants");
 const Repository = require("./repository");
 const Mailer = require("../libraries/nodemailer");
 const locales = require("../../frontend/src/locales.json");
+const { publisher } = require("../libraries/ioredis");
 
 const allowed = {
   conditions: ["username", "email"],
@@ -29,6 +30,10 @@ class model extends Repository {
     }
   }
 
+  /**
+   *
+   * @param {object}
+   */
   findMany({ query }) {
     if (typeof query === "string" && query.length > 0 && query.length < 256) {
       return knex(this.table)
@@ -47,6 +52,10 @@ class model extends Repository {
     }
   }
 
+  /**
+   *
+   * @param {object}
+   */
   async findOne(conditions, allowed) {
     const { username, email, withDialog } = conditions;
     if (username && typeof username !== "string") {
@@ -89,10 +98,18 @@ class model extends Repository {
     }
   }
 
+  /**
+   *
+   * @param {object}
+   */
   insert(values) {
     return;
   }
 
+  /**
+   *
+   * @param {object}
+   */
   update(conditions, values) {
     return;
   }
@@ -276,9 +293,21 @@ class model extends Repository {
     }
     if (keys.includes("email")) {
     }
-    return super.update(conditions, values);
+
+    const result = await super.update(conditions, values);
+    if (result) {
+      if (["username", "realname", "profile"].find((_) => _ in values)) {
+        publisher.publish(tapeEvents["user-info-changed"], JSON.stringify(result[0]));
+      }
+
+      return result;
+    }
   }
 
+  /**
+   *
+   * @param {object}
+   */
   async forgot(conditions) {
     let entity = await this.findOne(conditions, {
       conditions: ["username", "email"],

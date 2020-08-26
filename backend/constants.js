@@ -20,10 +20,11 @@ const lengths = {
 const dialogTypes = ["direct", "group", "channel"];
 
 const tapeEvents = {
-  message: "new-message",
-  online: "online",
-  offline: "offline",
-  typing: "typing",
+  ["message-in-dialog"]: "message-in-dialog",
+  ["user-info-changed"]: "user-info-changed",
+  ["user-online"]: "user-online",
+  ["user-offline"]: "user-offline",
+  ["user-typing"]: "user-typing",
 };
 
 const coreUser = { id: 0, email: "core@email" };

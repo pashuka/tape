@@ -17,6 +17,7 @@ import {
 } from '../../../../../hooks/recoil/user';
 import Avatar from '../../../components/avatar';
 import Skeleton from '../../../../Skeleton';
+// import Typing from '../../../components/typing';
 
 dayjs.extend(isToday);
 
@@ -30,6 +31,17 @@ const CardDialogDirect = ({ dialog, username }: PropsType) => {
   const { state, contents } = useRecoilValueLoadable(
     userInfoQuery({ username }),
   );
+
+  // const [isTyping, setIsTyping] = React.useState(false);
+  // React.useEffect(() => {
+  //   const timeoutId = setTimeout(() => {
+  //     setIsTyping(false);
+  //   }, 2000);
+  //   return () => {
+  //     clearTimeout(timeoutId);
+  //   };
+  // }, []);
+
   const dateString = dayjs(dialog.last_message_created_at).isToday()
     ? dayjs(dialog.last_message_created_at).format('HH:mm')
     : dayjs(dialog.last_message_created_at).format('ll');
@@ -68,7 +80,8 @@ const CardDialogDirect = ({ dialog, username }: PropsType) => {
         </div>
         <div className="d-flex align-items-center pb-2">
           <div className="small text-muted text-truncate text-left mr-auto">
-            {dialog.last_message_body || '...'}
+            {/* {isTyping ? <Typing /> : dialog.last_message_body} */}
+            {dialog.last_message_body}
           </div>
           {dialog.unread_count > 0 && (
             <div className="badge badge-pill badge-primary ml-3">

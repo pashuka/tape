@@ -131,7 +131,7 @@ class model extends Repository {
 
     const result = await super.insert({ dialog_id, body: message, owner_id: this.user.id });
     if (result) {
-      publisher.publish(tapeEvents["message-in-dialog"], JSON.stringify(result[0]));
+      publisher.publish(tapeEvents.message_created, JSON.stringify(result[0]));
       return result;
     }
   }

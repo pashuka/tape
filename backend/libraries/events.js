@@ -33,7 +33,7 @@ const broadcast = (event, data) => {
 subscriber.on("message", async (channel, message) => {
   const data = tryParseJSON(message);
   switch (channel) {
-    case tapeEvents["message-in-dialog"]:
+    case tapeEvents.message_created:
       const { dialog_id } = data;
       const dialogMembers = await knex(tables.members)
         .select("user_id")
@@ -46,17 +46,22 @@ subscriber.on("message", async (channel, message) => {
       }
       break;
 
-    case tapeEvents["user-info-changed"]:
+    case tapeEvents.message_changed:
+      break;
+    case tapeEvents.message_removed:
+      break;
+
+    case tapeEvents.user_info_changed:
       const isFriend = true;
       if (isFriend) {
         broadcast(channel, message);
       }
       break;
-    case tapeEvents["user-online"]:
+    case tapeEvents.user_online:
       break;
-    case tapeEvents["user-offline"]:
+    case tapeEvents.user_offline:
       break;
-    case tapeEvents["user-typing"]:
+    case tapeEvents.user_typing:
       break;
 
     default:

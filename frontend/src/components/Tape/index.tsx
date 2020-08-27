@@ -34,13 +34,13 @@ const Messenger = ({ tab, route }: PropsType) => {
   );
   const refNavbar = React.createRef<HTMLDivElement>();
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [tapeEvents] = useTapeEvents();
   const [messenger] = useRecoilState(MessengerAtom);
   const setDialogId = useSetRecoilState(currentDialogIdState);
   const resetMessagesOffset = useResetRecoilState(messagesOffsetAtom);
 
   const { params } = useRouteMatch<QSParamsType>();
+
+  useTapeEvents();
 
   // TODO: onSelect dialog scroll sidebar visible part to see selected dialog item
   const handleScroll = (e: React.UIEvent<HTMLElement>) => {

@@ -20,11 +20,17 @@ const lengths = {
 const dialogTypes = ["direct", "group", "channel"];
 
 const tapeEvents = {
-  ["message-in-dialog"]: "message-in-dialog",
-  ["user-info-changed"]: "user-info-changed",
-  ["user-online"]: "user-online",
-  ["user-offline"]: "user-offline",
-  ["user-typing"]: "user-typing",
+  message_created: "message_created",
+  message_changed: "message_changed",
+  message_removed: "message_removed",
+  dialog_changed: "dialog_changed",
+  dialog_member_created: "dialog_member_created",
+  dialog_member_changed: "dialog_member_changed",
+  dialog_member_removed: "dialog_member_removed",
+  user_info_changed: "user_info_changed",
+  user_online: "user_online",
+  user_offline: "user_offline",
+  user_typing: "user_typing",
 };
 
 const coreUser = { id: 0, email: "core@email" };

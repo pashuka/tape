@@ -297,7 +297,7 @@ class model extends Repository {
     const result = await super.update(conditions, values);
     if (result) {
       if (["username", "realname", "profile"].find((_) => _ in values)) {
-        publisher.publish(tapeEvents["user-info-changed"], JSON.stringify(result[0]));
+        publisher.publish(tapeEvents.user_info_changed, JSON.stringify(result[0]));
       }
 
       return result;

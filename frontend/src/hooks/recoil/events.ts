@@ -6,15 +6,28 @@ import { messagesState, messagesOffsetAtom } from './message';
 import { dialogsState } from './dialog';
 import { userInfoQuery, UserType } from './user';
 import { tryParseJSON } from '../../utils';
+import EventSource from 'eventsource';
 
-/*eslint no-useless-computed-key: "off"*/
-const tapeEvents = {
-  ['message-in-dialog']: 'message-in-dialog',
-  ['user-info-changed']: 'user-info-changed',
-  ['user-online']: 'user-online',
-  ['user-offline']: 'user-offline',
-  ['user-typing']: 'user-typing',
-};
+type tapeEventType =
+  | 'message_changed'
+  | 'message_created'
+  | 'message_removed'
+  | 'user_info_changed'
+  | 'user_online'
+  | 'user_offline'
+  | 'user_typing';
+
+const subscribe = (
+  es: EventSource | null,
+  type: tapeEventType,
+  listener: (event: any) => void,
+) => es?.addEventListener(type, listener);
+
+const unsubscribe = (
+  es: EventSource | null,
+  type: tapeEventType,
+  listener: (event: any) => void,
+) => es?.removeEventListener(type, listener);
 
 type EventSourceConstructor = {
   new (url: string, eventSourceInitDict?: EventSourceInit): EventSource;
@@ -55,7 +68,7 @@ export function useTapeEvents(
     };
   }, [EventSourceInstance]);
 
-  const newMessageListener = function (ev: any) {
+  const messageCreatedListener = function (ev: any) {
     resetMessages();
     resetMessagesOffset();
     resetDialogs();
@@ -71,24 +84,12 @@ export function useTapeEvents(
 
   // Predefine processing tape events
   useEffect(() => {
-    source.current?.addEventListener(
-      tapeEvents['message-in-dialog'],
-      newMessageListener,
-    );
-    source.current?.addEventListener(
-      tapeEvents['user-info-changed'],
-      userInfoListener,
-    );
+    subscribe(source.current, 'message_created', messageCreatedListener);
+    subscribe(source.current, 'user_info_changed', userInfoListener);
 
     return () => {
-      source.current?.removeEventListener(
-        tapeEvents['message-in-dialog'],
-        newMessageListener,
-      );
-      source.current?.removeEventListener(
-        tapeEvents['user-info-changed'],
-        userInfoListener,
-      );
+      unsubscribe(source.current, 'message_created', messageCreatedListener);
+      unsubscribe(source.current, 'user_info_changed', userInfoListener);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [source]);

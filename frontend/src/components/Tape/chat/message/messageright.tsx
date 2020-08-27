@@ -47,10 +47,9 @@ const MessageRight = ({
                   ? contents.realname || <span>@{contents?.username}</span>
                   : '...'}
               </h6>
-              <div className="alert alert-primary mb-0 py-1 py-lg-2 px-lg-3 px-2">
-                <div className="text-break">{body}</div>
-
-                <div className="text-right small">
+              <div className="alert alert-primary clearfix mb-0 py-1 px-lg-3 px-2">
+                <div className="float-left text-break">{body}</div>
+                <div className="float-right pl-2 pt-1 small">
                   <small
                     className="text-gray-600"
                     style={{ lineHeight: 1 }}

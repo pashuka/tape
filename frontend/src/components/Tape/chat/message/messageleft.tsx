@@ -53,8 +53,9 @@ const MessageLeft = ({
                   ? member.realname || <span>@{member.username}</span>
                   : null}
               </h6>
-              <div className="alert bg-gray-100 border-gray-200 mb-0 py-1 py-lg-2 px-lg-3 px-2">
-                <div className="float-right small">
+              <div className="alert clearfix bg-gray-100 border-gray-200 mb-0 py-1 px-lg-3 px-2">
+                <div className="text-body float-left text-break">{body}</div>
+                <div className="float-right pl-2 pt-1 small">
                   <small
                     className="text-gray-600"
                     style={{ lineHeight: 1 }}
@@ -63,7 +64,6 @@ const MessageLeft = ({
                     {dayjs(new Date(created_at)).format('HH:mm')}
                   </small>
                 </div>
-                <div className="text-body">{body}</div>
               </div>
             </div>
             <SubMenu />

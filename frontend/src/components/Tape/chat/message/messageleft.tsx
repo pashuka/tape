@@ -33,7 +33,7 @@ const MessageLeft = ({
   }, [state, contents]);
 
   return (
-    <div className="message">
+    <div className="message mt-3 mt-md-4">
       <a className="mr-2 mr-lg-4" href="#chat-messages">
         <Avatar
           pending={state === 'loading'}
@@ -55,7 +55,7 @@ const MessageLeft = ({
               </h6>
               <div className="alert clearfix bg-gray-100 border-gray-200 mb-0 py-1 px-lg-3 px-2">
                 <div className="text-body float-left text-break">{body}</div>
-                <div className="float-right pl-2 pt-1 small">
+                <div className="float-right pl-2 pl-md-4 pt-1 small">
                   <small
                     className="text-gray-600"
                     style={{ lineHeight: 1 }}

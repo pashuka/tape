@@ -27,7 +27,7 @@ const MessageRight = ({
     userInfoQuery({ username }),
   );
   return (
-    <div className="message message-right">
+    <div className="message message-right mt-2 mt-md-3">
       <div className="message-avatar ml-2 ml-lg-4 d-none d-lg-block">
         <Avatar
           pending={state === 'loading'}
@@ -42,14 +42,14 @@ const MessageRight = ({
             <SubMenu leftSide />
 
             <div className="message-content">
-              <h6 className="text-right text-primary">
+              <h6 className="text-right text-primary d-none d-md-block">
                 {state === 'hasValue' && instanceOfUser(contents)
                   ? contents.realname || <span>@{contents?.username}</span>
                   : '...'}
               </h6>
               <div className="alert alert-primary clearfix mb-0 py-1 px-lg-3 px-2">
                 <div className="float-left text-break">{body}</div>
-                <div className="float-right pl-2 pt-1 small">
+                <div className="float-right pl-2 pl-md-4 pt-1 small">
                   <small
                     className="text-gray-600"
                     style={{ lineHeight: 1 }}

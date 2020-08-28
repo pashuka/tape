@@ -239,14 +239,6 @@ $chat-sidebar-width: 350px;
 .message {
   display: flex;
   align-items: flex-start;
-
-  & + & {
-    margin-top: rem(32px);
-  }
-
-  .message-row + .message-row {
-    margin-top: rem(16px);
-  }
 }
 
 .message-body {
@@ -254,9 +246,7 @@ $chat-sidebar-width: 350px;
 }
 
 .message-content {
-  // border-radius: $border-radius-lg $border-radius-lg $border-radius-lg 2px;
   display: inline-block;
-  // padding: rem(18px);
 }
 
 .message-right {

@@ -80,7 +80,7 @@ const grants = {
     [resources.admin]: { "read:any": ["*"] },
     auth: { "read:own": ["*"] },
     [resources.user]: { "read:any": ["*"], "update:own": ["*"], "delete:own": ["*"] },
-    [resources.dialogs]: { "read:any": ["*"] },
+    [resources.dialogs]: { "read:any": ["*"], "update:own": ["*"], "delete:own": ["*"] },
     [resources.members]: { "read:any": ["*"] },
     [resources.messages]: {
       "create:own": ["*"],
@@ -100,7 +100,7 @@ const grants = {
       "update:any": ["*"],
       "delete:own": ["*"],
     },
-    [resources.dialogs]: { "read:any": ["*"] },
+    [resources.dialogs]: { "read:any": ["*"], "update:own": ["*"], "delete:own": ["*"] },
     [resources.messages]: {
       "create:own": ["*"],
       "read:any": ["*"],

@@ -22,7 +22,7 @@ export function instanceOfUser(o: any): o is UserType {
 }
 
 const userInfoVersion = Recoil.atomFamily({
-  key: 'userInfoVersion',
+  key: 'user-info-version',
   default: 0,
 });
 
@@ -35,7 +35,7 @@ export const userInfoQuery = Recoil.selectorFamily<
   UserType | MemberType | undefined,
   userInfoParamsType
 >({
-  key: 'userInfoQuery',
+  key: 'user-info-query',
   get: ({ username, withDialog }) => async ({ get }) => {
     get(userInfoVersion({ username, withDialog })); // 'register' as a resetable dependency
     return username.length
@@ -61,7 +61,7 @@ export const userInfoQuery = Recoil.selectorFamily<
 });
 
 export const usersFilter = Recoil.selector<UserNameType[]>({
-  key: 'usersFilter',
+  key: 'users-filter',
   get: async ({ get }) => {
     const query = get(searchQueryAtom);
     return query.length

@@ -3,7 +3,7 @@ import { request } from './request';
 import { routes, getRoute } from '../../constants';
 import { limitFetchMax } from './constants';
 import { UserNameType } from './user';
-import { idType } from './types';
+import { idType } from '../../types';
 
 export declare type DialogIdType = idType;
 
@@ -35,17 +35,17 @@ export function instanceOfDialog(o: any): o is DialogType {
 }
 
 export const currentDialogIdState = Recoil.atom<string | undefined>({
-  key: 'currentDialogIdState',
+  key: 'current-dialog-id',
   default: undefined,
 });
 
 export const dialogsOffsetAtom = Recoil.atom<number>({
-  key: 'dialogsOffsetAtom',
+  key: 'dialogs-offset',
   default: 0,
 });
 
 const dialogsVersion = Recoil.atom({
-  key: 'dialogsVersion',
+  key: 'dialogs-version',
   default: 0,
 });
 
@@ -92,7 +92,7 @@ export const dialogsState = Recoil.selector<DialogIdsType[]>({
 });
 
 const dialogVersion = Recoil.atomFamily({
-  key: 'dialogVersion',
+  key: 'dialog-version',
   default: 0,
 });
 
@@ -122,7 +122,7 @@ export const dialogSelector = Recoil.selectorFamily<
 });
 
 const dialogMembersVersion = Recoil.atom({
-  key: 'dialogMembersVersion',
+  key: 'dialog-members-version',
   default: 0,
 });
 
@@ -135,7 +135,7 @@ export const dialogMembersSelector = Recoil.selectorFamily<
   UserNameType[] | undefined,
   dialogMembersType
 >({
-  key: 'dialogMembersSelector',
+  key: 'dialog-members-selector',
   get: ({ dialog_id, offset }) => async ({ get }) => {
     get(dialogMembersVersion); // 'register' as a resetable dependency
     return await request<UserNameType[]>(

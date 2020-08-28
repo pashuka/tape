@@ -1,21 +1,20 @@
 import { useEffect, useRef, useState } from 'react';
 import Recoil from 'recoil';
 import { routes, getRoute } from '../../constants';
-import { messagesState, messagesOffsetAtom, MessageType } from './message';
-import {
-  dialogsState,
-  dialogSelector,
-  DialogIdType,
-  dialogsOffsetAtom,
-} from './dialog';
+import { messagesState, MessageType } from './message';
+import { dialogsState, dialogSelector, DialogIdType } from './dialog';
 import { userInfoQuery, UserType } from './user';
 import { tryParseJSON } from '../../utils';
-import EventSource from 'eventsource';
+import { MemberInfoType } from './member';
 
 type tapeEventType =
   | 'message_changed'
   | 'message_created'
   | 'message_removed'
+  | 'dialog_changed'
+  | 'dialog_member_created'
+  | 'dialog_member_changed'
+  | 'dialog_member_removed'
   | 'user_info_changed'
   | 'user_online'
   | 'user_offline'
@@ -48,9 +47,7 @@ export function useTapeEvents(
   const [status, setStatus] = useState<EventSourceStatus>('init');
 
   const resetMessages = Recoil.useResetRecoilState(messagesState);
-  const resetMessagesOffset = Recoil.useResetRecoilState(messagesOffsetAtom);
   const resetDialogs = Recoil.useResetRecoilState(dialogsState);
-  const resetDialogsOffset = Recoil.useResetRecoilState(dialogsOffsetAtom);
   const resetUserInfo = Recoil.useRecoilCallback(
     ({ reset }) => async (username: string) => {
       reset(userInfoQuery({ username }));
@@ -79,14 +76,17 @@ export function useTapeEvents(
   }, [EventSourceInstance]);
 
   const messageCreatedListener = function (ev: any) {
-    const event = tryParseJSON(ev.data);
-    const message = event as MessageType;
-    resetMessagesOffset();
-    resetDialogsOffset();
-
+    const data = tryParseJSON(ev.data);
+    const record = data as MessageType;
     resetMessages();
     resetDialogs();
-    resetDialogById(message.dialog_id);
+    resetDialogById(record.dialog_id);
+  };
+
+  const dialogChangedListener = function (ev: any) {
+    const data = tryParseJSON(ev.data);
+    const record = data as MemberInfoType;
+    resetDialogById(record.dialog_id);
   };
 
   const userInfoListener = function (ev: any) {
@@ -100,10 +100,12 @@ export function useTapeEvents(
   // Predefine processing tape events
   useEffect(() => {
     subscribe(source.current, 'message_created', messageCreatedListener);
+    subscribe(source.current, 'dialog_changed', dialogChangedListener);
     subscribe(source.current, 'user_info_changed', userInfoListener);
 
     return () => {
       unsubscribe(source.current, 'message_created', messageCreatedListener);
+      unsubscribe(source.current, 'dialog_changed', dialogChangedListener);
       unsubscribe(source.current, 'user_info_changed', userInfoListener);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps

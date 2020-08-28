@@ -2,19 +2,19 @@ import Recoil from 'recoil';
 import { instanceOfUser, UserNameType } from './user';
 import { request } from './request';
 import { routes, getRoute } from '../../constants';
-import { dialogsState, dialogsOffsetAtom } from './dialog';
-import { membersState, membersOffsetAtom } from './member';
-import { messagesState, messagesOffsetAtom } from './message';
+import { dialogsState } from './dialog';
+import { membersState } from './member';
+import { messagesState } from './message';
 
-const atomTrigger = Recoil.atom({
-  key: 'authTrigger',
+const authVersion = Recoil.atom({
+  key: 'auth-version',
   default: 0,
 });
 
 export const authState = Recoil.selector<UserNameType | undefined>({
-  key: 'authState',
+  key: 'auth-state',
   get: async ({ get }) => {
-    get(atomTrigger);
+    get(authVersion);
     const iam = await request<UserNameType>(getRoute(routes.auth.status)).then(
       (data) => (instanceOfUser(data) ? data : undefined),
       (reason) => {
@@ -25,15 +25,10 @@ export const authState = Recoil.selector<UserNameType | undefined>({
   },
   set: ({ set, reset }, value) => {
     if (value instanceof Recoil.DefaultValue || instanceOfUser(value)) {
-      set(atomTrigger, (v) => v + 1);
-      // TODO: deal with reset atoms and selectors
-      reset(dialogsOffsetAtom);
-      reset(messagesOffsetAtom);
-      reset(membersOffsetAtom);
-
       reset(dialogsState);
       reset(membersState);
       reset(messagesState);
+      set(authVersion, (v) => v + 1);
     }
   },
 });

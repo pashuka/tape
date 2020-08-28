@@ -29,19 +29,18 @@ const Chat = () => {
     return <Cover iam={iam} />;
   }
 
+  const dialog =
+    state === 'hasValue' && instanceOfDialog(contents) ? contents : undefined;
+
   return (
     <div className="chat">
       <div className="chat-body bg-white">
         <Header
-          dialog={
-            state === 'hasValue' && instanceOfDialog(contents)
-              ? contents
-              : undefined
-          }
+          dialog={dialog}
           // username={params[ParamsKeyUser]}
         />
         <SearchBar />
-        <Content iam={iam} />
+        <Content iam={iam} dialog={dialog} />
         <Footer />
       </div>
     </div>

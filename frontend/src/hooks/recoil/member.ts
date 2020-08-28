@@ -4,27 +4,35 @@ import { routes, getRoute } from '../../constants';
 import { DialogIdType } from './dialog';
 import { UserType } from './user';
 import { limitFetchMax } from './constants';
+import { idType } from '../../types';
 
 export type MemberType = UserType & {
   dialog_id: DialogIdType;
+};
+
+export type MemberInfoType = {
+  dialog_id: DialogIdType;
+  unread_count: number;
+  unread_cursor: idType;
+  user_id: idType;
 };
 
 export function instanceOfMember(o: any): o is MemberType {
   return o && 'dialog_id' in o && 'username' in o;
 }
 
-const atomTrigger = Recoil.atom({
-  key: 'membersTrigger',
+const membersVersion = Recoil.atom({
+  key: 'members-version',
   default: 0,
 });
 
 export const membersOffsetAtom = Recoil.atom<number>({
-  key: 'membersOffsetAtom',
+  key: 'members-offset',
   default: 0,
 });
 
 export const membersByOffset = Recoil.selectorFamily<MemberType[], number>({
-  key: 'membersByOffset',
+  key: 'members-by-offset',
   get: (offset) => async () => {
     return await request<MemberType[]>(
       getRoute(`find/${routes.members}/?offset=${offset}`),
@@ -38,9 +46,9 @@ export const membersByOffset = Recoil.selectorFamily<MemberType[], number>({
 });
 
 export const membersState = Recoil.selector<MemberType[]>({
-  key: 'membersState',
+  key: 'members-state',
   get: async ({ get }) => {
-    get(atomTrigger); // 'register' as a resetable dependency
+    get(membersVersion); // 'register' as a resetable dependency
     const offset = get(membersOffsetAtom);
     let records = [] as MemberType[];
     for (let index = 0; index <= offset; index += limitFetchMax) {
@@ -50,7 +58,7 @@ export const membersState = Recoil.selector<MemberType[]>({
   },
   set: ({ set }, value) => {
     if (value instanceof Recoil.DefaultValue) {
-      set(atomTrigger, (v) => v + 1);
+      set(membersVersion, (v) => v + 1);
     }
   },
 });

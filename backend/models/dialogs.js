@@ -1,8 +1,9 @@
 const validator = require("validator");
 const { BadRequest } = require("../libraries/error");
 const knex = require("../libraries/knex");
-const { tables } = require("../constants");
+const { tables, tapeEvents } = require("../constants");
 const Repository = require("./repository");
+const { publisher } = require("../libraries/ioredis");
 const allowed = {
   schema: [
     "id",
@@ -67,7 +68,49 @@ class model extends Repository {
     return;
   }
 
-  update(conditions, values) {
+  async update(conditions, values) {
+    if (!this.user) {
+      return;
+    }
+    const { dialog_id } = conditions;
+    const { read_message_id } = values;
+    if (!validator.isNumeric(dialog_id)) {
+      throw new BadRequest([{ dialog_id: "Bad dialog id" }]);
+    }
+    if (!validator.isNumeric(String(read_message_id))) {
+      throw new BadRequest([{ read_message_id: "Bad read message id" }]);
+    }
+    const isMember = await knex(tables.members)
+      .select(["unread_count", "unread_cursor"])
+      .where({ dialog_id, user_id: this.user.id })
+      .first();
+    if (!isMember) {
+      return;
+    }
+    const isMessage = await knex(tables.messages)
+      .select("id")
+      .where({ dialog_id, id: read_message_id })
+      .first();
+    if (!isMessage) {
+      return;
+    }
+    if (isMember.unread_cursor < isMessage.id) {
+      // move cursor and reset unread_count
+      const result = await knex(tables.members)
+        .where({ dialog_id, user_id: this.user.id })
+        .update({
+          unread_cursor: read_message_id,
+          unread_count: 0,
+        })
+        .returning(["dialog_id", "user_id", "unread_count", "unread_cursor"]);
+      if (!result) {
+        return;
+      }
+      // push notification && send event
+      publisher.publish(tapeEvents.dialog_changed, JSON.stringify(result[0]));
+      return result;
+    }
+
     return;
   }
 }

@@ -33,6 +33,20 @@ const broadcast = (event, data) => {
 subscriber.on("message", async (channel, message) => {
   const data = tryParseJSON(message);
   switch (channel) {
+    case tapeEvents.dialog_changed:
+      const { user_id } = data;
+      listener(user_id, channel, message);
+      break;
+
+    case tapeEvents.dialog_member_changed:
+      break;
+
+    case tapeEvents.dialog_member_created:
+      break;
+
+    case tapeEvents.dialog_member_removed:
+      break;
+
     case tapeEvents.message_created:
       const { dialog_id } = data;
       const dialogMembers = await knex(tables.members)

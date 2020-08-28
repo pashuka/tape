@@ -5,17 +5,23 @@ import {
   messagesState,
   messagesOffsetAtom,
   MessageType,
+  lastReadMessage,
+  instanceOfMessage,
 } from '../../../hooks/recoil/message';
 import Messages from './message';
 import { UserNameType } from '../../../hooks/recoil/user';
 import Overlay from '../../Overlay';
 import { limitFetchMax } from '../../../hooks/recoil/constants';
+import { useFetch } from 'react-async';
+import { getRoute, routes } from '../../../constants';
+import { DialogType } from '../../../hooks/recoil/dialog';
 
 type ContentPropsType = {
   iam: UserNameType;
+  dialog: DialogType | undefined;
 };
 
-const Content = ({ iam }: ContentPropsType) => {
+const Content = ({ iam, dialog }: ContentPropsType) => {
   const refLastElement = React.createRef<HTMLDivElement>();
   const refContentElement = React.createRef<HTMLDivElement>();
   const [scrollOnTop, setScrollOnTop] = React.useState(false);
@@ -23,8 +29,20 @@ const Content = ({ iam }: ContentPropsType) => {
 
   const [offset, setOffset] = useRecoilState(messagesOffsetAtom);
   const { state, contents } = useRecoilValueLoadable(messagesState);
+  const {
+    state: lastMessageState,
+    contents: lastMessageContents,
+  } = useRecoilValueLoadable(lastReadMessage);
   const [records, setRecords] = React.useState<MessageType[]>(
     [] as MessageType[],
+  );
+
+  const { run: readMessage } = useFetch<MessageType>(
+    getRoute(`put/${routes.dialogs}/`),
+    {
+      headers: { accept: 'application/json' },
+    },
+    { defer: true },
   );
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -60,6 +78,25 @@ const Content = ({ iam }: ContentPropsType) => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [state, contents]);
+
+  React.useEffect(() => {
+    // console.log('Send read message', dialog, lastMessageContents);
+    if (
+      lastMessageState === 'hasValue' &&
+      instanceOfMessage(lastMessageContents)
+    ) {
+      if (dialog?.unread_count && dialog.unread_count > 0) {
+        readMessage({
+          resource: getRoute(`put/${routes.dialogs}/?dialog_id=${dialog.id}`),
+          method: 'PUT',
+          body: JSON.stringify({
+            read_message_id: lastMessageContents.id,
+          }),
+        });
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [lastMessageState, lastMessageContents, dialog]);
 
   const handleScroll = (e: React.UIEvent<HTMLElement>) => {
     const el = e.currentTarget;

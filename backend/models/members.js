@@ -1,4 +1,5 @@
 const validator = require("validator");
+const { BadRequest } = require("../libraries/error");
 const knex = require("../libraries/knex");
 const { tables } = require("../constants");
 const Repository = require("./repository");

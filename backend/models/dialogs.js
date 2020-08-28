@@ -1,4 +1,5 @@
 const validator = require("validator");
+const { BadRequest } = require("../libraries/error");
 const knex = require("../libraries/knex");
 const { tables } = require("../constants");
 const Repository = require("./repository");
@@ -34,12 +35,9 @@ class model extends Repository {
     if (!validator.isNumeric(offset) || offset < 0 || offset > Number.MAX_VALUE) {
       throw new BadRequest([{ offset: "Bad offset" }]);
     }
-    return knex(this.table)
-      .select(allowed.select.map((c) => `${this.table}.${c}`))
-      .select(["settings", "unread_count", "unread_cursor"].map((c) => `${tables.members}.${c}`))
-      .select({ last_message_owner: `${tables.users}.username` })
-      .leftJoin(tables.members, `${this.table}.id`, `${tables.members}.dialog_id`)
-      .leftJoin(tables.users, `${this.table}.last_message_owner_id`, `${tables.users}.id`)
+    return knex(tables.members)
+      .select({ id: `${tables.dialogs}.id` })
+      .leftJoin(tables.dialogs, `${this.table}.id`, `${tables.members}.dialog_id`)
       .where(`${tables.members}.user_id`, this.user.id)
       .orderBy(`${this.table}.last_message_created_at`, "desc")
       .offset(offset)
@@ -47,7 +45,22 @@ class model extends Repository {
   }
 
   findOne(conditions) {
-    return;
+    if (!this.user) {
+      return;
+    }
+    const { id } = conditions;
+    if (!id || !validator.isNumeric(id)) {
+      throw new BadRequest([{ dialog_id: "Bad dialog id" }]);
+    }
+    return knex(this.table)
+      .select(allowed.select.map((c) => `${this.table}.${c}`))
+      .select(["settings", "unread_count", "unread_cursor"].map((c) => `${tables.members}.${c}`))
+      .select({ last_message_owner: `${tables.users}.username` })
+      .leftJoin(tables.members, `${this.table}.id`, `${tables.members}.dialog_id`)
+      .leftJoin(tables.users, `${this.table}.last_message_owner_id`, `${tables.users}.id`)
+      .where(`${this.table}.id`, id)
+      .andWhere(`${tables.members}.user_id`, this.user.id)
+      .first();
   }
 
   insert(values) {

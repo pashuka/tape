@@ -27,12 +27,13 @@ export const authState = Recoil.selector<UserNameType | undefined>({
     if (value instanceof Recoil.DefaultValue || instanceOfUser(value)) {
       set(atomTrigger, (v) => v + 1);
       // TODO: deal with reset atoms and selectors
+      reset(dialogsOffsetAtom);
+      reset(messagesOffsetAtom);
+      reset(membersOffsetAtom);
+
       reset(dialogsState);
       reset(membersState);
       reset(messagesState);
-      reset(dialogsOffsetAtom);
-      reset(membersOffsetAtom);
-      reset(messagesOffsetAtom);
     }
   },
 });

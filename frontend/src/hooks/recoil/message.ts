@@ -3,13 +3,19 @@ import { request } from './request';
 import { DialogIdType, currentDialogIdState } from './dialog';
 import { routes, getRoute } from '../../constants';
 import { limitFetchMax } from './constants';
+import { idType } from './types';
 
 export type MessageType = {
+  id: idType;
   dialog_id: DialogIdType;
   created_at: string;
   owner: string;
   body: string;
 };
+
+export function instanceOfMessage(o: any): o is MessageType {
+  return o && 'id' in o && 'dialog_id' in o;
+}
 
 const atomTrigger = Recoil.atom({
   key: 'messagesTrigger',

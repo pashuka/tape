@@ -13,13 +13,13 @@ import {
   ParamsKeyDialog,
 } from '../../../constants';
 import { authState } from '../../../hooks/recoil/auth';
-import { getDialog, instanceOfDialog } from '../../../hooks/recoil/dialog';
+import { instanceOfDialog, dialogSelector } from '../../../hooks/recoil/dialog';
 
 const Chat = () => {
   const { params } = useRouteMatch<QSParamsType>();
   const iam = useRecoilValue(authState);
   const { state, contents } = useRecoilValueLoadable(
-    getDialog(params[ParamsKeyDialog]),
+    dialogSelector(Number(params[ParamsKeyDialog])),
   );
 
   if (!iam) {

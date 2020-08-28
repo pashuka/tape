@@ -7,9 +7,9 @@ import Header from './header';
 import { QSParamsType, ParamsKeyUser, routes } from '../../../constants';
 import CardHeader from './cards/header';
 import {
-  dialogsState,
-  DialogType,
+  DialogIdsType,
   dialogsOffsetAtom,
+  dialogsState,
 } from '../../../hooks/recoil/dialog';
 import { usersFilter } from '../../../hooks/recoil/user';
 import { useRouteMatch } from 'react-router-dom';
@@ -26,8 +26,8 @@ const Dialogs = ({ scrollBottom }: PropsType) => {
 
   const [offset, setOffset] = useRecoilState(dialogsOffsetAtom);
   const { state, contents } = useRecoilValueLoadable(dialogsState);
-  const [records, setRecords] = React.useState<DialogType[]>(
-    [] as DialogType[],
+  const [records, setRecords] = React.useState<DialogIdsType[]>(
+    [] as DialogIdsType[],
   );
 
   const [searchQuery, setSearchQuery] = useRecoilState(searchQueryAtom);
@@ -88,7 +88,7 @@ const Dialogs = ({ scrollBottom }: PropsType) => {
                 </Fragment>
               )}
               {searchQuery.length === 0 &&
-                records.map((_) => <CardDialog key={_.id} dialog={_} />)}
+                records.map(({ id }) => <CardDialog key={id} dialog_id={id} />)}
               {state === 'loading' && (
                 <div className="d-flex justify-content-center p-2">
                   <Overlay size="sm" badge={true} />

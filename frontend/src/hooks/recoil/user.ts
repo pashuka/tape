@@ -21,11 +21,10 @@ export function instanceOfUser(o: any): o is UserType {
   return o && 'username' in o;
 }
 
-const atomTrigger = ({ username, withDialog }: userInfoParamsType) =>
-  Recoil.atom({
-    key: `userInfoTrigger-${username}-${withDialog}`,
-    default: 0,
-  });
+const userInfoVersion = Recoil.atomFamily({
+  key: 'userInfoVersion',
+  default: 0,
+});
 
 type userInfoParamsType = {
   username: string;
@@ -38,7 +37,7 @@ export const userInfoQuery = Recoil.selectorFamily<
 >({
   key: 'userInfoQuery',
   get: ({ username, withDialog }) => async ({ get }) => {
-    get(atomTrigger({ username, withDialog })); // 'register' as a resetable dependency
+    get(userInfoVersion({ username, withDialog })); // 'register' as a resetable dependency
     return username.length
       ? await request<UserType | MemberType>(
           getRoute(
@@ -56,7 +55,7 @@ export const userInfoQuery = Recoil.selectorFamily<
   },
   set: ({ username, withDialog }) => ({ set }, value) => {
     if (value instanceof Recoil.DefaultValue) {
-      set(atomTrigger({ username, withDialog }), (v) => v + 1);
+      set(userInfoVersion({ username, withDialog }), (v) => v + 1);
     }
   },
 });

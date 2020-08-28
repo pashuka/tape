@@ -1,9 +1,13 @@
 import { useEffect, useRef, useState } from 'react';
 import Recoil from 'recoil';
 import { routes, getRoute } from '../../constants';
-// import { tryParseJSON } from '../../utils';
-import { messagesState, messagesOffsetAtom } from './message';
-import { dialogsState } from './dialog';
+import { messagesState, messagesOffsetAtom, MessageType } from './message';
+import {
+  dialogsState,
+  dialogSelector,
+  DialogIdType,
+  dialogsOffsetAtom,
+} from './dialog';
 import { userInfoQuery, UserType } from './user';
 import { tryParseJSON } from '../../utils';
 import EventSource from 'eventsource';
@@ -46,9 +50,15 @@ export function useTapeEvents(
   const resetMessages = Recoil.useResetRecoilState(messagesState);
   const resetMessagesOffset = Recoil.useResetRecoilState(messagesOffsetAtom);
   const resetDialogs = Recoil.useResetRecoilState(dialogsState);
+  const resetDialogsOffset = Recoil.useResetRecoilState(dialogsOffsetAtom);
   const resetUserInfo = Recoil.useRecoilCallback(
     ({ reset }) => async (username: string) => {
       reset(userInfoQuery({ username }));
+    },
+  );
+  const resetDialogById = Recoil.useRecoilCallback(
+    ({ reset }) => async (id: DialogIdType) => {
+      reset(dialogSelector(id));
     },
   );
 
@@ -69,9 +79,14 @@ export function useTapeEvents(
   }, [EventSourceInstance]);
 
   const messageCreatedListener = function (ev: any) {
-    resetMessages();
+    const event = tryParseJSON(ev.data);
+    const message = event as MessageType;
     resetMessagesOffset();
+    resetDialogsOffset();
+
+    resetMessages();
     resetDialogs();
+    resetDialogById(message.dialog_id);
   };
 
   const userInfoListener = function (ev: any) {

@@ -6,7 +6,7 @@ const { BadRequest } = require("../libraries/error");
 const allowed = {
   schema: ["id", "dialog_id", "created_at", "owner_id", "body"],
   conditions: ["dialog_id"],
-  select: ["dialog_id", "created_at", "body"],
+  select: ["id", "dialog_id", "created_at", "body"],
   insert: ["dialog_id", "owner_id", "body"],
   update: ["owner_id", "body"],
 };

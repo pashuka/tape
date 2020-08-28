@@ -77,7 +77,7 @@ class model extends Repository {
        * select m1.dialog_id
        * from members as m1
        * left join members as m2 on m1.dialog_id = m2.dialog_id
-       * where m1.user_id=1295 and m2.user_id=1272;
+       * where m1.dialog_type = 'direct' and m1.user_id=1295 and m2.user_id=1272;
        */
       const entityWithDialog = await knex
         .select({ dialog_id: "m1.dialog_id" })
@@ -85,6 +85,7 @@ class model extends Repository {
         .leftJoin(`${tables.members} as m2`, "m1.dialog_id", "m2.dialog_id")
         .whereRaw("?? = ??", ["m1.user_id", this.user.id])
         .andWhereRaw("?? = ??", ["m2.user_id", id])
+        .andWhereRaw("m1.dialog_type = 'direct'")
         .first();
 
       if (entityWithDialog) {

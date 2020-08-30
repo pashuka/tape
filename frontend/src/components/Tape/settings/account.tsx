@@ -132,13 +132,6 @@ const Page = ({ iam }: PropsType) => {
                   </small>
                 </div>
               </div>
-              {/* <div className="form-group">
-            <fieldset className="border rounded p-2">
-              <legend className="w-auto font-weight-light">
-                {t("Really change your username?")}
-              </legend>
-            </fieldset>
-          </div> */}
 
               <button
                 type="submit"

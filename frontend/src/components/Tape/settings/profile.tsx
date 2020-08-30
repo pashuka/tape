@@ -69,8 +69,11 @@ const Page = ({ iam }: PropsType) => {
       <Header title={t('Public profile')} />
       <div className="container pt-4">
         <div className="row">
-          <div className="col-md-8 mb-4">
+          <div className="col-md-12 mb-4">
             <div className="pb-4">
+              <h1 className="h4 font-weight-light border-bottom pb-1 mb-4">
+                {t('Profile information')}
+              </h1>
               <p className="small text-muted m-0 mb-1">
                 <abbr title={t('Full name')}>{t('Name')}</abbr>
               </p>
@@ -127,10 +130,14 @@ const Page = ({ iam }: PropsType) => {
               {t('Update profile')}
             </button>
           </div>
-          <div className="col-md-3">
-            <p className="small text-muted m-0 mb-1">
-              <abbr title={t("User's profile Picture")}>{t('Picture')}</abbr>
-            </p>
+        </div>
+        <div className="row">
+          <div className="col-md-12">
+            <h1 className="h4 font-weight-light border-bottom">
+              {t('Profile picture')}
+            </h1>
+          </div>
+          <div className="col-md-4 mt-4 mb-4">
             <div className="text-center">
               <div className="card text-white border-0">
                 <Figure

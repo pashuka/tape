@@ -4,7 +4,6 @@ const { subscriber } = require("./ioredis");
 const knex = require("./knex");
 const { tryParseJSON } = require("./utils");
 const { tapeEvents, tables } = require("../constants");
-const { user } = require("../models/messages");
 
 let pool = [];
 
@@ -104,6 +103,10 @@ const streamTapeEvents = (req, res) => {
         user_id,
         streamContext,
       });
+
+      if (process.env.NODE_ENV === "development") {
+        console.log("Count subscribers:", pool.length);
+      }
 
       // Return an unsubscribe function, so the stream can be terminated properly
       return () => {

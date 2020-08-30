@@ -16,6 +16,7 @@ import {
   userInfoQuery,
 } from '../../../../../hooks/recoil/user';
 import Avatar from '../../../components/avatar';
+import { compactNumber } from '../../../../../utils';
 
 dayjs.extend(isToday);
 
@@ -67,7 +68,7 @@ const CardDialogGroup = ({ dialog }: PropsType) => {
           </div>
           {dialog.unread_count > 0 && (
             <div className="badge badge-pill badge-primary ml-3">
-              {dialog.unread_count}
+              {compactNumber(dialog.unread_count)}
             </div>
           )}
         </div>

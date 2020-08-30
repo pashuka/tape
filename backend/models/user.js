@@ -170,7 +170,14 @@ class model extends Repository {
       },
       {
         select: ["username", "email", "realname", "profile", "role", "confirmation_code"],
-        insert: ["username", "email", "password", "confirmation_code", "confirmation_code_at"],
+        insert: [
+          "username",
+          "realname",
+          "email",
+          "password",
+          "confirmation_code",
+          "confirmation_code_at",
+        ],
       }
     );
     entity = entity[0];

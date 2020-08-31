@@ -2,7 +2,8 @@ const router = require("koa-router")();
 const Auth = require("../../middlewares/auth");
 const { tryParseJSON } = require("../../libraries/utils");
 const { checkPerms } = require("../../libraries/accesscontrol");
-const { api } = require("../../constants");
+const { has, upload } = require("../../libraries/formidable");
+const { api, resources, supportMimes } = require("../../constants");
 const { BadRequest } = require("../../libraries/error");
 const { model } = require("../../libraries/utils");
 
@@ -32,6 +33,17 @@ router.post(`/${api.v4}/post/:resource+/`, Auth, async (ctx) => {
         status: "Update data does not contain any values to update",
       },
     ]);
+  }
+
+  if (resources.dialogs === resource) {
+    if (has(ctx.request.files)) {
+      const file = ctx.request.files["file"];
+      if (!supportMimes.includes(file.type)) {
+        throw new BadRequest([{ mimeType: "bad" }]);
+      }
+      const picture = await upload(file, resource);
+      body = { ...body, picture };
+    }
   }
 
   const Model = model(resource);

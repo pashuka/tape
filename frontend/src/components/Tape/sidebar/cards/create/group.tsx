@@ -1,19 +1,59 @@
 import React from 'react';
 import Avatar from '../../../components/avatar';
 import { useTranslation } from 'react-i18next';
+import { useFetch } from 'react-async';
+import { DialogType } from '../../../../../hooks/recoil/dialog';
+import { getRoute, routes } from '../../../../../constants';
 
 type ParamsType = {
   selected: string[];
 };
 
+type SchemaType = {
+  title?: string;
+  file?: File;
+};
+
 const CardCreateGroup = ({ selected }: ParamsType) => {
   const { t } = useTranslation();
   const inputRef = React.createRef<HTMLInputElement>();
-  const [preloaded, setPreloaded] = React.useState<string | undefined>();
+  const [values, setValues] = React.useState<SchemaType>({});
+  const [isValid, setIsValid] = React.useState(false);
+  const [preloadedPicture, setPreloadedPicture] = React.useState<
+    string | undefined
+  >();
+
   React.useEffect(() => {
     inputRef.current?.focus();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  React.useEffect(() => {
+    if (values['file']) {
+      setPreloadedPicture(URL.createObjectURL(values['file']));
+    } else {
+      setPreloadedPicture(undefined);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [values]);
+
+  React.useEffect(() => {
+    if (selected.length > 0 && values.title?.length) {
+      setIsValid(true);
+    } else {
+      setIsValid(false);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [values, selected]);
+
+  const { run } = useFetch<DialogType>(
+    getRoute(`post/${routes.dialogs}/`),
+    { headers: { accept: 'application/json' } },
+    {
+      defer: true,
+    },
+  );
+
   return (
     <div className="card border-0 rounded-0">
       <div className="card-body p-0 px-2">
@@ -26,46 +66,29 @@ const CardCreateGroup = ({ selected }: ParamsType) => {
               size="md"
               group={true}
               styles="position-absolute"
-              picture={preloaded}
+              picture={preloadedPicture}
               isDataURL={true}
             />
             <input
               className="custom-file-input position-absolute"
               type="file"
+              name="file"
               style={{ width: '48px', height: '48px' }}
               accept="image/jpg,image/png,image/jpeg,image/gif"
               disabled={false}
               onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                 if (e.currentTarget.files && e.currentTarget.files[0]) {
-                  // const reader = new FileReader();
-                  // reader.onload = (e: ProgressEvent<FileReader>) => {
-                  //   if (e.target) {
-                  //     setPreloaded(e.target.result);
-                  //   }
-                  // };
-                  // reader.readAsDataURL(e.currentTarget.files[0]);
-                  setPreloaded(URL.createObjectURL(e.currentTarget.files[0]));
+                  setValues({
+                    ...values,
+                    [e.currentTarget.name]: e.currentTarget.files[0],
+                  });
+                } else {
+                  setValues({
+                    ...values,
+                    [e.currentTarget.name]: undefined,
+                  });
                 }
               }}
-              // onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-              //   e.preventDefault();
-              //   if (
-              //     e.target.type === 'file' &&
-              //     e.target.files &&
-              //     e.target.files[0]
-              //   ) {
-              //     let body = new FormData();
-              //     body.append('file', e.target.files[0]);
-
-              //     run({
-              //       resource: getRoute(
-              //         `picture/${routes.user}/?username=${iam.username}`,
-              //       ),
-              //       method: 'PUT',
-              //       body,
-              //     });
-              //   }
-              // }}
             />
           </div>
           <div className="media-body ml-2 overflow-hidden border-top">
@@ -73,9 +96,16 @@ const CardCreateGroup = ({ selected }: ParamsType) => {
               <div className="input-group">
                 <input
                   ref={inputRef}
+                  name="title"
                   type="text"
                   className="form-control border-0 pl-0 shadow-none"
                   placeholder={t('Type group name...')}
+                  onChange={(e) =>
+                    setValues({
+                      ...values,
+                      [e.currentTarget.name]: e.currentTarget.value,
+                    })
+                  }
                 />
               </div>
             </div>
@@ -84,6 +114,38 @@ const CardCreateGroup = ({ selected }: ParamsType) => {
                 <strong>{selected.length}</strong> {t('members selected')}
               </div>
             </div>
+          </div>
+        </div>
+      </div>
+      <div className="card border-0 rounded-0">
+        <div className="card-body p-0 px-2 pt-2 pb-3">
+          <div className="media d-flex align-items-center justify-content-center">
+            <button
+              disabled={!isValid}
+              className="btn btn-primary btn-sm btn-block py-1"
+              type="button"
+              onClick={() => {
+                if (!isValid) {
+                  return;
+                }
+                const body = new FormData();
+                for (const key in values) {
+                  const value = values[key as keyof SchemaType];
+                  if (value) {
+                    body.append(key, value);
+                  }
+                }
+                // body.append('members', JSON.stringify(selected));
+                selected.forEach((_) => body.append('members[]', _));
+                run({
+                  resource: getRoute(`post/${routes.dialogs}/`),
+                  method: 'POST',
+                  body: body,
+                });
+              }}
+            >
+              Create group
+            </button>
           </div>
         </div>
       </div>

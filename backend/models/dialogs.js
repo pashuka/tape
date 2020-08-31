@@ -1,7 +1,7 @@
 const validator = require("validator");
 const { BadRequest } = require("../libraries/error");
 const knex = require("../libraries/knex");
-const { tables, tapeEvents } = require("../constants");
+const { tables, tapeEvents, lengths } = require("../constants");
 const Repository = require("./repository");
 const { publisher } = require("../libraries/ioredis");
 const allowed = {
@@ -64,8 +64,65 @@ class model extends Repository {
       .first();
   }
 
-  insert(values) {
-    return;
+  async insert(values) {
+    // TODO: remove picture on any fail
+
+    const { picture, ["members[]"]: members, title } = values;
+    const profile = {};
+    // check title
+    if (typeof title !== "string" || title.length === 0) {
+      throw new BadRequest([{ title: "Bad" }]);
+    }
+    profile.title = title.substr(0, 128);
+
+    // check members
+    if (!Array.isArray(members)) {
+      throw new BadRequest([{ members: "Bad type" }]);
+    }
+    if (members.length === 0) {
+      throw new BadRequest([{ members: "Should not be empty" }]);
+    }
+    if (
+      members.find(
+        (_) =>
+          typeof _ !== "string" ||
+          _.length < lengths.username.min ||
+          _.length > lengths.username.max
+      )
+    ) {
+      throw new BadRequest([{ members: "Bad elements" }]);
+    }
+    const records = await knex(tables.users).select(["id"]).whereIn("username", members);
+    if (!records || records.length !== members.length) {
+      throw new BadRequest([{ members: "Elements not exist" }]);
+    }
+
+    // use picture
+    if (picture) {
+      profile.picture = picture;
+    }
+
+    // create group dialog
+    const dialog = await knex(tables.dialogs)
+      .insert({ dialog_type: "group", profile, last_message_id: null })
+      .returning(["id"]);
+    if (!dialog) {
+      throw new BadRequest([{ dialog: "Bad dialog" }]);
+    }
+
+    const dialog_id = dialog[0].id;
+    const iam = { dialog_id, user_id: this.user.id };
+
+    let membersWithDialog = [{ ...iam, dialog_type: "group" }];
+    records.forEach(({ id }) =>
+      membersWithDialog.push({ dialog_type: "group", dialog_id, user_id: id })
+    );
+
+    // push admins/members
+    await knex(tables.admins).insert(iam);
+    await knex(tables.members).insert(membersWithDialog);
+
+    return dialog;
   }
 
   async update(conditions, values) {

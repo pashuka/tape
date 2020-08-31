@@ -6,17 +6,8 @@ const Auth = require("../../middlewares/auth");
 const { model } = require("../../libraries/utils");
 const { checkPerms } = require("../../libraries/accesscontrol");
 const { has, upload } = require("../../libraries/formidable");
-const { api, resources } = require("../../constants");
+const { api, resources, supportMimes } = require("../../constants");
 const { BadRequest } = require("../../libraries/error");
-
-const supportMimes = [
-  "image/gif",
-  "image/jpeg",
-  "image/png",
-  "image/svg+xml",
-  "image/tiff",
-  "image/webp",
-];
 
 const removeFile = (resource, profile) => {
   if (!profile || !profile.picture) {
@@ -71,7 +62,7 @@ router.put(`/${api.v4}/picture/:resource+/`, Auth, async (ctx) => {
   if (!supportMimes.includes(reqFile.type)) {
     throw new BadRequest([{ mimeType: "bad" }]);
   }
-  const picture = await upload(ctx.request.files["file"], resource);
+  const picture = await upload(reqFile, resource);
 
   entity = await Model.update(query, { profile: { ...profile, picture } });
 

@@ -69,20 +69,6 @@ const Participants = ({ scrollBottom }: PropsType) => {
                 <React.Fragment>
                   <CardHeader title="Group settings" />
                   <CardCreateGroup selected={selected} />
-                  <div className="nav-link1 disabled">
-                    <div className="card border-0 rounded-0">
-                      <div className="card-body p-0 px-2 pt-2 pb-3">
-                        <div className="media d-flex align-items-center justify-content-center">
-                          <button
-                            className="btn btn-primary btn-sm btn-block py-1"
-                            type="button"
-                          >
-                            Create group
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
                   {searchQuery.length === 0 && (
                     <CardHeader title="Select members" />
                   )}

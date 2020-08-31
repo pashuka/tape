@@ -41,7 +41,7 @@ class model extends Repository {
       const iam = await knex(this.table)
         .select(["user_id"])
         .where(`${this.table}.user_id`, this.user.id)
-        .where(`${this.table}.dialog_id`, dialog_id)
+        .adnWhere(`${this.table}.dialog_id`, dialog_id)
         .first();
 
       if (!iam) {
@@ -52,7 +52,7 @@ class model extends Repository {
       qb.from(`${this.table} as m2`)
         .leftJoin(tables.users, `${tables.users}.id`, "m2.user_id")
         .whereRaw("?? = ?", ["m2.dialog_id", dialog_id])
-        .whereRaw("?? != ?", ["m2.user_id", this.user.id]);
+        .andWhereRaw("?? != ?", ["m2.user_id", this.user.id]);
     } else {
       qb.from(`${this.table} as m1`)
         .leftJoin(`${this.table} as m2`, (builder) => {
@@ -60,7 +60,8 @@ class model extends Repository {
         })
         .leftJoin(tables.users, `${tables.users}.id`, "m2.user_id")
         .whereRaw("?? = ?", ["m1.user_id", this.user.id])
-        .whereRaw("?? != ?", ["m2.user_id", this.user.id])
+        .andWhereRaw("?? != ?", ["m2.user_id", this.user.id])
+        .andWhere(`m1.dialog_type`, knex.raw("'direct'"))
         .orderBy(`${tables.users}.realname`, "asc");
     }
     return qb.offset(offset).limit(this.limit);

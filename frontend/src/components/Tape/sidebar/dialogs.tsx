@@ -48,7 +48,7 @@ const Dialogs = ({ scrollBottom }: PropsType) => {
   }, [state, contents]);
 
   return (
-    <div className="tab-pane fade h-100 show active" id="tab-content-dialogs">
+    <div className="tab-pane fade h-100 show active">
       <div className="d-flex flex-column h-100">
         <div className="hide-scrollbar">
           <div className="container-fluid pl-0 pr-0">

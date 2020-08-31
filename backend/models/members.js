@@ -41,7 +41,7 @@ class model extends Repository {
       const iam = await knex(this.table)
         .select(["user_id"])
         .where(`${this.table}.user_id`, this.user.id)
-        .adnWhere(`${this.table}.dialog_id`, dialog_id)
+        .andWhere(`${this.table}.dialog_id`, dialog_id)
         .first();
 
       if (!iam) {

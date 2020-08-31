@@ -1,14 +1,20 @@
-import React, { Fragment } from 'react';
+import React from 'react';
 import { useRecoilValueLoadable, useRecoilState } from 'recoil';
 
 import CardMember from './cards/member/index';
 import CardUser from './cards/user';
+import CardCreateGroup from './cards/create/group';
 import Header from './header';
 import CardHeader from './cards/header';
 import { searchQueryAtom } from '../../../hooks/recoil/search';
 import { usersFilter } from '../../../hooks/recoil/user';
 import { useRouteMatch } from 'react-router-dom';
-import { QSParamsType, ParamsKeyUser, routes } from '../../../constants';
+import {
+  QSParamsType,
+  ParamsKeyUser,
+  routes,
+  ParamsKeyCreateGroup,
+} from '../../../constants';
 import {
   membersState,
   membersOffsetAtom,
@@ -29,7 +35,7 @@ const Participants = ({ scrollBottom }: PropsType) => {
   const [records, setRecords] = React.useState<MemberType[]>(
     [] as MemberType[],
   );
-
+  const [selected, setSelected] = React.useState<string[]>([]);
   const [searchQuery, setSearchQuery] = useRecoilState(searchQueryAtom);
   const filteredUsers = useRecoilValueLoadable(usersFilter);
 
@@ -48,7 +54,7 @@ const Participants = ({ scrollBottom }: PropsType) => {
   }, [state, contents]);
 
   return (
-    <div className="tab-pane fade h-100 show active" id="tab-content-dialogs">
+    <div className="tab-pane fade h-100 show active">
       <div className="d-flex flex-column h-100">
         <div className="hide-scrollbar">
           <div className="container-fluid pl-0 pr-0">
@@ -59,21 +65,43 @@ const Participants = ({ scrollBottom }: PropsType) => {
             />
 
             <nav className="nav nav-dialog d-block">
+              {ParamsKeyCreateGroup in params && (
+                <React.Fragment>
+                  <CardHeader title="Group settings" />
+                  <CardCreateGroup selected={selected} />
+                  <div className="nav-link1 disabled">
+                    <div className="card border-0 rounded-0">
+                      <div className="card-body p-0 px-2 pt-2 pb-3">
+                        <div className="media d-flex align-items-center justify-content-center">
+                          <button
+                            className="btn btn-primary btn-sm btn-block py-1"
+                            type="button"
+                          >
+                            Create group
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  {searchQuery.length === 0 && (
+                    <CardHeader title="Select members" />
+                  )}
+                </React.Fragment>
+              )}
               {ParamsKeyUser in params && (
                 <CardMember
-                  key={params[ParamsKeyUser]}
                   route={routes.participants}
                   username={params[ParamsKeyUser] || ''}
                 />
               )}
               {searchQuery.length > 0 && (
-                <Fragment>
+                <React.Fragment>
                   {state === 'loading' || filteredUsers.state === 'loading' ? (
                     <div className="d-flex justify-content-center p-2">
                       <Overlay size="sm" badge={true} />
                     </div>
                   ) : (
-                    <Fragment>
+                    <React.Fragment>
                       <CardHeader title="Search" />
                       {filteredUsers.state === 'hasValue' &&
                         filteredUsers.contents.map(({ username }) => (
@@ -81,14 +109,37 @@ const Participants = ({ scrollBottom }: PropsType) => {
                             key={username}
                             route={routes.participants}
                             username={username}
+                            selectable={ParamsKeyCreateGroup in params}
+                            selected={selected.includes(username)}
+                            onSelect={(username) => {
+                              setSelected(
+                                selected.includes(username)
+                                  ? selected.filter((_) => _ !== username)
+                                  : [...selected, username],
+                              );
+                            }}
                           />
                         ))}
-                    </Fragment>
+                    </React.Fragment>
                   )}
-                </Fragment>
+                </React.Fragment>
               )}
               {searchQuery.length === 0 &&
-                records.map((_) => <CardUser key={_.username} member={_} />)}
+                records.map((_) => (
+                  <CardUser
+                    key={_.username}
+                    member={_}
+                    selectable={ParamsKeyCreateGroup in params}
+                    selected={selected.includes(_.username)}
+                    onSelect={(username) => {
+                      setSelected(
+                        selected.includes(username)
+                          ? selected.filter((_) => _ !== username)
+                          : [...selected, username],
+                      );
+                    }}
+                  />
+                ))}
               {state === 'loading' && (
                 <div className="d-flex justify-content-center p-2">
                   <Overlay size="sm" badge={true} />

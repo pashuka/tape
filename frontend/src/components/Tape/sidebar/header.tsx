@@ -7,11 +7,13 @@ import IClose from '@material-ui/icons/Close';
 import IPersonAdd from '@material-ui/icons/PersonAdd';
 
 import useOutsideClick from '../../../hooks/useOutsideClick';
-import { useRouteMatch } from 'react-router-dom';
+import { useRouteMatch, useHistory } from 'react-router-dom';
 import {
   QSParamsType,
   ParamsKeyUser,
   ParamsKeyDialog,
+  routes,
+  ParamsKeyCreateGroup,
 } from '../../../constants';
 
 type HeaderPropsType = {
@@ -26,6 +28,7 @@ const Header = ({
   searchPlaceholder,
 }: HeaderPropsType) => {
   const { t } = useTranslation();
+  const history = useHistory();
   const [ddRef, isVisible, setIsVisible] = useOutsideClick<HTMLDivElement>(
     false,
   );
@@ -118,9 +121,13 @@ const Header = ({
             </button>
             <button
               type="button"
-              disabled
               className="dropdown-item d-flex align-items-center"
-              onClick={() => setIsVisible(!isVisible)}
+              onClick={() => {
+                setIsVisible(!isVisible);
+                history.push(
+                  `/${routes.tape}/${routes.participants}/create/${ParamsKeyCreateGroup}`,
+                );
+              }}
             >
               <IGroupAdd className="mr-3" /> {t('New Group')}
             </button>

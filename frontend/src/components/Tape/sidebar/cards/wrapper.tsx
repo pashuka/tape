@@ -9,6 +9,7 @@ type PropsType = {
   activeColor?: string;
   to?: string;
   disabled?: boolean;
+  onSelect?: (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => void;
 };
 
 const CardWrapper: React.FC<PropsType> = ({
@@ -17,6 +18,7 @@ const CardWrapper: React.FC<PropsType> = ({
   activeColor,
   children,
   disabled,
+  onSelect,
 }) => {
   const [messenger, setMessenger] = useRecoilState(MessengerAtom);
   return (
@@ -24,6 +26,10 @@ const CardWrapper: React.FC<PropsType> = ({
       className={`nav-link text-body p-0 ${disabled ? 'disabled' : ''}`}
       to={to || ''}
       onClick={(e) => {
+        if (onSelect) {
+          e.preventDefault();
+          onSelect(e);
+        }
         setMessenger({ isOpen: messenger.isOpen, isChatOpen: true });
       }}
     >

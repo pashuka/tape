@@ -452,3 +452,26 @@ $chat-sidebar-width: 350px;
     }
   }
 }
+
+.custom-file {
+  #file-upload-button,
+  .custom-file-input,
+  .card-avatar {
+    cursor: pointer;
+  }
+  &:active,
+  &:focus,
+  &:hover {
+    .custom-file-input {
+      background-color: black;
+    }
+    .card-avatar {
+      svg {
+        color: $gray-500 !important;
+      }
+    }
+  }
+}
+::-webkit-file-upload-button {
+  cursor: pointer;
+}

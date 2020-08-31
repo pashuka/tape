@@ -8,15 +8,17 @@ export type RequireAtLeastOne<T, Keys extends keyof T = keyof T> = Pick<
 
 export const ParamsKeyUser = 'user';
 export const ParamsKeyDialog = 'dialog';
+export const ParamsKeyCreateGroup = 'group';
 
 interface ParamsInterface {
   [ParamsKeyUser]?: string;
   [ParamsKeyDialog]?: string;
+  [ParamsKeyCreateGroup]?: string;
 }
 
 export declare type QSParamsType = RequireAtLeastOne<
   ParamsInterface,
-  'user' | 'dialog'
+  'user' | 'dialog' | 'group'
 >;
 
 export const host = process.env.REACT_APP_HOST;

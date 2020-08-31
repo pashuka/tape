@@ -25,10 +25,8 @@ const HeaderDialogDirect = ({ dialog, username }: PropsType) => {
     state === 'loading' ? (
       <Skeleton width="128px" />
     ) : state === 'hasValue' && instanceOfUser(contents) ? (
-      contents.realname
-    ) : (
-      'REALUSERNAME'
-    );
+      contents.realname || `@${contents.username}`
+    ) : null;
 
   return (
     <div className="media text-center text-xl-left">

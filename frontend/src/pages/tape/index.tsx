@@ -1,7 +1,12 @@
 import React from 'react';
 import { Switch, Route, Redirect } from 'react-router-dom';
 
-import { ParamsKeyUser, ParamsKeyDialog, routes } from '../../constants';
+import {
+  ParamsKeyUser,
+  ParamsKeyDialog,
+  routes,
+  ParamsKeyCreateGroup,
+} from '../../constants';
 import Tape, { TabEnum } from '../../components/Tape/index';
 
 const IndexPage = () => (
@@ -25,6 +30,11 @@ const IndexPage = () => (
     <Route
       exact
       path={`/${routes.tape}/${routes.participants}/`}
+      render={() => <Tape tab={TabEnum.Participants} />}
+    />
+    <Route
+      exact
+      path={`/${routes.tape}/${routes.participants}/create/:${ParamsKeyCreateGroup}`}
       render={() => <Tape tab={TabEnum.Participants} />}
     />
     <Route

@@ -13,9 +13,12 @@ import { MemberType, instanceOfMember } from '../../../../hooks/recoil/member';
 
 type PropsType = {
   member: UserType | MemberType;
+  selectable?: boolean;
+  selected?: boolean;
+  onSelect?: (id: string) => void;
 };
 
-const CardUser = ({ member }: PropsType) => {
+const CardUser = ({ member, selectable, selected, onSelect }: PropsType) => {
   const { params } = useRouteMatch<QSParamsType>();
   const baseUrl = `/${routes.tape}/${routes.participants}/`;
   const to = instanceOfMember(member)
@@ -28,8 +31,11 @@ const CardUser = ({ member }: PropsType) => {
         member.dialog_id.toString() === params[ParamsKeyDialog]
       }
       to={baseUrl + to}
-      avaSize="sm"
+      avaSize="md"
       members={member}
+      selectable={selectable}
+      selected={selected}
+      onSelect={(e) => onSelect && onSelect(member.username)}
     />
   );
 };

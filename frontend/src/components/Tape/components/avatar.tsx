@@ -22,6 +22,7 @@ type PropsType = {
   color?: string;
   group?: boolean;
   styles?: string;
+  isDataURL?: boolean;
 };
 
 const Avatar = ({
@@ -33,7 +34,16 @@ const Avatar = ({
   color,
   group,
   styles = '',
+  isDataURL,
 }: PropsType) => {
+  let src;
+  if (isDataURL) {
+    src = picture;
+  } else {
+    src = `${process.env.REACT_APP_IMG_HOST}/${
+      group ? routes.dialogs : routes.user
+    }/${size === 'lg' ? '' : 'thumb-'}${picture}`;
+  }
   return (
     <div className={`card-avatar ${online ? 'online' : ''} ${styles}`}>
       {pending ? (
@@ -45,12 +55,13 @@ const Avatar = ({
       ) : picture ? (
         <img
           className="rounded-circle"
-          src={`${process.env.REACT_APP_IMG_HOST}/${
-            group ? routes.dialogs : routes.user
-          }/${size === 'lg' ? '' : 'thumb-'}${picture}`}
+          src={src}
           alt="ava"
           width={size ? iconSize[size] : iconSize['md']}
           height={size ? iconSize[size] : iconSize['md']}
+          onLoad={(e: React.SyntheticEvent<HTMLImageElement, Event>) => {
+            URL.revokeObjectURL(e.currentTarget.src);
+          }}
         />
       ) : group ? (
         <ISupervisedUserCircleIcon

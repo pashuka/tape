@@ -3,6 +3,8 @@ import { Link } from 'react-router-dom';
 import dayjs from 'dayjs';
 import isToday from 'dayjs/plugin/isToday';
 import ICancel from '@material-ui/icons/Cancel';
+import ICheckBoxOutlineBlank from '@material-ui/icons/CheckBoxOutlineBlank';
+import ICheckBox from '@material-ui/icons/CheckBox';
 
 import { UserType, instanceOfUser } from '../../../../hooks/recoil/user';
 import { DialogType, instanceOfDialog } from '../../../../hooks/recoil/dialog';
@@ -21,6 +23,9 @@ type PropsType = {
   members?: UserType | UserType[] | MemberType[];
   lastMessageFrom?: UserType;
   isCancelable?: boolean;
+  selectable?: boolean;
+  selected?: boolean;
+  onSelect?: (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => void;
 };
 
 const getMemberTitle = (m: UserType) =>
@@ -46,6 +51,9 @@ const CardBasic = ({
   members,
   lastMessageFrom,
   isCancelable,
+  selectable,
+  selected,
+  onSelect,
 }: PropsType) => {
   const date =
     instanceOfDialog(dialog) && new Date(dialog.last_message_created_at);
@@ -79,7 +87,7 @@ const CardBasic = ({
   }
 
   return (
-    <CardWrapper active={active} to={to || ''}>
+    <CardWrapper active={active} to={to || ''} onSelect={onSelect}>
       {avatar}
 
       <div className="media-body ml-2 overflow-hidden border-top">
@@ -97,6 +105,16 @@ const CardBasic = ({
               <ICancel />
             </Link>
           )}
+          {selectable && (
+            <div className="d-flex align-items-end text-gray-400">
+              {selected ? (
+                <ICheckBox fontSize="small" />
+              ) : (
+                <ICheckBoxOutlineBlank fontSize="small" />
+              )}
+            </div>
+          )}
+
           {dateString && (
             <p className="small text-muted text-nowrap mb-2 ml-4">
               {dateString}

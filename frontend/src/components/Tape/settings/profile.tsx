@@ -159,6 +159,7 @@ const Page = ({ iam }: PropsType) => {
                   >
                     <input
                       type="file"
+                      accept="image/jpg,image/png,image/jpeg,image/gif"
                       disabled={isPending}
                       className="picture-file-input"
                       onChange={(e: React.ChangeEvent<HTMLInputElement>) => {

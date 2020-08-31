@@ -4,13 +4,14 @@ import relativeTime from 'dayjs/plugin/relativeTime';
 import IChevronLeft from '@material-ui/icons/ChevronLeft';
 import { useRecoilState } from 'recoil';
 
-import { Link } from 'react-router-dom';
-import { routes } from '../../../../constants';
+import { Link, useRouteMatch } from 'react-router-dom';
+import { routes, QSParamsType, ParamsKeyUser } from '../../../../constants';
 
 import { DialogType } from '../../../../hooks/recoil/dialog';
 import { MessengerAtom } from '../../../../hooks/recoil/messenger';
 import HeaderDialog from './dialog';
 import SideBar from './sidebar';
+import HeaderWithUserInfo from './user';
 
 dayjs.extend(relativeTime);
 
@@ -20,6 +21,7 @@ declare type HeaderPropsType = {
 
 const Header = ({ dialog }: HeaderPropsType) => {
   const [messenger, setMessenger] = useRecoilState(MessengerAtom);
+  const { params } = useRouteMatch<QSParamsType>();
 
   return (
     <div className="chat-header bg-light py-2 py-lg-3 px-2 px-lg-4">
@@ -44,7 +46,13 @@ const Header = ({ dialog }: HeaderPropsType) => {
               </li>
             </ul>
           </div>
-          {dialog && <HeaderDialog dialog={dialog} />}
+          {dialog ? (
+            <HeaderDialog dialog={dialog} />
+          ) : (
+            ParamsKeyUser in params && (
+              <HeaderWithUserInfo username={params[ParamsKeyUser] || ''} />
+            )
+          )}
           <SideBar isPending={true} />
         </div>
       </div>

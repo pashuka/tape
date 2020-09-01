@@ -39,14 +39,14 @@ const NavItem = ({ active, to, title, children }: NavItemPropsType) => (
 
 const navItems: NavItemPropsType[] = [
   {
-    to: `/${routes.tape}/${routes.participants}/`,
-    title: 'Participants',
-    children: <IPeople style={{ width: iconSize, height: iconSize }} />,
-  },
-  {
     to: `/${routes.tape}/${routes.dialogs}/`,
     title: 'Messages',
     children: <IChat style={{ width: iconSize, height: iconSize }} />,
+  },
+  {
+    to: `/${routes.tape}/${routes.participants}/`,
+    title: 'Participants',
+    children: <IPeople style={{ width: iconSize, height: iconSize }} />,
   },
   {
     to: `/${routes.tape}/${routes.settings.index}/`,

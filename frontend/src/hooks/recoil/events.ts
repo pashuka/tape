@@ -97,11 +97,16 @@ export function useTapeEvents(
     }
   };
 
+  const memberCreatedListener = function (ev: any) {
+    resetDialogs();
+  };
+
   // Predefine processing tape events
   useEffect(() => {
     subscribe(source.current, 'message_created', messageCreatedListener);
     subscribe(source.current, 'dialog_changed', dialogChangedListener);
     subscribe(source.current, 'user_info_changed', userInfoListener);
+    subscribe(source.current, 'dialog_member_created', memberCreatedListener);
 
     return () => {
       unsubscribe(source.current, 'message_created', messageCreatedListener);

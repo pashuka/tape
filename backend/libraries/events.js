@@ -41,6 +41,10 @@ subscriber.on("message", async (channel, message) => {
       break;
 
     case tapeEvents.dialog_member_created:
+      const { dialog, members } = data;
+      members.forEach((id) => {
+        listener(id, channel, JSON.stringify(dialog));
+      });
       break;
 
     case tapeEvents.dialog_member_removed:

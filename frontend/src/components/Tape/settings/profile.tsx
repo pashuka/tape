@@ -3,12 +3,12 @@ import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useFetch, FetchError } from 'react-async';
 import IClose from '@material-ui/icons/Close';
-import { useRecoilState } from 'recoil';
+// import { useRecoilState } from 'recoil';
 
 import { TapeErrorType, onReject, isEmpty, filterObject } from '../../../utils';
 import { getRoute, routes } from '../../../constants';
 import { UserType, instanceOfUser } from '../../../hooks/recoil/user';
-import { authState } from '../../../hooks/recoil/auth';
+// import { authState } from '../../../hooks/recoil/auth';
 import Figure from '../../Figure';
 import Header from './header';
 
@@ -23,7 +23,7 @@ type PropsType = {
 
 const Page = ({ iam }: PropsType) => {
   const { t } = useTranslation();
-  const [, setAuth] = useRecoilState(authState);
+  // const [, setAuth] = useRecoilState(authState);
 
   const [error, setError] = useState<TapeErrorType | undefined>();
 
@@ -48,7 +48,7 @@ const Page = ({ iam }: PropsType) => {
 
   useEffect(() => {
     if (!isPending && !error && instanceOfUser(data)) {
-      setAuth(() => data);
+      // setAuth(() => data);
     }
     // eslint-disable-next-line
   }, [data]);

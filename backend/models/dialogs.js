@@ -105,7 +105,7 @@ class model extends Repository {
     // create group dialog
     const dialog = await knex(tables.dialogs)
       .insert({ dialog_type: "group", profile, last_message_id: null })
-      .returning(["id"]);
+      .returning(this.allowed.select);
     if (!dialog) {
       throw new BadRequest([{ dialog: "Bad dialog" }]);
     }
@@ -121,6 +121,15 @@ class model extends Repository {
     // push admins/members
     await knex(tables.admins).insert(iam);
     await knex(tables.members).insert(membersWithDialog);
+
+    // send events
+    publisher.publish(
+      tapeEvents.dialog_member_created,
+      JSON.stringify({
+        dialog: dialog[0],
+        members: membersWithDialog.map(({ user_id }) => user_id),
+      })
+    );
 
     return dialog;
   }

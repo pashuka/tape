@@ -29,8 +29,9 @@ const CardWrapper: React.FC<PropsType> = ({
         if (onSelect) {
           e.preventDefault();
           onSelect(e);
+        } else {
+          setMessenger({ isOpen: messenger.isOpen, isChatOpen: true });
         }
-        setMessenger({ isOpen: messenger.isOpen, isChatOpen: true });
       }}
     >
       <div

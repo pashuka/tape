@@ -6,8 +6,8 @@ import IWarning from '@material-ui/icons/Warning';
 import { UserType, instanceOfUser } from '../../../hooks/recoil/user';
 import { TapeErrorType, filterObject, isEmpty, onReject } from '../../../utils';
 import { routes, getRoute } from '../../../constants';
-import { useRecoilState } from 'recoil';
-import { authState } from '../../../hooks/recoil/auth';
+// import { useRecoilState } from 'recoil';
+// import { authState } from '../../../hooks/recoil/auth';
 import Header from './header';
 
 const schema = {
@@ -23,7 +23,7 @@ const Page = ({ iam }: PropsType) => {
 
   const [error, setError] = useState<TapeErrorType | undefined>();
   const [values, setValues] = useState({ username: '' });
-  const [, setAuth] = useRecoilState(authState);
+  // const [, setAuth] = useRecoilState(authState);
   const { data, isPending, run } = useFetch<UserType>(
     getRoute(`get/${routes.user}/?username=${iam.username}`),
     { headers: { accept: 'application/json' } },
@@ -40,7 +40,7 @@ const Page = ({ iam }: PropsType) => {
 
   useEffect(() => {
     if (!isPending && !error && instanceOfUser(data)) {
-      setAuth(() => data);
+      // setAuth(() => data);
     }
     // eslint-disable-next-line
   }, [data, error]);

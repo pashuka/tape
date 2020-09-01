@@ -2,8 +2,12 @@ import React from 'react';
 import Avatar from '../../../components/avatar';
 import { useTranslation } from 'react-i18next';
 import { useFetch } from 'react-async';
-import { DialogType } from '../../../../../hooks/recoil/dialog';
+import {
+  DialogType,
+  instanceOfDialog,
+} from '../../../../../hooks/recoil/dialog';
 import { getRoute, routes } from '../../../../../constants';
+import { useHistory } from 'react-router-dom';
 
 type ParamsType = {
   selected: string[];
@@ -16,12 +20,21 @@ type SchemaType = {
 
 const CardCreateGroup = ({ selected }: ParamsType) => {
   const { t } = useTranslation();
+  const history = useHistory();
   const inputRef = React.createRef<HTMLInputElement>();
   const [values, setValues] = React.useState<SchemaType>({});
   const [isValid, setIsValid] = React.useState(false);
   const [preloadedPicture, setPreloadedPicture] = React.useState<
     string | undefined
   >();
+
+  const { data, isPending, run } = useFetch<DialogType>(
+    getRoute(`post/${routes.dialogs}/`),
+    { headers: { accept: 'application/json' } },
+    {
+      defer: true,
+    },
+  );
 
   React.useEffect(() => {
     inputRef.current?.focus();
@@ -46,13 +59,12 @@ const CardCreateGroup = ({ selected }: ParamsType) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [values, selected]);
 
-  const { run } = useFetch<DialogType>(
-    getRoute(`post/${routes.dialogs}/`),
-    { headers: { accept: 'application/json' } },
-    {
-      defer: true,
-    },
-  );
+  React.useEffect(() => {
+    if (!isPending && data && instanceOfDialog(data)) {
+      history.push(`/${routes.tape}/${routes.dialogs}/${data.id}/`);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [data, isPending]);
 
   return (
     <div className="card border-0 rounded-0">

@@ -1,4 +1,5 @@
 import React from 'react';
+import INotificationsOffIcon from '@material-ui/icons/NotificationsOff';
 import { useRecoilValueLoadable } from 'recoil';
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
@@ -38,7 +39,15 @@ const HeaderDialogDirect = ({ dialog, username }: PropsType) => {
         />
       </div>
       <div className="media-body align-self-center text-truncate">
-        <h6 className="text-truncate m-0">{title}</h6>
+        <h6 className="text-truncate m-0">
+          {dialog.settings.mute && (
+            <INotificationsOffIcon
+              fontSize="small"
+              className="mr-2 text-gray-300"
+            />
+          )}
+          {title}
+        </h6>
         {dialog.last_message_created_at && (
           <small className="text-muted">
             last message {dayjs().to(new Date(dialog.last_message_created_at))}

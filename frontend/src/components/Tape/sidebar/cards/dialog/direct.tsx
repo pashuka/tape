@@ -79,9 +79,7 @@ const CardDialogDirect = ({ dialog, username }: PropsType) => {
               {dialog.settings.mute && (
                 <INotificationsOffIcon
                   fontSize="small"
-                  className={`small mr-2 ${
-                    active ? ' text-white' : ' text-gray-300'
-                  }`}
+                  className={`mr-2 ${active ? 'text-white' : 'text-gray-300'}`}
                 />
               )}
               {dateString}

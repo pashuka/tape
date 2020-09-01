@@ -5,10 +5,14 @@ import {
 } from '../../../../../hooks/recoil/dialog';
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
-import { useRecoilValueLoadable } from 'recoil';
+import { useRecoilValueLoadable, useSetRecoilState } from 'recoil';
 import { UserNameType } from '../../../../../hooks/recoil/user';
 import HeaderDialogDirect from './direct';
 import HeaderDialogGroup from './group';
+import {
+  MessengerAtom,
+  MessengerType,
+} from '../../../../../hooks/recoil/messenger';
 
 dayjs.extend(relativeTime);
 
@@ -17,6 +21,7 @@ declare type PropsType = {
 };
 
 const HeaderDialog = ({ dialog }: PropsType) => {
+  const setMessenger = useSetRecoilState(MessengerAtom);
   const { state, contents } = useRecoilValueLoadable(
     dialogMembersSelector({ dialog_id: dialog.id, offset: 0 }),
   );
@@ -50,6 +55,18 @@ const HeaderDialog = ({ dialog }: PropsType) => {
       break;
   }
 
-  return <div className="col-8 col-xl-6">{headerComponent}</div>;
+  return (
+    <div
+      className="col-8 col-xl-6"
+      onClick={(e) => {
+        setMessenger((currVal: MessengerType) => ({
+          ...currVal,
+          isChatSideBarOpen: true,
+        }));
+      }}
+    >
+      {headerComponent}
+    </div>
+  );
 };
 export default HeaderDialog;

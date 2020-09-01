@@ -1,6 +1,6 @@
 import React from 'react';
 import IChevronLeft from '@material-ui/icons/ChevronLeft';
-import { useRecoilState } from 'recoil';
+import { useSetRecoilState } from 'recoil';
 
 import { Link } from 'react-router-dom';
 import { routes } from '../../../../constants';
@@ -16,7 +16,7 @@ declare type PropsType = {
 
 const Header = ({ title }: PropsType) => {
   const { t } = useTranslation();
-  const [messenger, setMessenger] = useRecoilState(MessengerAtom);
+  const setMessenger = useSetRecoilState(MessengerAtom);
 
   return (
     <div className="chat-header bg-light py-2 py-lg-3 px-2 px-lg-4">

@@ -55,6 +55,14 @@ const Participants = ({ scrollBottom }: PropsType) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [state, contents]);
 
+  const handleSelect = (username: string) => {
+    setSelected(
+      selected.includes(username)
+        ? selected.filter((_) => _ !== username)
+        : [...selected, username],
+    );
+  };
+
   return (
     <div className="tab-pane fade h-100 show active">
       <div className="d-flex flex-column h-100">
@@ -99,13 +107,9 @@ const Participants = ({ scrollBottom }: PropsType) => {
                             username={username}
                             selectable={isGroupCreateState}
                             selected={selected.includes(username)}
-                            onSelect={(username) => {
-                              setSelected(
-                                selected.includes(username)
-                                  ? selected.filter((_) => _ !== username)
-                                  : [...selected, username],
-                              );
-                            }}
+                            onSelect={
+                              isGroupCreateState ? handleSelect : undefined
+                            }
                           />
                         ))}
                     </React.Fragment>
@@ -119,17 +123,7 @@ const Participants = ({ scrollBottom }: PropsType) => {
                     member={_}
                     selectable={isGroupCreateState}
                     selected={selected.includes(_.username)}
-                    onSelect={
-                      isGroupCreateState
-                        ? (username) => {
-                            setSelected(
-                              selected.includes(username)
-                                ? selected.filter((_) => _ !== username)
-                                : [...selected, username],
-                            );
-                          }
-                        : undefined
-                    }
+                    onSelect={isGroupCreateState ? handleSelect : undefined}
                   />
                 ))}
               {state === 'loading' && (

@@ -138,35 +138,63 @@ class model extends Repository {
     if (!this.user) {
       return;
     }
+
+    // check dialog id
     const { dialog_id } = conditions;
-    const { read_message_id } = values;
     if (!validator.isNumeric(dialog_id)) {
       throw new BadRequest([{ dialog_id: "Bad dialog id" }]);
     }
-    if (!validator.isNumeric(String(read_message_id))) {
-      throw new BadRequest([{ read_message_id: "Bad read message id" }]);
-    }
+
+    const memberConditions = { dialog_id, user_id: this.user.id };
+    // check user as dialog member
     const isMember = await knex(tables.members)
-      .select(["unread_count", "unread_cursor"])
-      .where({ dialog_id, user_id: this.user.id })
+      .select(["unread_count", "unread_cursor", "settings"])
+      .where(memberConditions)
       .first();
     if (!isMember) {
       return;
     }
-    const isMessage = await knex(tables.messages)
-      .select("id")
-      .where({ dialog_id, id: read_message_id })
-      .first();
-    if (!isMessage) {
-      return;
-    }
-    if (isMember.unread_cursor < isMessage.id) {
-      // move cursor and reset unread_count
+
+    const { read_message_id, mute } = values;
+    if (read_message_id) {
+      if (isMember.unread_count < 0) {
+        return;
+      }
+
+      // check message by id
+      if (!validator.isNumeric(String(read_message_id))) {
+        throw new BadRequest([{ read_message_id: "Bad read message id" }]);
+      }
+      const isMessage = await knex(tables.messages)
+        .select("id")
+        .where({ dialog_id, id: read_message_id })
+        .first();
+      if (!isMessage) {
+        return;
+      }
+
+      if (isMember.unread_cursor === null || isMember.unread_cursor < isMessage.id) {
+        // move cursor and reset unread_count
+        const result = await knex(tables.members)
+          .where(memberConditions)
+          .update({
+            unread_cursor: read_message_id,
+            unread_count: 0,
+          })
+          .returning(["dialog_id", "user_id", "unread_count", "unread_cursor"]);
+        if (!result) {
+          return;
+        }
+        // push notification && send event
+        publisher.publish(tapeEvents.dialog_changed, JSON.stringify(result[0]));
+        return result;
+      }
+    } else if (typeof mute === "boolean") {
+      const settings = { ...isMember.settings, mute: !!mute };
       const result = await knex(tables.members)
-        .where({ dialog_id, user_id: this.user.id })
+        .where(memberConditions)
         .update({
-          unread_cursor: read_message_id,
-          unread_count: 0,
+          settings,
         })
         .returning(["dialog_id", "user_id", "unread_count", "unread_cursor"]);
       if (!result) {

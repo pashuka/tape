@@ -26,13 +26,13 @@ const HeaderWithUserInfo = ({ username }: PropsType) => {
       contents.realname || `@${contents.username}`
     ) : null;
   return (
-    <div className="col-8 col-xl-8">
+    <div className="col-8 col-xl-6">
       <div className="media text-center text-xl-left">
         <div className="d-none d-xl-inline-block text-center mr-3">
           <Avatar
             pending={state === 'loading'}
             picture={instanceOfUser(contents) ? contents.profile.picture : ''}
-            size="md"
+            size="sm"
           />
         </div>
         <div className="media-body align-self-center text-truncate">

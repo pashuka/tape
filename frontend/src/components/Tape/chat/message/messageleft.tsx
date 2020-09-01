@@ -34,7 +34,7 @@ const MessageLeft = ({
 
   return (
     <div className="message mt-3 mt-md-4">
-      <a className="mr-2 mr-lg-4" href="#chat-messages">
+      <a className="mr-2 mr-lg-4" href="#dialog-member">
         <Avatar
           pending={state === 'loading'}
           picture={member?.profile?.picture}

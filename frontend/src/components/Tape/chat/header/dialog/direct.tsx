@@ -34,7 +34,7 @@ const HeaderDialogDirect = ({ dialog, username }: PropsType) => {
         <Avatar
           pending={state === 'loading'}
           picture={instanceOfUser(contents) ? contents.profile.picture : ''}
-          size="md"
+          size="sm"
         />
       </div>
       <div className="media-body align-self-center text-truncate">

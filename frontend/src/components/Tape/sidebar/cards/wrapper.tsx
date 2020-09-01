@@ -38,6 +38,7 @@ const CardWrapper: React.FC<PropsType> = ({
           setMessenger((currVal: MessengerType) => ({
             ...currVal,
             isChatOpen: true,
+            isChatSideBarOpen: false,
           }));
         }
       }}

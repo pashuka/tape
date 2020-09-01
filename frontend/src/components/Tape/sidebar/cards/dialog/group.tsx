@@ -1,4 +1,5 @@
 import React from 'react';
+import INotificationsOffIcon from '@material-ui/icons/NotificationsOff';
 import { useRouteMatch } from 'react-router-dom';
 import { useRecoilValueLoadable } from 'recoil';
 import dayjs from 'dayjs';
@@ -55,6 +56,14 @@ const CardDialogGroup = ({ dialog }: PropsType) => {
           <h6 className="text-truncate mb-0 mr-auto">{title}</h6>
           {dateString && (
             <p className="small text-muted text-nowrap mb-2 ml-4">
+              {dialog.settings.mute && (
+                <INotificationsOffIcon
+                  fontSize="small"
+                  className={`small mr-2 ${
+                    active ? ' text-white' : ' text-gray-300'
+                  }`}
+                />
+              )}
               {dateString}
             </p>
           )}
@@ -67,7 +76,13 @@ const CardDialogGroup = ({ dialog }: PropsType) => {
             {dialog.last_message_body || '...'}
           </div>
           {dialog.unread_count > 0 && (
-            <div className="badge badge-pill badge-primary ml-3">
+            <div
+              className={`badge badge-pill ${
+                dialog.settings.mute
+                  ? 'badge-secondary bg-gray-500'
+                  : 'badge-primary'
+              } ml-3`}
+            >
               {compactNumber(dialog.unread_count)}
             </div>
           )}

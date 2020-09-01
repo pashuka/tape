@@ -50,6 +50,6 @@ const HeaderDialog = ({ dialog }: PropsType) => {
       break;
   }
 
-  return <div className="col-8 col-xl-8">{headerComponent}</div>;
+  return <div className="col-8 col-xl-6">{headerComponent}</div>;
 };
 export default HeaderDialog;

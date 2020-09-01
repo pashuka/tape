@@ -17,7 +17,7 @@ const HeaderDialogGroup = ({ dialog }: PropsType) => {
   return (
     <div className="media text-center text-xl-left">
       <div className="d-none d-xl-inline-block text-center mr-3">
-        <Avatar picture={dialog.profile.picture} size="md" group={true} />
+        <Avatar picture={dialog.profile.picture} size="sm" group={true} />
       </div>
       <div className="media-body align-self-center text-truncate">
         <h6 className="text-truncate m-0">{title}</h6>

@@ -3,22 +3,36 @@ import React from 'react';
 import ISearch from '@material-ui/icons/Search';
 import IPersonAdd from '@material-ui/icons/PersonAdd';
 import IMoreVert from '@material-ui/icons/MoreVert';
+import INotificationsActiveOutlinedIcon from '@material-ui/icons/NotificationsActiveOutlined';
+import INotificationsOffOutlined from '@material-ui/icons/NotificationsOffOutlined';
 import { useSetRecoilState } from 'recoil';
 import {
   MessengerAtom,
   MessengerType,
 } from '../../../../hooks/recoil/messenger';
+import { DialogType } from '../../../../hooks/recoil/dialog';
+import { routes, getRoute } from '../../../../constants';
+import { MemberType } from '../../../../hooks/recoil/member';
+import { useFetch } from 'react-async';
 
 declare type PropsType = {
+  dialog: DialogType;
   disabled?: boolean;
 };
 
-const SideBar = ({ disabled = false }: PropsType) => {
+const SideBar = ({ dialog, disabled = false }: PropsType) => {
   const setMessenger = useSetRecoilState(MessengerAtom);
+  const { run } = useFetch<MemberType>(
+    getRoute(`put/${routes.dialogs}/`),
+    {
+      headers: { accept: 'application/json' },
+    },
+    { defer: true },
+  );
   return (
-    <div className="col-2 col-xl-4 text-right">
+    <div className="col-2 col-xl-6 text-right">
       <ul className="nav justify-content-end">
-        <li className="nav-item list-inline-item d-none d-xl-block mr-2">
+        {/* <li className="nav-item list-inline-item d-none d-xl-block mr-2">
           <button
             className="nav-link btn btn-link text-muted px-3"
             title="Search this chat"
@@ -27,9 +41,9 @@ const SideBar = ({ disabled = false }: PropsType) => {
           >
             <ISearch />
           </button>
-        </li>
+        </li> */}
 
-        <li className="nav-item list-inline-item d-none d-xl-block mr-2">
+        {/* <li className="nav-item list-inline-item d-none d-xl-block mr-2">
           <button
             className="nav-link btn btn-link text-muted px-3"
             title="Add People"
@@ -37,6 +51,32 @@ const SideBar = ({ disabled = false }: PropsType) => {
             disabled={disabled}
           >
             <IPersonAdd />
+          </button>
+        </li> */}
+
+        <li className="nav-item list-inline-item d-none d-xl-block mr-2">
+          <button
+            className="nav-link btn btn-link text-muted px-3"
+            title={dialog.settings.mute ? 'Unmute' : 'Mute'}
+            type="button"
+            disabled={disabled}
+            onClick={() => {
+              run({
+                resource: getRoute(
+                  `put/${routes.dialogs}/?dialog_id=${dialog.id}`,
+                ),
+                method: 'PUT',
+                body: JSON.stringify({
+                  mute: !dialog.settings.mute,
+                }),
+              });
+            }}
+          >
+            {dialog.settings.mute ? (
+              <INotificationsActiveOutlinedIcon />
+            ) : (
+              <INotificationsOffOutlined />
+            )}
           </button>
         </li>
 
@@ -46,6 +86,12 @@ const SideBar = ({ disabled = false }: PropsType) => {
             disabled={disabled}
             className="nav-link btn btn-link text-muted px-3"
             title="Details"
+            onClick={(e) => {
+              setMessenger((currVal: MessengerType) => ({
+                ...currVal,
+                isChatSideBarOpen: true,
+              }));
+            }}
           >
             <IMoreVert />
           </button>
@@ -56,16 +102,21 @@ const SideBar = ({ disabled = false }: PropsType) => {
             <button
               className="nav-link btn btn-link text-muted px-0"
               type="button"
+              title="Details"
               disabled={disabled}
+              onClick={(e) => {
+                setMessenger((currVal: MessengerType) => ({
+                  ...currVal,
+                  isChatSideBarOpen: true,
+                }));
+              }}
             >
               <IMoreVert />
             </button>
             <div className="dropdown-menu">
               <a
                 className="dropdown-item d-flex align-items-center"
-                data-toggle="collapse"
-                data-target="#chat-1-search"
-                href="#chat-search"
+                href="#dialog-search"
               >
                 Search <ISearch />
               </a>
@@ -73,12 +124,6 @@ const SideBar = ({ disabled = false }: PropsType) => {
               <button
                 type="button"
                 className="dropdown-item d-flex align-items-center"
-                onClick={(e) => {
-                  setMessenger((currVal: MessengerType) => ({
-                    ...currVal,
-                    isChatSideBarOpen: true,
-                  }));
-                }}
               >
                 Dialog Info
                 <span className="ml-auto pl-5 fe-more-horizontal"></span>

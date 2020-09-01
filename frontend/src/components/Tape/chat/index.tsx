@@ -23,7 +23,7 @@ const Chat = () => {
   const { state, contents } = useRecoilValueLoadable(
     dialogSelector(Number(params[ParamsKeyDialog])),
   );
-  const messenger = useRecoilValue(MessengerAtom);
+  const { isChatSideBarOpen } = useRecoilValue(MessengerAtom);
 
   if (!iam) {
     return null;
@@ -38,15 +38,12 @@ const Chat = () => {
   return (
     <div className="chat">
       <div className="chat-body bg-white">
-        <Header
-          dialog={dialog}
-          // username={params[ParamsKeyUser]}
-        />
+        <Header dialog={dialog} />
         <SearchBar />
         <Content iam={iam} dialog={dialog} />
         <Footer />
       </div>
-      {messenger.isChatSideBarOpen && <ChatSideBar />}
+      <ChatSideBar isOpen={isChatSideBarOpen} />
     </div>
   );
 };

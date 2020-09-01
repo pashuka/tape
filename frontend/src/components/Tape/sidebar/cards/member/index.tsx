@@ -54,7 +54,7 @@ const CardMember = ({
       members={record}
       selectable={selectable}
       selected={selected}
-      onSelect={(e) => onSelect && record && onSelect(username)}
+      onSelect={onSelect && record ? (e) => onSelect(username) : undefined}
     />
 
     // <CardWrapper

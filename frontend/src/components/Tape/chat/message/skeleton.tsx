@@ -1,5 +1,5 @@
-import React from "react";
-import Skeleton from "../../../Skeleton";
+import React from 'react';
+import Skeleton from '../../../Skeleton';
 
 type MessageSkeletonPropsType = {
   isIam?: boolean;
@@ -22,7 +22,7 @@ export const MessageSkeleton = ({ isIam }: MessageSkeletonPropsType) =>
     </div>
   ) : (
     <div className="message">
-      <a className="avatar avatar-sm mr-2 mr-lg-5" href="#chat-messages">
+      <a className="avatar avatar-sm mr-2 mr-lg-5" href="#dialog-member">
         <Skeleton roundedCircle />
       </a>
 

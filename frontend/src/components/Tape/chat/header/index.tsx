@@ -2,7 +2,7 @@ import React from 'react';
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
 import IChevronLeft from '@material-ui/icons/ChevronLeft';
-import { useRecoilState } from 'recoil';
+import { useSetRecoilState } from 'recoil';
 
 import { Link, useRouteMatch } from 'react-router-dom';
 import { routes, QSParamsType, ParamsKeyUser } from '../../../../constants';
@@ -23,7 +23,7 @@ declare type HeaderPropsType = {
 };
 
 const Header = ({ dialog }: HeaderPropsType) => {
-  const [messenger, setMessenger] = useRecoilState(MessengerAtom);
+  const setMessenger = useSetRecoilState(MessengerAtom);
   const { params } = useRouteMatch<QSParamsType>();
 
   return (
@@ -49,13 +49,15 @@ const Header = ({ dialog }: HeaderPropsType) => {
             </ul>
           </div>
           {dialog ? (
-            <HeaderDialog dialog={dialog} />
+            <React.Fragment>
+              <HeaderDialog dialog={dialog} />
+              <SideBar dialog={dialog} disabled={false} />
+            </React.Fragment>
           ) : (
             ParamsKeyUser in params && (
               <HeaderWithUserInfo username={params[ParamsKeyUser] || ''} />
             )
           )}
-          <SideBar disabled={false} />
         </div>
       </div>
     </div>

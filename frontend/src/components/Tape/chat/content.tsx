@@ -15,6 +15,7 @@ import { limitFetchMax } from '../../../hooks/recoil/constants';
 import { useFetch } from 'react-async';
 import { getRoute, routes } from '../../../constants';
 import { DialogType } from '../../../hooks/recoil/dialog';
+import { MemberType } from '../../../hooks/recoil/member';
 
 type ContentPropsType = {
   iam: UserNameType;
@@ -37,7 +38,7 @@ const Content = ({ iam, dialog }: ContentPropsType) => {
     [] as MessageType[],
   );
 
-  const { run: readMessage } = useFetch<MessageType>(
+  const { run: readMessage } = useFetch<MemberType>(
     getRoute(`put/${routes.dialogs}/`),
     {
       headers: { accept: 'application/json' },
@@ -80,10 +81,10 @@ const Content = ({ iam, dialog }: ContentPropsType) => {
   }, [state, contents]);
 
   React.useEffect(() => {
-    // console.log('Send read message', dialog, lastMessageContents);
     if (
       lastMessageState === 'hasValue' &&
-      instanceOfMessage(lastMessageContents)
+      instanceOfMessage(lastMessageContents) &&
+      lastMessageContents.dialog_id === dialog?.id
     ) {
       if (dialog?.unread_count && dialog.unread_count > 0) {
         readMessage({

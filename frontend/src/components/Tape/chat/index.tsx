@@ -14,6 +14,8 @@ import {
 } from '../../../constants';
 import { authState } from '../../../hooks/recoil/auth';
 import { instanceOfDialog, dialogSelector } from '../../../hooks/recoil/dialog';
+import { MessengerAtom } from '../../../hooks/recoil/messenger';
+import ChatSideBar from './sidebar';
 
 const Chat = () => {
   const { params } = useRouteMatch<QSParamsType>();
@@ -21,6 +23,7 @@ const Chat = () => {
   const { state, contents } = useRecoilValueLoadable(
     dialogSelector(Number(params[ParamsKeyDialog])),
   );
+  const messenger = useRecoilValue(MessengerAtom);
 
   if (!iam) {
     return null;
@@ -43,6 +46,7 @@ const Chat = () => {
         <Content iam={iam} dialog={dialog} />
         <Footer />
       </div>
+      {messenger.isChatSideBarOpen && <ChatSideBar />}
     </div>
   );
 };

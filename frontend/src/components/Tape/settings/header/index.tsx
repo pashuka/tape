@@ -4,7 +4,10 @@ import { useRecoilState } from 'recoil';
 
 import { Link } from 'react-router-dom';
 import { routes } from '../../../../constants';
-import { MessengerAtom } from '../../../../hooks/recoil/messenger';
+import {
+  MessengerAtom,
+  MessengerType,
+} from '../../../../hooks/recoil/messenger';
 import { useTranslation } from 'react-i18next';
 
 declare type PropsType = {
@@ -26,10 +29,10 @@ const Header = ({ title }: PropsType) => {
                   to={`/${routes.tape}/${routes.settings.index}/`}
                   className="text-muted px-0"
                   onClick={(e) => {
-                    setMessenger({
-                      isOpen: messenger.isOpen,
+                    setMessenger((currVal: MessengerType) => ({
+                      ...currVal,
                       isChatOpen: false,
-                    });
+                    }));
                   }}
                 >
                   <IChevronLeft />

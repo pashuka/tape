@@ -39,6 +39,8 @@ const Participants = ({ scrollBottom }: PropsType) => {
   const [searchQuery, setSearchQuery] = useRecoilState(searchQueryAtom);
   const filteredUsers = useRecoilValueLoadable(usersFilter);
 
+  const isGroupCreateState = ParamsKeyCreateGroup in params;
+
   React.useEffect(() => {
     if (scrollBottom && offset + limitFetchMax === records.length) {
       setOffset((currVal: number) => currVal + limitFetchMax);
@@ -65,7 +67,7 @@ const Participants = ({ scrollBottom }: PropsType) => {
             />
 
             <nav className="nav nav-dialog d-block">
-              {ParamsKeyCreateGroup in params && (
+              {isGroupCreateState && (
                 <React.Fragment>
                   <CardHeader title="Group settings" />
                   <CardCreateGroup selected={selected} />
@@ -95,7 +97,7 @@ const Participants = ({ scrollBottom }: PropsType) => {
                             key={username}
                             route={routes.participants}
                             username={username}
-                            selectable={ParamsKeyCreateGroup in params}
+                            selectable={isGroupCreateState}
                             selected={selected.includes(username)}
                             onSelect={(username) => {
                               setSelected(
@@ -115,15 +117,19 @@ const Participants = ({ scrollBottom }: PropsType) => {
                   <CardUser
                     key={_.username}
                     member={_}
-                    selectable={ParamsKeyCreateGroup in params}
+                    selectable={isGroupCreateState}
                     selected={selected.includes(_.username)}
-                    onSelect={(username) => {
-                      setSelected(
-                        selected.includes(username)
-                          ? selected.filter((_) => _ !== username)
-                          : [...selected, username],
-                      );
-                    }}
+                    onSelect={
+                      isGroupCreateState
+                        ? (username) => {
+                            setSelected(
+                              selected.includes(username)
+                                ? selected.filter((_) => _ !== username)
+                                : [...selected, username],
+                            );
+                          }
+                        : undefined
+                    }
                   />
                 ))}
               {state === 'loading' && (

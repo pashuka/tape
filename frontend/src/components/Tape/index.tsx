@@ -1,6 +1,6 @@
 import React from 'react';
 import { useRouteMatch } from 'react-router-dom';
-import { useRecoilState, useSetRecoilState, useResetRecoilState } from 'recoil';
+import { useSetRecoilState, useResetRecoilState, useRecoilValue } from 'recoil';
 
 import Navbar from './navbar';
 import DialogsBar from './sidebar/dialogs';
@@ -34,7 +34,7 @@ const Messenger = ({ tab, route }: PropsType) => {
   );
   const refNavbar = React.createRef<HTMLDivElement>();
 
-  const [messenger] = useRecoilState(MessengerAtom);
+  const messenger = useRecoilValue(MessengerAtom);
   const setDialogId = useSetRecoilState(currentDialogIdState);
   const resetMessagesOffset = useResetRecoilState(messagesOffsetAtom);
 

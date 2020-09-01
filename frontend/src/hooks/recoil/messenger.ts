@@ -1,14 +1,16 @@
-import { atom } from "recoil";
+import { atom } from 'recoil';
 
 export type MessengerType = {
-  isOpen: boolean;
-  isChatOpen: boolean;
+  isOpen?: boolean;
+  isChatOpen?: boolean;
+  isChatSideBarOpen?: boolean;
 };
 
 export const MessengerAtom = atom<MessengerType>({
-  key: "messenger",
+  key: 'messenger',
   default: {
     isOpen: false,
     isChatOpen: false,
+    isChatSideBarOpen: false,
   },
 });

@@ -35,7 +35,7 @@ const CardUser = ({ member, selectable, selected, onSelect }: PropsType) => {
       members={member}
       selectable={selectable}
       selected={selected}
-      onSelect={(e) => onSelect && onSelect(member.username)}
+      onSelect={onSelect ? (e) => onSelect(member.username) : undefined}
     />
   );
 };

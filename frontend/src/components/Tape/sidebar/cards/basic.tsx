@@ -106,11 +106,14 @@ const CardBasic = ({
             </Link>
           )}
           {selectable && (
-            <div className="d-flex align-items-end text-gray-400">
+            <div className="d-flex align-items-end">
               {selected ? (
-                <ICheckBox fontSize="small" />
+                <ICheckBox fontSize="small" className="text-primary" />
               ) : (
-                <ICheckBoxOutlineBlank fontSize="small" />
+                <ICheckBoxOutlineBlank
+                  fontSize="small"
+                  className="text-gray-400"
+                />
               )}
             </div>
           )}

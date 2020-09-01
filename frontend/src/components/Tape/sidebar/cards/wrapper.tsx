@@ -1,15 +1,20 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { useRecoilState } from 'recoil';
+import { useSetRecoilState } from 'recoil';
 
-import { MessengerAtom } from '../../../../hooks/recoil/messenger';
+import {
+  MessengerAtom,
+  MessengerType,
+} from '../../../../hooks/recoil/messenger';
 
 type PropsType = {
   active?: boolean;
   activeColor?: string;
   to?: string;
   disabled?: boolean;
-  onSelect?: (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => void;
+  onSelect?: (
+    e: React.MouseEvent<HTMLAnchorElement, MouseEvent>,
+  ) => void | undefined;
 };
 
 const CardWrapper: React.FC<PropsType> = ({
@@ -20,7 +25,7 @@ const CardWrapper: React.FC<PropsType> = ({
   disabled,
   onSelect,
 }) => {
-  const [messenger, setMessenger] = useRecoilState(MessengerAtom);
+  const setMessenger = useSetRecoilState(MessengerAtom);
   return (
     <Link
       className={`nav-link text-body p-0 ${disabled ? 'disabled' : ''}`}
@@ -30,7 +35,10 @@ const CardWrapper: React.FC<PropsType> = ({
           e.preventDefault();
           onSelect(e);
         } else {
-          setMessenger({ isOpen: messenger.isOpen, isChatOpen: true });
+          setMessenger((currVal: MessengerType) => ({
+            ...currVal,
+            isChatOpen: true,
+          }));
         }
       }}
     >

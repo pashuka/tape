@@ -8,7 +8,10 @@ import { Link, useRouteMatch } from 'react-router-dom';
 import { routes, QSParamsType, ParamsKeyUser } from '../../../../constants';
 
 import { DialogType } from '../../../../hooks/recoil/dialog';
-import { MessengerAtom } from '../../../../hooks/recoil/messenger';
+import {
+  MessengerAtom,
+  MessengerType,
+} from '../../../../hooks/recoil/messenger';
 import HeaderDialog from './dialog';
 import SideBar from './sidebar';
 import HeaderWithUserInfo from './user';
@@ -34,11 +37,10 @@ const Header = ({ dialog }: HeaderPropsType) => {
                   to={`/${routes.tape}/${routes.dialogs}/`}
                   className="text-muted px-0"
                   onClick={(e) => {
-                    // e.preventDefault();
-                    setMessenger({
-                      isOpen: messenger.isOpen,
+                    setMessenger((currVal: MessengerType) => ({
+                      ...currVal,
                       isChatOpen: false,
-                    });
+                    }));
                   }}
                 >
                   <IChevronLeft />
@@ -53,7 +55,7 @@ const Header = ({ dialog }: HeaderPropsType) => {
               <HeaderWithUserInfo username={params[ParamsKeyUser] || ''} />
             )
           )}
-          <SideBar isPending={true} />
+          <SideBar disabled={false} />
         </div>
       </div>
     </div>

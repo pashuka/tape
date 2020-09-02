@@ -13,7 +13,6 @@ import { MessengerAtom } from '../../hooks/recoil/messenger';
 import { currentDialogIdState } from '../../hooks/recoil/dialog';
 import SettingsContent from './settings/index';
 import { messagesOffsetAtom } from '../../hooks/recoil/message';
-import { useTapeEvents } from '../../hooks/recoil/events';
 
 export enum TabEnum {
   Dialogs,
@@ -39,8 +38,6 @@ const Messenger = ({ tab, route }: PropsType) => {
   const resetMessagesOffset = useResetRecoilState(messagesOffsetAtom);
 
   const { params } = useRouteMatch<QSParamsType>();
-
-  useTapeEvents();
 
   // TODO: onSelect dialog scroll sidebar visible part to see selected dialog item
   const handleScroll = (e: React.UIEvent<HTMLElement>) => {

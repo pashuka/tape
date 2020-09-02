@@ -30,7 +30,8 @@ let users = [...Array(counts.users)].map(() => {
 });
 
 exports.seed = async (knex) => {
-  await knex(tables.admins).del();
+  // TODO: remove admins after migration in production
+  // await knex(tables.admins).del();
   await knex(tables.members).del();
   await knex(tables.dialogs).del();
   await knex(tables.messages).del();
@@ -57,8 +58,14 @@ exports.seed = async (knex) => {
     const dialog = await knex(tables.dialogs).insert({ last_message_id: null }).returning(["id"]);
     const dialog_id = dialog[0].id;
     // add dialog admins and members
-    const dialogPeers = peers[i].map((user_id) => ({ user_id, dialog_id }));
-    await knex(tables.admins).insert(dialogPeers);
+    const dialogPeers = peers[i].map((user_id) => ({
+      user_id,
+      dialog_id,
+      dialog_type: "direct",
+      role: "admin",
+    }));
+    // TODO: remove admins after migration in production
+    // await knex(tables.admins).insert(dialogPeers);
     await knex(tables.members).insert(dialogPeers);
 
     // Create messages with dialog's id

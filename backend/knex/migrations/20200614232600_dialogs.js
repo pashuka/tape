@@ -1,4 +1,4 @@
-const { tables, lengths, dialogTypes } = require("../../constants");
+const { tables, dialogTypes } = require("../../constants");
 
 exports.up = (knex) =>
   knex.schema

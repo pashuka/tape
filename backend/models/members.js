@@ -4,9 +4,9 @@ const knex = require("../libraries/knex");
 const { tables } = require("../constants");
 const Repository = require("./repository");
 const allowed = {
-  schema: ["dialog_id", "user_id"],
-  conditions: ["dialog_id", "user_id"],
-  select: ["dialog_id", "user_id"],
+  schema: ["dialog_id", "user_id", "role"],
+  conditions: ["dialog_id", "user_id", "role"],
+  select: ["dialog_id", "user_id", "role"],
   insert: [],
   update: [],
 };

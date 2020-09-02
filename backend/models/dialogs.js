@@ -13,6 +13,7 @@ const allowed = {
     "last_message_body",
     "last_message_created_at",
     "profile",
+    "member_count",
   ],
   conditions: ["created_at"],
   select: [
@@ -22,6 +23,7 @@ const allowed = {
     "last_message_body",
     "last_message_created_at",
     "profile",
+    "member_count",
   ],
   insert: ["profile"],
   update: ["profile"],
@@ -37,8 +39,8 @@ class model extends Repository {
       throw new BadRequest([{ offset: "Bad offset" }]);
     }
     return knex(tables.members)
-      .select({ id: `${tables.dialogs}.id` })
-      .leftJoin(tables.dialogs, `${this.table}.id`, `${tables.members}.dialog_id`)
+      .select({ id: `${this.table}.id` })
+      .leftJoin(this.table, `${this.table}.id`, `${tables.members}.dialog_id`)
       .where(`${tables.members}.user_id`, this.user.id)
       .orderBy(`${this.table}.last_message_created_at`, "desc")
       .offset(offset)
@@ -103,8 +105,8 @@ class model extends Repository {
     }
 
     // create group dialog
-    const dialog = await knex(tables.dialogs)
-      .insert({ dialog_type: "group", profile, last_message_id: null })
+    const dialog = await knex(this.table)
+      .insert({ dialog_type: "group", profile, member_count: records.length + 1 })
       .returning(this.allowed.select);
     if (!dialog) {
       throw new BadRequest([{ dialog: "Bad dialog" }]);
@@ -113,13 +115,14 @@ class model extends Repository {
     const dialog_id = dialog[0].id;
     const iam = { dialog_id, user_id: this.user.id };
 
-    let membersWithDialog = [{ ...iam, dialog_type: "group" }];
+    let membersWithDialog = [{ ...iam, dialog_type: "group", role: "admin" }];
     records.forEach(({ id }) =>
       membersWithDialog.push({ dialog_type: "group", dialog_id, user_id: id })
     );
 
     // push admins/members
-    await knex(tables.admins).insert(iam);
+    // TODO: remove after migration in production
+    // await knex(tables.admins).insert(iam);
     await knex(tables.members).insert(membersWithDialog);
 
     // send events

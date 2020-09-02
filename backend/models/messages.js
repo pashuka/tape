@@ -108,14 +108,33 @@ class model extends Repository {
 
       // TODO: impl group dialog type creation
       // TODO: impl transactional solution
+      /**
+       * knex.transaction((trx) => {
+       *   return knex.schema.table('Orders', (table) => table.string('user_nick_name').transacting(trx))
+       *   .then(() => {
+       *     return Promise.all(
+       *       nickNames.map((row) => {
+       *         return knex('Orders')
+       *         .update({ user_nick_name: row.nickName })
+       *         .where('user_id', row.userId)
+       *         .transacting(trx);
+       *       })
+       *    )
+       * })
+       * .then(trx.commit)
+       * .catch(trx.rollback);
+      });
+       */
       // const trx = await knex.transaction();
-      dialog = await knex(tables.dialogs).insert({ last_message_id: null }).returning(["id"]);
+      dialog = await knex(tables.dialogs).insert({ member_count: 2 }).returning(["id"]);
       dialog_id = dialog[0].id;
+      // both user is admin in direct conversation
       const members = [
-        { dialog_id, user_id: this.user.id },
-        { dialog_id, user_id: participant.id },
+        { dialog_id, user_id: this.user.id, role: "admin" },
+        { dialog_id, user_id: participant.id, role: "admin" },
       ];
-      await knex(tables.admins).insert(members);
+      // TODO: remove admins after migration in production
+      // await knex(tables.admins).insert(members);
       await knex(tables.members).insert(members);
     } else if (dialog_id) {
       if (!validator.isNumeric(dialog_id)) {

@@ -1,4 +1,4 @@
-const { tables, lengths } = require("../../constants");
+const { tables } = require("../../constants");
 
 exports.up = (knex) =>
   knex.schema

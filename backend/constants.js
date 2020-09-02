@@ -18,6 +18,7 @@ const lengths = {
 };
 
 const dialogTypes = ["direct", "group", "channel"];
+const memberRoles = ["member", "admin"];
 
 const tapeEvents = {
   message_created: "message_created",
@@ -40,6 +41,7 @@ const api = {
 };
 
 const tables = {
+  // TODO: remove admins after migration in production
   admins: "admins",
   dialogs: "dialogs",
   members: "members",
@@ -48,6 +50,7 @@ const tables = {
 };
 
 const resources = {
+  // TODO: remove admins after migration in production
   admins: "admins",
   auth: {
     signin: "auth/signin",
@@ -134,4 +137,5 @@ module.exports = {
   dialogTypes,
   tapeEvents,
   supportMimes,
+  memberRoles,
 };

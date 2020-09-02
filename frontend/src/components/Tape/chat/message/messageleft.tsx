@@ -44,7 +44,7 @@ const MessageLeft = ({
 
       <div className="message-body">
         <div className="message-row">
-          <div className="d-flex align-items-center">
+          <div className="d-flex align-items-end">
             <div className="message-content">
               <h6>
                 {state === 'loading'

@@ -38,7 +38,7 @@ const MessageRight = ({
 
       <div className="message-body">
         <div className="message-row">
-          <div className="d-flex align-items-center justify-content-end">
+          <div className="d-flex align-items-end justify-content-end">
             <SubMenu leftSide />
 
             <div className="message-content">

@@ -13,7 +13,7 @@ const SubMenu = ({ leftSide }: SubMenuPropsType) => {
   const [ref, show, setShow] = useOutsideClick<HTMLDivElement>(false);
 
   return (
-    <div className="dropdown">
+    <div className="dropdown dropup">
       <button
         onClick={() => setShow(!show)}
         type="button"

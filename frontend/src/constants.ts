@@ -25,7 +25,8 @@ export const host = process.env.REACT_APP_HOST;
 export const apis = JSON.parse(process.env.REACT_APP_APIS || '');
 
 export const routes = {
-  admins: 'admins',
+  // TODO: remove admins after migration in production
+  // admins: 'admins',
   auth: {
     index: 'auth',
     signin: 'auth/signin',

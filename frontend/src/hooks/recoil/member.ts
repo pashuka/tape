@@ -10,10 +10,13 @@ export type MemberType = UserType & {
   dialog_id: DialogIdType;
 };
 
+export type MemberRoleType = 'member' | 'admin';
+
 export type MemberInfoType = {
   dialog_id: DialogIdType;
   unread_count: number;
   unread_cursor: idType;
+  role: MemberRoleType;
   user_id: idType;
 };
 

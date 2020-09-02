@@ -26,6 +26,7 @@ export type DialogType = {
   last_message_owner: string;
   profile: DialogProfileType;
   settings: DialogSettingsType;
+  member_count: number;
   unread_count: number;
   unread_cursor: number;
 };

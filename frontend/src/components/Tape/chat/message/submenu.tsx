@@ -19,7 +19,7 @@ const SubMenu = ({ leftSide }: SubMenuPropsType) => {
         type="button"
         className={`btn btn-link text-gray-400 ${
           !!leftSide ? 'mr-1' : 'ml-1'
-        } p-1 p-lg-2`}
+        } p-1`}
       >
         <IMoreVert />
       </button>

@@ -41,8 +41,6 @@ const api = {
 };
 
 const tables = {
-  // TODO: remove admins after migration in production
-  admins: "admins",
   dialogs: "dialogs",
   members: "members",
   messages: "messages",
@@ -50,8 +48,6 @@ const tables = {
 };
 
 const resources = {
-  // TODO: remove admins after migration in production
-  admins: "admins",
   auth: {
     signin: "auth/signin",
     signup: "auth/signup",

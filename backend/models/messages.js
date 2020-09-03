@@ -133,8 +133,6 @@ class model extends Repository {
         { dialog_id, user_id: this.user.id, role: "admin" },
         { dialog_id, user_id: participant.id, role: "admin" },
       ];
-      // TODO: remove admins after migration in production
-      // await knex(tables.admins).insert(members);
       await knex(tables.members).insert(members);
     } else if (dialog_id) {
       if (!validator.isNumeric(dialog_id)) {

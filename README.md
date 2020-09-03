@@ -2,7 +2,7 @@
 
 ## Aims
 
-This project's aim to ...
+This project's aim to show how to develop real time messengers
 
 ## Give it a try
 

@@ -30,8 +30,6 @@ let users = [...Array(counts.users)].map(() => {
 });
 
 exports.seed = async (knex) => {
-  // TODO: remove admins after migration in production
-  // await knex(tables.admins).del();
   await knex(tables.members).del();
   await knex(tables.dialogs).del();
   await knex(tables.messages).del();
@@ -55,7 +53,7 @@ exports.seed = async (knex) => {
 
   // create peer dialogs
   for (const i in peers) {
-    const dialog = await knex(tables.dialogs).insert({ last_message_id: null }).returning(["id"]);
+    const dialog = await knex(tables.dialogs).insert({ member_count: 2 }).returning(["id"]);
     const dialog_id = dialog[0].id;
     // add dialog admins and members
     const dialogPeers = peers[i].map((user_id) => ({
@@ -64,8 +62,6 @@ exports.seed = async (knex) => {
       dialog_type: "direct",
       role: "admin",
     }));
-    // TODO: remove admins after migration in production
-    // await knex(tables.admins).insert(dialogPeers);
     await knex(tables.members).insert(dialogPeers);
 
     // Create messages with dialog's id
@@ -78,14 +74,6 @@ exports.seed = async (knex) => {
       });
     });
 
-    // Push messages
-    // await Promise.all(
-    //   messages.map(async (message) => {
-    //     // We use fixture delay for some creation datetime offset
-    //     await delay(10 * (Math.floor(Math.random() * 10) + 1));
-    //     return await knex(tables.messages).insert(message);
-    //   })
-    // );
     // messages.forEach((message) => {
     for await (const message of messages) {
       // We use fixture delay for some creation datetime offset

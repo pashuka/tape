@@ -121,8 +121,6 @@ class model extends Repository {
     );
 
     // push admins/members
-    // TODO: remove after migration in production
-    // await knex(tables.admins).insert(iam);
     await knex(tables.members).insert(membersWithDialog);
 
     // send events

@@ -4,7 +4,9 @@ const { tables } = require("../../constants");
 
 const counts = {
   // How many fixtures users we should generate
-  users: 32,
+  users: 64,
+  // How many fixture conversations to generate
+  conversations: 48,
   // How many fixtures messages range per one peer dialog we should generate
   messages: { min: 1, max: 64 },
 };
@@ -40,7 +42,7 @@ exports.seed = async (knex) => {
     .del()
     .then(() => knex(tables.users).insert(users).returning(["id", "username"]));
 
-  const uids = users.map(({ id }) => id);
+  const uids = users.map(({ id }) => id).slice(0, counts.conversations);
   let peers = [];
   const a = uids.pop();
   console.log(

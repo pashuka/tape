@@ -61,7 +61,7 @@ const HeaderDialog = ({ dialog }: PropsType) => {
       onClick={(e) => {
         setMessenger((currVal: MessengerType) => ({
           ...currVal,
-          isChatSideBarOpen: true,
+          isChatSideBarOpen: !currVal.isChatSideBarOpen,
         }));
       }}
     >

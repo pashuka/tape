@@ -15,10 +15,13 @@ import { DialogType } from '../../../../../hooks/recoil/dialog';
 import {
   instanceOfUser,
   userInfoQuery,
+  UserType,
 } from '../../../../../hooks/recoil/user';
 import Avatar from '../../../components/avatar';
 import Skeleton from '../../../../Skeleton';
 import { compactNumber } from '../../../../../utils';
+import { useTranslation } from 'react-i18next';
+import { MemberType } from '../../../../../hooks/recoil/member';
 // import Typing from '../../../components/typing';
 
 dayjs.extend(isToday);
@@ -29,10 +32,19 @@ type PropsType = {
 };
 
 const CardDialogDirect = ({ dialog, username }: PropsType) => {
+  const { t } = useTranslation();
   const { params } = useRouteMatch<QSParamsType>();
   const { state, contents } = useRecoilValueLoadable(
     userInfoQuery({ username }),
   );
+  const [member, setMember] = React.useState<
+    UserType | MemberType | undefined
+  >();
+  React.useEffect(() => {
+    if (state === 'hasValue' && instanceOfUser(contents)) {
+      setMember(contents);
+    }
+  }, [state, contents]);
 
   // const [isTyping, setIsTyping] = React.useState(false);
   // React.useEffect(() => {
@@ -51,13 +63,7 @@ const CardDialogDirect = ({ dialog, username }: PropsType) => {
   const active = dialog.id.toString() === params[ParamsKeyDialog];
 
   const title =
-    state === 'loading' ? (
-      <Skeleton width="128px" />
-    ) : state === 'hasValue' && instanceOfUser(contents) ? (
-      contents.realname
-    ) : (
-      'REALUSERNAME'
-    );
+    state === 'loading' ? <Skeleton width="128px" /> : member?.realname;
 
   return (
     <CardWrapper
@@ -67,7 +73,7 @@ const CardDialogDirect = ({ dialog, username }: PropsType) => {
       <Avatar
         active={active}
         pending={state === 'loading'}
-        picture={instanceOfUser(contents) ? contents.profile?.picture : ''}
+        picture={member?.profile?.picture}
         size="md"
       />
 
@@ -89,6 +95,9 @@ const CardDialogDirect = ({ dialog, username }: PropsType) => {
         <div className="d-flex align-items-center pb-2">
           <div className="small text-muted text-truncate text-left mr-auto">
             {/* {isTyping ? <Typing /> : dialog.last_message_body} */}
+            {member && dialog.last_message_owner !== member.username
+              ? t('You') + ': '
+              : null}
             {dialog.last_message_body}
           </div>
           {dialog.unread_count > 0 && (

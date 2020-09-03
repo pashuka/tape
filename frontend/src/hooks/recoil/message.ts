@@ -28,7 +28,7 @@ export const messagesOffsetAtom = Recoil.atom<number>({
 });
 
 type OffsetType = {
-  dialog_id: string;
+  dialog_id: idType;
   offset: number;
 };
 

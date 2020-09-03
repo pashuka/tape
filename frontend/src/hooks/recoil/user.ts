@@ -6,6 +6,7 @@ import { MemberType } from './member';
 
 type UserProfileType = {
   picture?: string;
+  status?: string;
 };
 
 export type UserNameType = {

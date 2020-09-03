@@ -1,7 +1,7 @@
 import React from 'react';
 
 import ISearch from '@material-ui/icons/Search';
-// import IInfo from '@material-ui/icons/Info';
+import IInfo from '@material-ui/icons/Info';
 import IDeleteForever from '@material-ui/icons/DeleteForever';
 import IExitToApp from '@material-ui/icons/ExitToApp';
 import IMoreVert from '@material-ui/icons/MoreVert';
@@ -83,7 +83,7 @@ const SideBar = ({ dialog, disabled = false }: PropsType) => {
             onClick={(e) => {
               setMessenger((currVal: MessengerType) => ({
                 ...currVal,
-                isChatSideBarOpen: true,
+                isChatSideBarOpen: !currVal.isChatSideBarOpen,
               }));
             }}
           >
@@ -135,14 +135,14 @@ const SideBar = ({ dialog, disabled = false }: PropsType) => {
                 </span>
               </button>
 
-              {/* <button
+              <button
                 type="button"
                 className="dropdown-item d-flex align-items-center"
                 onClick={(e) => {
                   setShow(!show);
                   setMessenger((currVal: MessengerType) => ({
                     ...currVal,
-                    isChatSideBarOpen: true,
+                    isChatSideBarOpen: !currVal.isChatSideBarOpen,
                   }));
                 }}
               >
@@ -150,7 +150,7 @@ const SideBar = ({ dialog, disabled = false }: PropsType) => {
                 <span className="ml-auto pl-3 text-gray-200">
                   <IInfo />
                 </span>
-              </button> */}
+              </button>
 
               <button
                 type="button"

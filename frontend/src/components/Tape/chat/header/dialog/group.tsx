@@ -5,6 +5,8 @@ import relativeTime from 'dayjs/plugin/relativeTime';
 
 import { DialogType } from '../../../../../hooks/recoil/dialog';
 import Avatar from '../../../components/avatar';
+import { useTranslation } from 'react-i18next';
+import { compactNumber } from '../../../../../utils';
 
 dayjs.extend(relativeTime);
 
@@ -13,6 +15,7 @@ type PropsType = {
 };
 
 const HeaderDialogGroup = ({ dialog }: PropsType) => {
+  const { t } = useTranslation();
   const title = dialog.profile.title;
 
   return (
@@ -30,9 +33,14 @@ const HeaderDialogGroup = ({ dialog }: PropsType) => {
           )}
           {title}
         </h6>
+        <small className="text-muted">
+          {compactNumber(dialog.member_count)} {t('members')}
+        </small>
+        <small className="text-muted px-2">•</small>
         {dialog.last_message_created_at && (
           <small className="text-muted">
-            last message {dayjs().to(new Date(dialog.last_message_created_at))}
+            {t('last message')}{' '}
+            {dayjs().to(new Date(dialog.last_message_created_at))}
           </small>
         )}
       </div>

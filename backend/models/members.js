@@ -30,7 +30,7 @@ class model extends Repository {
      */
 
     const qb = knex
-      .select({ dialog_id: "m2.dialog_id" })
+      .select({ dialog_id: "m2.dialog_id", role: "m2.role" })
       .select(["username", "realname", "profile"].map((c) => `${tables.users}.${c}`));
 
     if (dialog_id) {

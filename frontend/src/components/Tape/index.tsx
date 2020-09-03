@@ -75,7 +75,7 @@ const Messenger = ({ tab, route }: PropsType) => {
   }, []);
 
   React.useEffect(() => {
-    setDialogId(params[ParamsKeyDialog]);
+    setDialogId(Number(params[ParamsKeyDialog]));
     resetMessagesOffset();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [params]);

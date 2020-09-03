@@ -2,8 +2,9 @@ import Recoil from 'recoil';
 import { request } from './request';
 import { routes, getRoute } from '../../constants';
 import { limitFetchMax } from './constants';
-import { UserNameType } from './user';
+import { UserType } from './user';
 import { idType } from '../../types';
+import { MemberRoleType } from './member';
 
 export declare type DialogIdType = idType;
 
@@ -35,7 +36,7 @@ export function instanceOfDialog(o: any): o is DialogType {
   return o && 'id' in o && 'dialog_type' in o;
 }
 
-export const currentDialogIdState = Recoil.atom<string | undefined>({
+export const currentDialogIdState = Recoil.atom<DialogIdType | undefined>({
   key: 'current-dialog-id',
   default: undefined,
 });
@@ -127,30 +128,64 @@ const dialogMembersVersion = Recoil.atom({
   default: 0,
 });
 
-type dialogMembersType = {
+export const dialogMembersOffsetAtom = Recoil.atom<number>({
+  key: 'dialog-members-offset',
+  default: 0,
+});
+
+type DialogMembersParamsType = {
   dialog_id: DialogIdType;
   offset: number;
 };
 
+export type DialogMemberType = UserType & {
+  dialog_id: DialogIdType;
+  role: MemberRoleType;
+};
+
 export const dialogMembersSelector = Recoil.selectorFamily<
-  UserNameType[] | undefined,
-  dialogMembersType
+  DialogMemberType[],
+  DialogMembersParamsType
 >({
   key: 'dialog-members-selector',
   get: ({ dialog_id, offset }) => async ({ get }) => {
     get(dialogMembersVersion); // 'register' as a resetable dependency
-    return await request<UserNameType[]>(
+    return await request<DialogMemberType[]>(
       getRoute(
         `find/${routes.members}/?dialog_id=${dialog_id}&offset=${offset}`,
       ),
     ).then(
-      (data) => data,
+      (data) => (Array.isArray(data) ? data : ([] as DialogMemberType[])),
       (reason) => {
         throw reason;
       },
     );
   },
   set: () => ({ set }, value) => {
+    if (value instanceof Recoil.DefaultValue) {
+      set(dialogMembersVersion, (v) => v + 1);
+    }
+  },
+});
+
+export const dialogMembersState = Recoil.selector<DialogMemberType[]>({
+  key: 'dialog-members-state',
+  get: async ({ get }) => {
+    get(dialogMembersVersion); // 'register' as a resetable dependency
+    const dialog_id = get(currentDialogIdState);
+    if (!dialog_id) {
+      return [] as DialogMemberType[];
+    }
+    const offset = get(dialogMembersOffsetAtom);
+    let records = [] as DialogMemberType[];
+    for (let index = 0; index <= offset; index += limitFetchMax) {
+      records = records.concat(
+        get(dialogMembersSelector({ dialog_id, offset: index })),
+      );
+    }
+    return records;
+  },
+  set: ({ set }, value) => {
     if (value instanceof Recoil.DefaultValue) {
       set(dialogMembersVersion, (v) => v + 1);
     }

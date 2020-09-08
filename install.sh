@@ -22,7 +22,7 @@ echo "if you forget save this password then just run next sql command to set new
 echo "sql:"
 echo "alter user tape with password 'new_secure_password';"
 echo
--i -u postgres psql \
+sudo -i -u postgres psql \
  -c "create database tape;" \
  -c "create user tape with encrypted password '${password}';" \
  -c "grant all privileges on database tape to tape;" \

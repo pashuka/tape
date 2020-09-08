@@ -2,12 +2,13 @@
 
 apt-get update
 apt update
+sudo apt -y curl
 curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add -
 echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list
 apt-get update
 
 curl -sL https://deb.nodesource.com/setup_12.x | sudo -E bash -
-apt -y install nginx postgresql postgresql-contrib curl dirmngr apt-transport-https lsb-release ca-certificates nodejs gcc g++ make yarn redis-server certbot python3-certbot-nginx
+apt -y install nginx postgresql postgresql-contrib dirmngr apt-transport-https lsb-release ca-certificates nodejs gcc g++ make yarn redis-server certbot python3-certbot-nginx
 
 yarn global add knex
 yarn global add pm2

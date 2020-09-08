@@ -18,7 +18,7 @@ yarn install
 password=`cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 32 | head -n 1`
 echo "This is the database credentials allow you to log into your database"
 echo "user: tape, password: [${password}]"
-echo "if you forget save this password then just run next sql command to set new"
+echo "if you forget to save this password then just run next sql command to set new"
 echo "sql:"
 echo "alter user tape with password 'new_secure_password';"
 echo

@@ -6,14 +6,22 @@ module.exports = {
   client: {
     url: "http://localhost:3000",
   },
-  jwt: {
-    // openssl rand -base64 48
-    secret: "hFnGhbHqQCvNgKKW7nSyRtZtQkIEF+rgiSJ7oKxMcA9npzzoyPZNHgDS5uSli2b3",
-    expiresIn: 36000,
-  },
   session: {
     // openssl rand -base64 48
     secret: "d29ePFBI0cvjhZKAc9Vd9WPfJZEOlEj2EVmpk3vBXxgc/ydPiVpEzZDjy+ceCwZ2",
+    config: {
+      key: "sess" /** (string) cookie key (default is koa:sess) */,
+      /** (number || 'session') maxAge in ms (default is 1 days) */
+      /** 'session' will result in a cookie that expires when session/browser is closed */
+      /** Warning: If a session cookie is stolen, this cookie will never expire */
+      maxAge: 14 * 24 * 60 * 60 * 1e3,
+      autoCommit: true /** (boolean) automatically commit headers (default true) */,
+      overwrite: true /** (boolean) can overwrite or not (default true) */,
+      httpOnly: true /** (boolean) httpOnly or not (default true) */,
+      signed: true /** (boolean) signed or not (default true) */,
+      rolling: true /** (boolean) Force a session identifier cookie to be set on every response. The expiration is reset to the original maxAge, resetting the expiration countdown. (default is false) */,
+      renew: false /** (boolean) renew session when session is nearly expired, so we can always keep user logged in. (default is false)*/,
+    },
   },
   knex: {
     development: {
@@ -64,9 +72,6 @@ module.exports = {
       },
     ],
   },
-  sentry: {
-    dsn: "https://xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx@sentry.io/xxxxxxxx",
-  },
   nodemailer: {
     send: false,
     preview: true,
@@ -85,6 +90,13 @@ module.exports = {
       text: "-body-",
       html: "<p>-body-</p>",
     },
+  },
+  redis: {
+    host: "localhost",
+    port: 6379,
+  },
+  sentry: {
+    dsn: "https://xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx@sentry.io/xxxxxxxx",
   },
   formidable: {
     destination: "../frontend/public/uploads",

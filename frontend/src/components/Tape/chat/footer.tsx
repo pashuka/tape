@@ -25,24 +25,20 @@ const Footer = () => {
   const searchParams = new URLSearchParams(search);
   const { params } = useRouteMatch<QSParamsType>();
   const [message, setMessage] = React.useState<string>('');
-  const [messageToEdit, setMessageToEdit] = React.useState<
-    MessageType | undefined
-  >();
-  const [messageToReply, setMessageToReply] = React.useState<
+  const [messageToAction, setMessageToAction] = React.useState<
     MessageType | undefined
   >();
   const [isShiftEnter, setIsShiftEnter] = React.useState(false);
 
   const { state, contents } = useRecoilValueLoadable(
-    messageById(Number(searchParams.get('edit'))),
+    messageById(Number(searchParams.get('id'))),
   );
   React.useEffect(() => {
-    let body = '';
-    if (state === 'hasValue' && instanceOfMessage(contents)) {
-      body = contents.body;
+    const action = searchParams.get('action');
+    if (action === 'edit') {
+      setMessage(instanceOfMessage(contents) ? contents.body : '');
     }
-    setMessage(body);
-    setMessageToEdit(instanceOfMessage(contents) ? contents : undefined);
+    setMessageToAction(instanceOfMessage(contents) ? contents : undefined);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [search, state, contents]);
 
@@ -92,17 +88,23 @@ const Footer = () => {
   const onSubmitHandler = (text: string) => {
     let method = 'POST';
     let resource = getRoute(`post/${routes.messages}/`);
-    const body = params[ParamsKeyUser]
+
+    const action = searchParams.get('action');
+    if (action === 'edit' && messageToAction) {
+      method = 'PUT';
+      resource = getRoute(`put/${routes.messages}/?id=${messageToAction.id}`);
+    }
+
+    let body = params[ParamsKeyUser]
       ? {
           username: params[ParamsKeyUser],
           message: text,
         }
-      : { dialog_id: params[ParamsKeyDialog], message };
-
-    if (messageToEdit) {
-      method = 'PUT';
-      resource = getRoute(`put/${routes.messages}/?id=${messageToEdit.id}`);
-    }
+      : {
+          dialog_id: params[ParamsKeyDialog],
+          message,
+          reply_id: action === 'reply' ? searchParams.get('id') : null,
+        };
     sendMessage({
       resource,
       method,
@@ -122,13 +124,13 @@ const Footer = () => {
 
   return (
     <div className="chat-footer bg-light py-2 py-lg-3 px-2 px-lg-4">
-      {messageToEdit ? (
+      {messageToAction ? (
         <div className="input-group pb-2">
           <div className="input-group-prepend py-2 text-success">
             <IFormatQuote />
           </div>
           <div className="form-control text-truncate bg-transparent border-0">
-            {messageToEdit.body}
+            {messageToAction.body}
           </div>
           <div className="input-group-append">
             <button

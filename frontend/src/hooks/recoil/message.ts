@@ -12,6 +12,7 @@ export type MessageType = {
   updated_at: string;
   owner: string;
   body: string;
+  reply_id: idType | null;
 };
 
 export function instanceOfMessage(o: any): o is MessageType {

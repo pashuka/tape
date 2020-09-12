@@ -69,7 +69,13 @@ const SubMenu = ({
           type="button"
           disabled={!isReplayable}
           className="dropdown-item d-flex px-2 align-items-center"
-          onClick={() => setShow(!show)}
+          onClick={() => {
+            setShow(!show);
+            history.push({
+              pathname: '',
+              search: `?action=reply&id=${message_id}`,
+            });
+          }}
         >
           Reply{' '}
           <span className="ml-auto">
@@ -82,7 +88,10 @@ const SubMenu = ({
           className="dropdown-item d-flex px-2 align-items-center"
           onClick={() => {
             setShow(!show);
-            history.push({ pathname: '', search: `?edit=${message_id}` });
+            history.push({
+              pathname: '',
+              search: `?action=edit&id=${message_id}`,
+            });
           }}
         >
           Edit{' '}

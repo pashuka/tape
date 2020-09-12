@@ -4,10 +4,10 @@ const { tables, lengths, tapeEvents } = require("../constants");
 const Repository = require("./repository");
 const { BadRequest } = require("../libraries/error");
 const allowed = {
-  schema: ["id", "dialog_id", "created_at", "updated_at", "owner_id", "body"],
-  conditions: ["dialog_id"],
-  select: ["id", "dialog_id", "created_at", "updated_at", "body"],
-  insert: ["dialog_id", "owner_id", "body"],
+  schema: ["id", "dialog_id", "created_at", "updated_at", "owner_id", "body", "reply_id"],
+  conditions: ["id", "dialog_id"],
+  select: ["id", "dialog_id", "created_at", "updated_at", "body", "reply_id"],
+  insert: ["dialog_id", "owner_id", "body", "reply_id"],
   update: ["body", "updated_at"],
 };
 const { publisher } = require("../libraries/ioredis");
@@ -49,7 +49,7 @@ class model extends Repository {
     return;
   }
 
-  async insert({ dialog_id, username, message }) {
+  async insert({ dialog_id, username, message, reply_id }) {
     let dialog;
     if (typeof message !== "string") {
       throw new BadRequest([{ message: "Bad message" }]);
@@ -138,6 +138,9 @@ class model extends Repository {
       if (!validator.isNumeric(dialog_id)) {
         throw new BadRequest([{ dialog_id: "Bad dialog_id" }]);
       }
+      if (reply_id && !validator.isNumeric(reply_id)) {
+        throw new BadRequest([{ reply_id: "Bad reply_id" }]);
+      }
       dialog = await knex(tables.dialogs).select(["id"]).where({ id: dialog_id }).first();
       if (!dialog) {
         throw new BadRequest([{ dialog: "Bad dialog" }]);
@@ -146,7 +149,12 @@ class model extends Repository {
       throw new BadRequest([{ values: "Bad command" }]);
     }
 
-    const result = await super.insert({ dialog_id, body: message, owner_id: this.user.id });
+    const result = await super.insert({
+      dialog_id,
+      body: message,
+      owner_id: this.user.id,
+      reply_id: reply_id | null,
+    });
     if (result) {
       publisher.publish(tapeEvents.message_created, JSON.stringify(result[0]));
       return result;

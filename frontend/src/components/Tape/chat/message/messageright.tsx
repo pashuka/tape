@@ -11,6 +11,7 @@ import {
 } from '../../../../hooks/recoil/user';
 import Avatar from '../../components/avatar';
 import { useRecoilValueLoadable } from 'recoil';
+import { useTranslation } from 'react-i18next';
 
 dayjs.extend(LocalizedFormat);
 
@@ -20,12 +21,14 @@ type MessageRightPropsType = {
 };
 
 const MessageRight = ({
-  data: { created_at, body },
+  data: { id, created_at, body, updated_at },
   iam: { username },
 }: MessageRightPropsType) => {
+  const { t } = useTranslation();
   const { state, contents } = useRecoilValueLoadable(
     userInfoQuery({ username }),
   );
+  const [isActive, setIsActive] = React.useState(false);
   return (
     <div className="message message-right mt-2 mt-md-3">
       <div className="message-avatar ml-2 ml-lg-4 d-none d-lg-block">
@@ -39,7 +42,14 @@ const MessageRight = ({
       <div className="message-body">
         <div className="message-row">
           <div className="d-flex align-items-end justify-content-end">
-            <SubMenu leftSide />
+            <SubMenu
+              message_id={id}
+              isIam
+              isReplayable={true}
+              isEditable={true}
+              isDeletable={true}
+              handleOpen={setIsActive}
+            />
 
             <div className="message-content">
               <h6 className="text-right text-primary d-none d-md-block">
@@ -47,9 +57,22 @@ const MessageRight = ({
                   ? contents.realname || <span>@{contents?.username}</span>
                   : '...'}
               </h6>
-              <div className="alert alert-primary clearfix mb-0 py-1 px-lg-3 px-2">
+              <div
+                className={`alert alert-primary ${
+                  isActive ? 'alert-dark' : ''
+                } clearfix mb-0 py-1 px-lg-3 px-2`}
+              >
                 <div className="float-left text-break">{body}</div>
                 <div className="float-right pl-2 pl-md-4 pt-1 small">
+                  {updated_at && (
+                    <small
+                      className="text-gray-600 badge badge-pill"
+                      style={{ lineHeight: 1 }}
+                      title={dayjs(new Date(updated_at)).format('lll')}
+                    >
+                      {t('edited')}
+                    </small>
+                  )}
                   <small
                     className="text-gray-600"
                     style={{ lineHeight: 1 }}

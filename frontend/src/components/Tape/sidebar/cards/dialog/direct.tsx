@@ -95,9 +95,16 @@ const CardDialogDirect = ({ dialog, username }: PropsType) => {
         <div className="d-flex align-items-center pb-2">
           <div className="small text-muted text-truncate text-left mr-auto">
             {/* {isTyping ? <Typing /> : dialog.last_message_body} */}
-            {member && dialog.last_message_owner !== member.username
-              ? t('You') + ': '
-              : null}
+            {member && dialog.last_message_owner !== member.username ? (
+              <div
+                className={`badge badge-pill badge-info ${
+                  active ? '' : 'bg-gray-400'
+                } mr-1`}
+                style={{ padding: '0.2em 0.4em' }}
+              >
+                {t('You')}
+              </div>
+            ) : null}
             {dialog.last_message_body}
           </div>
           {dialog.unread_count > 0 && (

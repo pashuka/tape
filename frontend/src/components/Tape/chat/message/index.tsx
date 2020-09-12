@@ -21,7 +21,7 @@ const Messages = ({ messages, iam }: PropsType) => {
           iam.username === owner ? (
             <MessageRight iam={iam} data={_} />
           ) : (
-            <MessageLeft data={_} />
+            <MessageLeft data={_} isAdmin={true} />
           );
         const day = <Day createdAt={created_at} prevDay={prevDay} />;
         prevDay = created_at;

@@ -41,11 +41,10 @@ exports.up = (knex) =>
       after insert or update on ${tables.messages}
       for each row execute procedure ${functionName}()
     ;
-`);
+  `);
 
 exports.down = (knex) =>
   knex.raw(`
-  drop trigger if exists ${functionName} on ${tables.messages};
-
-  drop function if exists ${functionName}();
-`);
+    drop trigger if exists ${functionName} on ${tables.messages};
+    drop function if exists ${functionName}();
+  `);

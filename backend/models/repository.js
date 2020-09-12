@@ -168,4 +168,12 @@ module.exports = class Repository {
       .update(this.filterBeforeSendToKnex(values, (_) => allowed.update.includes(_)))
       .returning(allowed.select);
   }
+
+  /**
+   * Delete record
+   * @param {number} conditions - query object conditions
+   */
+  del(conditions) {
+    // return knex(this.table).where(conditions).del();
+  }
 };

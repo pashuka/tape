@@ -1,5 +1,8 @@
 import React from 'react';
 import ISend from '@material-ui/icons/Send';
+import ISentimentSatisfiedOutlinedIcon from '@material-ui/icons/SentimentSatisfiedOutlined';
+import ICloseOutlined from '@material-ui/icons/CloseOutlined';
+import IFormatQuote from '@material-ui/icons/FormatQuote';
 import { useFetch } from 'react-async';
 import {
   QSParamsType,
@@ -8,14 +11,40 @@ import {
   routes,
   getRoute,
 } from '../../../constants';
-import { useRouteMatch, useHistory } from 'react-router-dom';
-import { MessageType } from '../../../hooks/recoil/message';
+import { useRouteMatch, useHistory, useLocation } from 'react-router-dom';
+import {
+  MessageType,
+  messageById,
+  instanceOfMessage,
+} from '../../../hooks/recoil/message';
+import { useRecoilValueLoadable } from 'recoil';
 
 const Footer = () => {
   const history = useHistory();
+  const { search } = useLocation();
+  const searchParams = new URLSearchParams(search);
   const { params } = useRouteMatch<QSParamsType>();
   const [message, setMessage] = React.useState<string>('');
+  const [messageToEdit, setMessageToEdit] = React.useState<
+    MessageType | undefined
+  >();
+  const [messageToReply, setMessageToReply] = React.useState<
+    MessageType | undefined
+  >();
   const [isShiftEnter, setIsShiftEnter] = React.useState(false);
+
+  const { state, contents } = useRecoilValueLoadable(
+    messageById(Number(searchParams.get('edit'))),
+  );
+  React.useEffect(() => {
+    let body = '';
+    if (state === 'hasValue' && instanceOfMessage(contents)) {
+      body = contents.body;
+    }
+    setMessage(body);
+    setMessageToEdit(instanceOfMessage(contents) ? contents : undefined);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [search, state, contents]);
 
   const { data, isPending, run: sendMessage } = useFetch<MessageType>(
     getRoute(`post/${routes.messages}/`),
@@ -28,6 +57,8 @@ const Footer = () => {
     if (!isPending && data) {
       if (params[ParamsKeyUser]) {
         history.push(`/${routes.tape}/${routes.dialogs}/${data.dialog_id}/`);
+      } else {
+        history.push({ pathname: '', search: '' });
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -59,16 +90,23 @@ const Footer = () => {
     }
   };
   const onSubmitHandler = (text: string) => {
+    let method = 'POST';
+    let resource = getRoute(`post/${routes.messages}/`);
+    const body = params[ParamsKeyUser]
+      ? {
+          username: params[ParamsKeyUser],
+          message: text,
+        }
+      : { dialog_id: params[ParamsKeyDialog], message };
+
+    if (messageToEdit) {
+      method = 'PUT';
+      resource = getRoute(`put/${routes.messages}/?id=${messageToEdit.id}`);
+    }
     sendMessage({
-      method: 'POST',
-      body: JSON.stringify(
-        params[ParamsKeyUser]
-          ? {
-              username: params[ParamsKeyUser],
-              message: text,
-            }
-          : { dialog_id: params[ParamsKeyDialog], message },
-      ),
+      resource,
+      method,
+      body: JSON.stringify(body),
     });
     setMessage('');
   };
@@ -84,65 +122,68 @@ const Footer = () => {
 
   return (
     <div className="chat-footer bg-light py-2 py-lg-3 px-2 px-lg-4">
-      <div className="">
-        <div className="form-row align-items-center">
-          <div className="col">
-            <div className="input-group">
-              {/* Emoji */}
-              {/* <div className="input-group-prepend">
-                <button
-                  className="btn btn-secondary bg-light text-muted border-0"
-                  type="button"
-                  disabled
-                >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="24"
-                    height="24"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    className=""
-                  >
-                    <circle cx="12" cy="12" r="10"></circle>
-                    <path d="M8 14s1.5 2 4 2 4-2 4-2"></path>
-                    <line x1="9" y1="9" x2="9.01" y2="9"></line>
-                    <line x1="15" y1="9" x2="15.01" y2="9"></line>
-                  </svg>
-                </button>
-              </div> */}
-              {/* Textarea */}
-              <textarea
-                ref={ref}
-                disabled={isPending}
-                onChange={onChange}
-                onKeyDown={onKeyDown}
-                onKeyUp={onKeyUp}
-                className="form-control bg-light border-0 rounded bg-white chat-input"
-                placeholder="Type your message"
-                rows={1}
-                value={message}
-                style={{
-                  overflow: 'hidden',
-                  overflowWrap: 'break-word',
-                  resize: 'none',
+      {messageToEdit ? (
+        <div className="input-group pb-2">
+          <div className="input-group-prepend py-2 text-success">
+            <IFormatQuote />
+          </div>
+          <div className="form-control text-truncate bg-transparent border-0">
+            {messageToEdit.body}
+          </div>
+          <div className="input-group-append">
+            <button
+              className="btn btn-link py-0"
+              type="button"
+              onClick={() => {
+                history.push({ pathname: '', search: '' });
+              }}
+            >
+              <ICloseOutlined />
+            </button>
+          </div>
+        </div>
+      ) : null}
+      <div className="form-row align-items-center">
+        <div className="col">
+          <div className="input-group">
+            {/* Emoji */}
+            <div className="input-group-prepend">
+              <button
+                className="btn btn-secondary bg-light text-muted border-0"
+                type="button"
+                disabled
+              >
+                <ISentimentSatisfiedOutlinedIcon />
+              </button>
+            </div>
+            {/* Textarea */}
+            <textarea
+              ref={ref}
+              disabled={isPending}
+              onChange={onChange}
+              onKeyDown={onKeyDown}
+              onKeyUp={onKeyUp}
+              className="form-control bg-light border-0 rounded bg-white chat-input"
+              placeholder="Type your message"
+              rows={1}
+              value={message}
+              style={{
+                overflow: 'hidden',
+                overflowWrap: 'break-word',
+                resize: 'none',
+              }}
+            ></textarea>
+            <div className="input-group-append">
+              <button
+                onClick={(e) => {
+                  onSubmitHandler(message);
                 }}
-              ></textarea>
-              <div className="input-group-append">
-                <button
-                  onClick={(e) => {
-                    onSubmitHandler(message);
-                  }}
-                  disabled={isPending || message.length === 0}
-                  className="btn btn-secondary text-primary bg-light border-0"
-                  type="button"
-                >
-                  <ISend />
-                </button>
-              </div>
+                disabled={isPending || message.length === 0}
+                className="btn btn-secondary text-primary bg-light border-0"
+                type="button"
+              >
+                <ISend />
+              </button>
             </div>
           </div>
         </div>

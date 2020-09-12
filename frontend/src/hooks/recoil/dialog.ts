@@ -30,6 +30,7 @@ export type DialogType = {
   member_count: number;
   unread_count: number;
   unread_cursor: number;
+  role: MemberRoleType;
 };
 
 export function instanceOfDialog(o: any): o is DialogType {

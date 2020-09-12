@@ -9,6 +9,7 @@ export type MessageType = {
   id: idType;
   dialog_id: DialogIdType;
   created_at: string;
+  updated_at: string;
   owner: string;
   body: string;
 };
@@ -90,4 +91,13 @@ export const lastReadMessage = Recoil.selector<MessageType | undefined>({
     const { [messages.length - 1]: lastRecord } = messages;
     return lastRecord;
   },
+});
+
+export const messageById = Recoil.selectorFamily<
+  MessageType | undefined,
+  idType
+>({
+  key: 'message-by-id',
+  get: (id) => async ({ get }) =>
+    id ? get(messagesState).find((_) => _.id === id) : undefined,
 });

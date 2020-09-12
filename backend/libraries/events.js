@@ -51,6 +51,8 @@ subscriber.on("message", async (channel, message) => {
       break;
 
     case tapeEvents.message_created:
+    case tapeEvents.message_changed:
+    case tapeEvents.message_removed:
       const { dialog_id } = data;
       const dialogMembers = await knex(tables.members)
         .select("user_id")
@@ -61,11 +63,6 @@ subscriber.on("message", async (channel, message) => {
           listener(user_id, channel, message);
         });
       }
-      break;
-
-    case tapeEvents.message_changed:
-      break;
-    case tapeEvents.message_removed:
       break;
 
     case tapeEvents.user_info_changed:

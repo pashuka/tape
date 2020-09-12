@@ -75,7 +75,7 @@ export function useTapeEvents(
     };
   }, [EventSourceInstance]);
 
-  const messageCreatedListener = function (ev: any) {
+  const messagesEventListener = function (ev: any) {
     const data = tryParseJSON(ev.data);
     const record = data as MessageType;
     resetMessages();
@@ -103,13 +103,17 @@ export function useTapeEvents(
 
   // Predefine processing tape events
   useEffect(() => {
-    subscribe(source.current, 'message_created', messageCreatedListener);
+    subscribe(source.current, 'message_created', messagesEventListener);
+    subscribe(source.current, 'message_changed', messagesEventListener);
+    subscribe(source.current, 'message_removed', messagesEventListener);
     subscribe(source.current, 'dialog_changed', dialogChangedListener);
     subscribe(source.current, 'user_info_changed', userInfoListener);
     subscribe(source.current, 'dialog_member_created', memberCreatedListener);
 
     return () => {
-      unsubscribe(source.current, 'message_created', messageCreatedListener);
+      unsubscribe(source.current, 'message_created', messagesEventListener);
+      unsubscribe(source.current, 'message_changed', messagesEventListener);
+      unsubscribe(source.current, 'message_removed', messagesEventListener);
       unsubscribe(source.current, 'dialog_changed', dialogChangedListener);
       unsubscribe(source.current, 'user_info_changed', userInfoListener);
     };

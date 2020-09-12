@@ -4,11 +4,11 @@ const { tables, lengths, tapeEvents } = require("../constants");
 const Repository = require("./repository");
 const { BadRequest } = require("../libraries/error");
 const allowed = {
-  schema: ["id", "dialog_id", "created_at", "owner_id", "body"],
+  schema: ["id", "dialog_id", "created_at", "updated_at", "owner_id", "body"],
   conditions: ["dialog_id"],
-  select: ["id", "dialog_id", "created_at", "body"],
+  select: ["id", "dialog_id", "created_at", "updated_at", "body"],
   insert: ["dialog_id", "owner_id", "body"],
-  update: ["owner_id", "body"],
+  update: ["body", "updated_at"],
 };
 const { publisher } = require("../libraries/ioredis");
 
@@ -153,8 +153,90 @@ class model extends Repository {
     }
   }
 
-  update(conditions, values) {
-    return;
+  async update(conditions, values) {
+    const { id } = conditions;
+    const { message } = values;
+
+    // check message id
+    if (!validator.isNumeric(id)) {
+      throw new BadRequest([{ id: "Bad message id" }]);
+    }
+    if (typeof message !== "string") {
+      throw new BadRequest([{ message: "Bad message" }]);
+    }
+    if (message.length < lengths.message.min && message.length > lengths.message.max) {
+      throw new BadRequest([
+        {
+          message: `Message length must be between ${lengths.message.min} and ${lengths.message.max} characters`,
+        },
+      ]);
+    }
+
+    // 1. is message exist
+    const isMessage = await knex(this.table)
+      .select(["id", "dialog_id", "owner_id"])
+      .where(conditions)
+      .first();
+    if (!isMessage) {
+      return;
+    }
+
+    // 2. if message owner than we can edit message
+    if (isMessage.owner_id !== this.user.id) {
+      throw new BadRequest([{ owner: "Only owner can edit message" }]);
+    }
+
+    const result = await super.update({ id }, { updated_at: knex.fn.now(6), body: message });
+    if (result) {
+      publisher.publish(tapeEvents.message_changed, JSON.stringify(result[0]));
+      return result;
+    }
+  }
+
+  /**
+   * Delete record
+   * @param {number} conditions - query object conditions
+   */
+  async del(conditions) {
+    const { id } = conditions;
+    if (!validator.isNumeric(id)) {
+      throw new BadRequest([{ id: "Bad message id" }]);
+    }
+
+    // 1. is message exist
+    const isMessage = await knex(this.table)
+      .select(["id", "dialog_id", "owner_id"])
+      .where(conditions)
+      .first();
+    if (!isMessage) {
+      return;
+    }
+
+    // 2. if message owner than we can remove message without any other checks or
+    if (isMessage.owner_id !== this.user.id) {
+      // 3. is current user be a dialog member
+      const { dialog_id } = isMessage;
+      const isMember = await knex(tables.members)
+        .select(["role"])
+        .where({ dialog_id, user_id: this.user.id })
+        .first();
+
+      if (!isMember) {
+        throw new BadRequest([{ id: "Bad message id" }]);
+      }
+
+      // 4. is user has access rights to delete message ?
+      const { role } = isMember;
+      if (role !== "admin") {
+        throw new BadRequest([{ role: "User should have admin role" }]);
+      }
+    }
+    // TODO: deal with unread_cursor & unread_counter
+    const result = await knex(this.table).where(conditions).del();
+    if (Number.isInteger(result) && result > 0) {
+      publisher.publish(tapeEvents.message_removed, JSON.stringify(isMessage));
+    }
+    return result;
   }
 }
 

@@ -16,15 +16,18 @@ dayjs.extend(LocalizedFormat);
 
 type MessageLeftPropsType = {
   data: MessageType;
+  isAdmin?: boolean;
 };
 
 const MessageLeft = ({
-  data: { created_at, owner, body },
+  data: { id, created_at, owner, body },
+  isAdmin,
 }: MessageLeftPropsType) => {
   const { state, contents } = useRecoilValueLoadable(
     userInfoQuery({ username: owner }),
   );
   const [member, setMember] = React.useState<UserType | undefined>();
+  const [isActive, setIsActive] = React.useState(false);
 
   React.useEffect(() => {
     setMember(
@@ -53,7 +56,11 @@ const MessageLeft = ({
                   ? member.realname || <span>@{member.username}</span>
                   : null}
               </h6>
-              <div className="alert clearfix bg-gray-100 border-gray-200 mb-0 py-1 px-lg-3 px-2">
+              <div
+                className={`alert ${
+                  isActive ? 'alert-dark' : 'bg-gray-100 border-gray-200'
+                } clearfix mb-0 py-1 px-lg-3 px-2`}
+              >
                 <div className="text-body float-left text-break">{body}</div>
                 <div className="float-right pl-2 pl-md-4 pt-1 small">
                   <small
@@ -66,7 +73,12 @@ const MessageLeft = ({
                 </div>
               </div>
             </div>
-            <SubMenu />
+            <SubMenu
+              message_id={id}
+              handleOpen={setIsActive}
+              isReplayable={true}
+              isDeletable={isAdmin}
+            />
           </div>
         </div>
       </div>

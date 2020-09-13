@@ -19,6 +19,21 @@ import {
 } from '../../../hooks/recoil/message';
 import { useRecoilValueLoadable } from 'recoil';
 
+type SendMessageInDialogParamsType = {
+  dialog_id: string;
+  message: string;
+  reply_id?: string | null;
+};
+
+type SendMessageToUsernameParamsType = {
+  username: string;
+  message: string;
+};
+
+type SendMessageParamsType =
+  | SendMessageInDialogParamsType
+  | SendMessageToUsernameParamsType;
+
 const Footer = () => {
   const history = useHistory();
   const { search } = useLocation();
@@ -85,31 +100,33 @@ const Footer = () => {
       setIsShiftEnter(true);
     }
   };
-  const onSubmitHandler = (text: string) => {
+  const onSubmitHandler = (message: string) => {
+    const action = searchParams.get('action');
+    const username = params[ParamsKeyUser];
+    const dialog_id = params[ParamsKeyDialog];
     let method = 'POST';
     let resource = getRoute(`post/${routes.messages}/`);
-
-    const action = searchParams.get('action');
-    if (action === 'edit' && messageToAction) {
-      method = 'PUT';
-      resource = getRoute(`put/${routes.messages}/?id=${messageToAction.id}`);
+    let body: SendMessageParamsType | undefined;
+    if (username) {
+      body = { username, message };
+    } else if (dialog_id) {
+      body = {
+        dialog_id,
+        message,
+      };
+      if (action === 'edit' && messageToAction) {
+        method = 'PUT';
+        resource = getRoute(`put/${routes.messages}/?id=${messageToAction.id}`);
+      } else if (action === 'reply' && searchParams.get('id')) {
+        body.reply_id = searchParams.get('id');
+      }
     }
-
-    let body = params[ParamsKeyUser]
-      ? {
-          username: params[ParamsKeyUser],
-          message: text,
-        }
-      : {
-          dialog_id: params[ParamsKeyDialog],
-          message,
-          reply_id: action === 'reply' ? searchParams.get('id') : null,
-        };
-    sendMessage({
-      resource,
-      method,
-      body: JSON.stringify(body),
-    });
+    body &&
+      sendMessage({
+        resource,
+        method,
+        body: JSON.stringify(body),
+      });
     setMessage('');
   };
 

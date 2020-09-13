@@ -149,12 +149,15 @@ class model extends Repository {
       throw new BadRequest([{ values: "Bad command" }]);
     }
 
-    const result = await super.insert({
+    const toInset = {
       dialog_id,
       body: message,
       owner_id: this.user.id,
-      reply_id: reply_id | null,
-    });
+    };
+    if (reply_id) {
+      toInset.reply_id = reply_id;
+    }
+    const result = await super.insert(toInset);
     if (result) {
       publisher.publish(tapeEvents.message_created, JSON.stringify(result[0]));
       return result;

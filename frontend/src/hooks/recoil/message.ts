@@ -102,3 +102,33 @@ export const messageById = Recoil.selectorFamily<
   get: (id) => async ({ get }) =>
     id ? get(messagesState).find((_) => _.id === id) : undefined,
 });
+
+const messageVersion = Recoil.atomFamily({
+  key: 'message-version',
+  default: 0,
+});
+
+export const messageSelector = Recoil.selectorFamily<
+  MessageType | undefined,
+  idType | null
+>({
+  key: 'message-selector',
+  get: (id) => async ({ get }) => {
+    if (!id) return;
+    get(messageVersion(id));
+    return await request<MessageType>(
+      getRoute(`get/${routes.messages}/?id=${id}`),
+    ).then(
+      (data) => data,
+      (reason) => {
+        throw reason;
+      },
+    );
+  },
+  set: (id) => ({ set }, value) => {
+    if (!id) return;
+    if (value instanceof Recoil.DefaultValue) {
+      set(messageVersion(id), (v) => v + 1);
+    }
+  },
+});

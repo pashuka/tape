@@ -100,14 +100,14 @@ const dialogVersion = Recoil.atomFamily({
 });
 
 export const dialogSelector = Recoil.selectorFamily<
-  DialogIdsType[] | undefined,
+  DialogType | undefined,
   DialogIdType
 >({
   key: 'dialog-selector',
   get: (id) => async ({ get }) => {
     if (!id) return;
     get(dialogVersion(id));
-    return await request<DialogIdsType[]>(
+    return await request<DialogType>(
       getRoute(`get/${routes.dialogs}/?id=${id}`),
     ).then(
       (data) => data,

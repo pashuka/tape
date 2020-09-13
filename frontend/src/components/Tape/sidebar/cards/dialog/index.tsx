@@ -33,6 +33,7 @@ const CardDialog = ({ dialog_id }: PropsType) => {
       setDialog(dContents);
     }
   }, [dState, dContents]);
+
   React.useEffect(() => {
     if (mState === 'hasValue' && Array.isArray(mContents)) {
       setMembers(mContents);

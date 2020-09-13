@@ -45,8 +45,34 @@ class model extends Repository {
     return records;
   }
 
-  findOne(conditions) {
-    return;
+  async findOne(conditions) {
+    if (!this.user) {
+      return;
+    }
+    const { id } = conditions;
+    if (!validator.isNumeric(id)) {
+      throw new BadRequest([{ id: "Bad id" }]);
+    }
+
+    const isMessage = await knex(this.table).select(["id", "dialog_id"]).where({ id }).first();
+    if (!isMessage) {
+      throw new BadRequest([{ id: "Bad id" }]);
+    }
+
+    const isMember = await knex(tables.members)
+      .select(["user_id"])
+      .where({ dialog_id: isMessage.dialog_id, user_id: this.user.id })
+      .first();
+    if (!isMember) {
+      throw new BadRequest([{ id: "Bad id" }]);
+    }
+
+    return knex(this.table)
+      .select(allowed.select.map((c) => `${this.table}.${c}`))
+      .select({ owner: `${tables.users}.username` })
+      .leftJoin(tables.users, `${tables.users}.id`, `${this.table}.owner_id`)
+      .where({ [`${this.table}.id`]: id })
+      .first();
   }
 
   async insert({ dialog_id, username, message, reply_id }) {

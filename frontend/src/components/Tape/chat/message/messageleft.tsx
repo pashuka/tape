@@ -3,7 +3,11 @@ import dayjs from 'dayjs';
 import LocalizedFormat from 'dayjs/plugin/localizedFormat';
 
 import SubMenu from './submenu';
-import { MessageType } from '../../../../hooks/recoil/message';
+import {
+  MessageType,
+  messageSelector,
+  instanceOfMessage,
+} from '../../../../hooks/recoil/message';
 import {
   userInfoQuery,
   instanceOfUser,
@@ -11,6 +15,7 @@ import {
 } from '../../../../hooks/recoil/user';
 import { useRecoilValueLoadable } from 'recoil';
 import Avatar from '../../components/avatar';
+import MessageReply from './messagereply';
 
 dayjs.extend(LocalizedFormat);
 
@@ -20,11 +25,14 @@ type MessageLeftPropsType = {
 };
 
 const MessageLeft = ({
-  data: { id, created_at, owner, body },
+  data: { id, created_at, owner, body, reply_id },
   isAdmin,
 }: MessageLeftPropsType) => {
   const { state, contents } = useRecoilValueLoadable(
     userInfoQuery({ username: owner }),
+  );
+  const { state: replyState, contents: replyContents } = useRecoilValueLoadable(
+    messageSelector(reply_id),
   );
   const [member, setMember] = React.useState<UserType | undefined>();
   const [isActive, setIsActive] = React.useState(false);
@@ -61,6 +69,11 @@ const MessageLeft = ({
                   isActive ? 'alert-dark' : 'bg-gray-100 border-gray-200'
                 } clearfix mb-0 py-1 px-lg-3 px-2`}
               >
+                {reply_id &&
+                replyState === 'hasValue' &&
+                instanceOfMessage(replyContents) ? (
+                  <MessageReply reply={replyContents} />
+                ) : null}
                 <div className="text-body float-left text-break">{body}</div>
                 <div className="float-right pl-2 pl-md-4 pt-1 small">
                   <small

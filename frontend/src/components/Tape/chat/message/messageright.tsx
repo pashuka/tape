@@ -3,7 +3,11 @@ import dayjs from 'dayjs';
 import LocalizedFormat from 'dayjs/plugin/localizedFormat';
 
 import SubMenu from './submenu';
-import { MessageType } from '../../../../hooks/recoil/message';
+import {
+  MessageType,
+  messageSelector,
+  instanceOfMessage,
+} from '../../../../hooks/recoil/message';
 import {
   UserNameType,
   userInfoQuery,
@@ -12,6 +16,7 @@ import {
 import Avatar from '../../components/avatar';
 import { useRecoilValueLoadable } from 'recoil';
 import { useTranslation } from 'react-i18next';
+import MessageReply from './messagereply';
 
 dayjs.extend(LocalizedFormat);
 
@@ -21,12 +26,15 @@ type MessageRightPropsType = {
 };
 
 const MessageRight = ({
-  data: { id, created_at, body, updated_at },
+  data: { id, created_at, body, updated_at, reply_id },
   iam: { username },
 }: MessageRightPropsType) => {
   const { t } = useTranslation();
   const { state, contents } = useRecoilValueLoadable(
     userInfoQuery({ username }),
+  );
+  const { state: replyState, contents: replyContents } = useRecoilValueLoadable(
+    messageSelector(reply_id),
   );
   const [isActive, setIsActive] = React.useState(false);
   return (
@@ -62,6 +70,11 @@ const MessageRight = ({
                   isActive ? 'alert-dark' : ''
                 } clearfix mb-0 py-1 px-lg-3 px-2`}
               >
+                {reply_id &&
+                replyState === 'hasValue' &&
+                instanceOfMessage(replyContents) ? (
+                  <MessageReply reply={replyContents} />
+                ) : null}
                 <div className="float-left text-break">{body}</div>
                 <div className="float-right pl-2 pl-md-4 pt-1 small">
                   {updated_at && (

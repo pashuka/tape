@@ -12,7 +12,7 @@ const MessageReply = ({ reply }: MessageReplyPropsType) => {
     userInfoQuery({ username: reply.owner }),
   );
   return (
-    <div className="small border-left border-primary bg-white rounded px-2 my-1 mx-n2">
+    <div className="small border-left border-primary bg-white rounded px-1 px-lg-2 my-1 mx-n1 mx-lg-n2">
       <strong className="d-block">
         {state === 'hasValue' && instanceOfUser(contents)
           ? contents.realname || <span>@{contents?.username}</span>

@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef } from 'react';
 import Recoil from 'recoil';
 import { routes, getRoute } from '../../constants';
 import { messagesState, MessageType } from './message';
@@ -35,16 +35,19 @@ const unsubscribe = (
 type EventSourceConstructor = {
   new (url: string, eventSourceInitDict?: EventSourceInit): EventSource;
 };
+type EventSourceStatus = 'init' | 'open' | 'closed' | 'error';
+type EventSourceEvent = Event & { data: string };
 
-export type EventSourceStatus = 'init' | 'open' | 'closed' | 'error';
-
-export type EventSourceEvent = Event & { data: string };
+export const EventSourceStatusAtom = Recoil.atom<EventSourceStatus>({
+  key: 'event-source-status',
+  default: 'init',
+});
 
 export function useTapeEvents(
   EventSourceInstance: EventSourceConstructor = EventSource,
 ) {
   const source = useRef<EventSource | null>(null);
-  const [status, setStatus] = useState<EventSourceStatus>('init');
+  const [status, setStatus] = Recoil.useRecoilState(EventSourceStatusAtom);
 
   const resetMessages = Recoil.useResetRecoilState(messagesState);
   const resetDialogs = Recoil.useResetRecoilState(dialogsState);
@@ -67,12 +70,16 @@ export function useTapeEvents(
     source.current = es;
 
     es.addEventListener('open', () => setStatus('open'));
-    es.addEventListener('error', () => setStatus('error'));
+    es.addEventListener('error', () => {
+      setStatus('error');
+    });
 
     return () => {
       source.current = null;
       es.close();
+      setStatus('closed');
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [EventSourceInstance]);
 
   const messagesEventListener = function (ev: any) {
@@ -141,3 +148,67 @@ export function useTapeEventsListener(
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [source, ...dependencies]);
 }
+
+// TODO: impl reconnecting
+// Maybe get implemenation from:
+// https://github.com/Yaffle/EventSource
+
+// const isFunction = (fn) => fn && {}.toString.call(fn) === "[object Function]";
+// const debounce = (fn, wait) => {
+//   let timeout;
+//   let waitFn;
+
+//   return function () {
+//     if (isFunction(wait)) {
+//       waitFn = wait;
+//     } else {
+//       waitFn = function () {
+//         return wait;
+//       };
+//     }
+
+//     var context = this,
+//       args = arguments;
+//     var later = function () {
+//       timeout = null;
+//       fn.apply(context, args);
+//     };
+//     clearTimeout(timeout);
+//     timeout = setTimeout(later, waitFn());
+//   };
+// }
+
+// let reconnectFrequencySeconds = 1;
+// let evtSource;
+// const urlString = ''
+
+// var reconnect = debounce(
+//   function () {
+//     setupEventSource(urlString);
+//     // Double delay every attempt to avoid overwhelming server
+//     reconnectFrequencySeconds *= 2;
+//     // Max out at ~1 minute as a compromise between user experience and server load
+//     if (reconnectFrequencySeconds >= 64) {
+//       reconnectFrequencySeconds = 64;
+//     }
+//   },
+//   function () {
+//     return reconnectFrequencySeconds * 1000;
+//   }
+// );
+
+// function setupEventSource(url:string) {
+//   evtSource = new EventSource(url);
+//   evtSource.onmessage = function (e) {
+//     // Handle even here
+//   };
+//   evtSource.onopen = function (e) {
+//     // Reset reconnect frequency upon successful connection
+//     reconnectFrequencySeconds = 1;
+//   };
+//   evtSource.onerror = function (e) {
+//     evtSource.close();
+//     reconnect();
+//   };
+// }
+// setupEventSource(urlString);

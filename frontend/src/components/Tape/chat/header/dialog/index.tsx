@@ -58,6 +58,7 @@ const HeaderDialog = ({ dialog }: PropsType) => {
   return (
     <div
       className="col-8 col-xl-6"
+      role="button"
       onClick={(e) => {
         setMessenger((currVal: MessengerType) => ({
           ...currVal,

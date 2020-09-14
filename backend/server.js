@@ -1,7 +1,8 @@
 const app = require("./app");
+const cleanup = require("./cleanup").cleanup();
 const config = require("./.env");
 
-process.send = process.send || function() {};
+process.send = process.send || function () {};
 
 app.listen(config.server.port, () => {
   console.log(`API listening on port ${config.server.port}`);

@@ -13,6 +13,10 @@ import { MessengerAtom } from '../../hooks/recoil/messenger';
 import { currentDialogIdState } from '../../hooks/recoil/dialog';
 import SettingsContent from './settings/index';
 import { messagesOffsetAtom } from '../../hooks/recoil/message';
+import { EventSourceStatusAtom } from '../../hooks/recoil/events';
+import Modal from '../Modal';
+import ModalBackdrop from '../Modal/backdrop';
+import { useTranslation } from 'react-i18next';
 
 export enum TabEnum {
   Dialogs,
@@ -26,6 +30,7 @@ type PropsType = {
 };
 
 const Messenger = ({ tab, route }: PropsType) => {
+  const { t } = useTranslation();
   const { device } = useUserAgent();
   const [sidebarHeight, setSidebarHeight] = React.useState(0);
   const [sidebarScrollOnBottom, setSidebarScrollOnBottom] = React.useState(
@@ -33,6 +38,7 @@ const Messenger = ({ tab, route }: PropsType) => {
   );
   const refNavbar = React.createRef<HTMLDivElement>();
 
+  const eventsStatus = useRecoilValue(EventSourceStatusAtom);
   const messenger = useRecoilValue(MessengerAtom);
   const setDialogId = useSetRecoilState(currentDialogIdState);
   const resetMessagesOffset = useResetRecoilState(messagesOffsetAtom);
@@ -102,34 +108,73 @@ const Messenger = ({ tab, route }: PropsType) => {
       break;
   }
   return (
-    <div className="messenger">
-      <div
-        ref={refNavbar}
-        className="navigation navbar navbar-light justify-content-center py-xl-1 bg-white pt-0"
-      >
-        <Navbar />
+    <React.Fragment>
+      <div className="messenger">
+        <div
+          ref={refNavbar}
+          className="navigation navbar navbar-light justify-content-center py-xl-1 bg-white pt-0"
+        >
+          <Navbar />
+        </div>
+        <div
+          onScroll={handleScroll}
+          className="sidebar"
+          style={{
+            height: device.type === 'mobile' ? sidebarHeight : '',
+          }}
+        >
+          {sidebarComponent}
+        </div>
+        <div
+          className={`main ${
+            (device.type === 'mobile' && params[ParamsKeyDialog]) ||
+            params[ParamsKeyUser] ||
+            messenger.isChatOpen
+              ? 'main-visible'
+              : ''
+          }`}
+        >
+          {mainComponent}
+        </div>
+        {eventsStatus === 'error' && (
+          <Modal
+            title="Trying to reach server"
+            body={
+              <React.Fragment>
+                <p>
+                  {t(
+                    'Please make sure that your device has network connectivity.',
+                  )}
+                </p>{' '}
+                <p>
+                  {t(
+                    'You must have a strong and stable Internet connection on your computer to use Tape',
+                  )}
+                </p>{' '}
+              </React.Fragment>
+            }
+            buttons={[
+              <button
+                key="sign-out-button"
+                type="button"
+                className="btn btn-link"
+                disabled
+              >
+                {t('Sign Out')}
+              </button>,
+              <button
+                key="retry-now-button"
+                type="button"
+                className="btn btn-primary"
+              >
+                {t('Retry Now')}
+              </button>,
+            ]}
+          />
+        )}
       </div>
-      <div
-        onScroll={handleScroll}
-        className="sidebar"
-        style={{
-          height: device.type === 'mobile' ? sidebarHeight : '',
-        }}
-      >
-        {sidebarComponent}
-      </div>
-      <div
-        className={`main ${
-          (device.type === 'mobile' && params[ParamsKeyDialog]) ||
-          params[ParamsKeyUser] ||
-          messenger.isChatOpen
-            ? 'main-visible'
-            : ''
-        }`}
-      >
-        {mainComponent}
-      </div>
-    </div>
+      {eventsStatus === 'error' && <ModalBackdrop />}
+    </React.Fragment>
   );
 };
 

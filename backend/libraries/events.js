@@ -29,6 +29,10 @@ const broadcast = (event, data) => {
   );
 };
 
+process.on("cleanup", () => {
+  pool.forEach(({ streamContext }) => streamContext.close());
+});
+
 subscriber.on("message", async (channel, message) => {
   const data = tryParseJSON(message);
   switch (channel) {

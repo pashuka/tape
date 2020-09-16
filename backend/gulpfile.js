@@ -12,12 +12,12 @@ livereload.listen();
 const serverRestart = () => {
   nodemon({
     script,
-    ignore: ["build/*", "public/*"]
+    ignore: ["build/*", "public/*"],
   }).on("restart", () => {
     clearConsole();
     restartServer();
   });
-  return new Promise(function(resolve, reject) {
+  return new Promise(function (resolve, reject) {
     resolve("Server ReStarted");
   });
 };

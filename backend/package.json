@@ -9,6 +9,7 @@
     "@types/events": "^3.0.0",
     "@types/koa": "^2.11.4",
     "accesscontrol": "^2.2.1",
+    "amqplib": "^0.6.0",
     "bcryptjs": "^2.4.3",
     "clear": "^0.1.0",
     "cross-env": "^5.2.0",

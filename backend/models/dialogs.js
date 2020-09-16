@@ -71,7 +71,7 @@ class model extends Repository {
   async insert(values) {
     // TODO: remove picture on any fail
 
-    const { picture, ["members[]"]: members, title } = values;
+    let { picture, ["members[]"]: members, title } = values;
     const profile = {};
     // check title
     if (typeof title !== "string" || title.length === 0) {
@@ -81,7 +81,11 @@ class model extends Repository {
 
     // check members
     if (!Array.isArray(members)) {
-      throw new BadRequest([{ members: "Bad type" }]);
+      if (typeof members === "string") {
+        members = [members];
+      } else {
+        throw new BadRequest([{ members: "Bad type" }]);
+      }
     }
     if (members.length === 0) {
       throw new BadRequest([{ members: "Should not be empty" }]);

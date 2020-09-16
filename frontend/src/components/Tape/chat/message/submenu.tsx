@@ -9,8 +9,6 @@ import { routes, getRoute } from '../../../../constants';
 import { idType } from '../../../../types';
 import { useHistory } from 'react-router-dom';
 
-const temporaryDisable = true;
-
 export type SubMenuPropsType = {
   message_id: idType;
   handleOpen: (isOpen: boolean) => void;
@@ -101,7 +99,7 @@ const SubMenu = ({
         </button>
         <button
           type="button"
-          disabled={!isDeletable || temporaryDisable}
+          disabled={!isDeletable}
           className="dropdown-item d-flex px-2 align-items-center"
           onClick={(e) => {
             setShow(!show);

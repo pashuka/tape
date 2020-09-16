@@ -1,7 +1,7 @@
 import React from 'react';
 import dayjs from 'dayjs';
 import LocalizedFormat from 'dayjs/plugin/localizedFormat';
-
+import INotInterested from '@material-ui/icons/NotInterested';
 import SubMenu from './submenu';
 import {
   MessageType,
@@ -16,6 +16,7 @@ import {
 import { useRecoilValueLoadable } from 'recoil';
 import Avatar from '../../components/avatar';
 import MessageReply from './messagereply';
+import { useTranslation } from 'react-i18next';
 
 dayjs.extend(LocalizedFormat);
 
@@ -28,6 +29,7 @@ const MessageLeft = ({
   data: { id, created_at, owner, body, reply_id },
   isAdmin,
 }: MessageLeftPropsType) => {
+  const { t } = useTranslation();
   const { state, contents } = useRecoilValueLoadable(
     userInfoQuery({ username: owner }),
   );
@@ -74,7 +76,16 @@ const MessageLeft = ({
                 instanceOfMessage(replyContents) ? (
                   <MessageReply reply={replyContents} />
                 ) : null}
-                <div className="text-body float-left text-break">{body}</div>
+                <div className="text-body float-left text-break">
+                  {body === null ? (
+                    <small className="text-muted">
+                      <INotInterested style={{ fontSize: '1rem' }} />{' '}
+                      <i>{t('deleted')}</i>
+                    </small>
+                  ) : (
+                    body
+                  )}
+                </div>
                 <div className="float-right pl-2 pl-md-4 pt-1 small">
                   <small
                     className="text-gray-600"

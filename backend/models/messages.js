@@ -209,7 +209,7 @@ class model extends Repository {
     // 1. is message exist
     const isMessage = await knex(this.table)
       .select(["id", "dialog_id", "owner_id"])
-      .where(conditions)
+      .where({ id })
       .first();
     if (!isMessage) {
       return;
@@ -240,7 +240,7 @@ class model extends Repository {
     // 1. is message exist
     const isMessage = await knex(this.table)
       .select(["id", "dialog_id", "owner_id"])
-      .where(conditions)
+      .where({ id })
       .first();
     if (!isMessage) {
       return;
@@ -266,11 +266,18 @@ class model extends Repository {
       }
     }
     // TODO: deal with unread_cursor & unread_counter
-    const result = await knex(this.table).where(conditions).del();
-    if (Number.isInteger(result) && result > 0) {
-      publisher.publish(tapeEvents.message_removed, JSON.stringify(isMessage));
+    // currently we don't delete message, we just set it's body to null
+
+    // const result = await knex(this.table).where({ id }).del();
+    // if (Number.isInteger(result) && result > 0) {
+    //   publisher.publish(tapeEvents.message_removed, JSON.stringify(isMessage));
+    // }
+    const result = await super.update({ id }, { updated_at: knex.fn.now(6), body: null });
+    if (result) {
+      publisher.publish(tapeEvents.message_removed, JSON.stringify(result[0]));
+      // method should return the number of affected rows for the query
+      return result;
     }
-    return result;
   }
 }
 

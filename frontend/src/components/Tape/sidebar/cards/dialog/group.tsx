@@ -1,5 +1,6 @@
 import React from 'react';
 import INotificationsOffIcon from '@material-ui/icons/NotificationsOff';
+import INotInterested from '@material-ui/icons/NotInterested';
 import { useRouteMatch } from 'react-router-dom';
 import { useRecoilValueLoadable } from 'recoil';
 import dayjs from 'dayjs';
@@ -18,6 +19,7 @@ import {
 } from '../../../../../hooks/recoil/user';
 import Avatar from '../../../components/avatar';
 import { compactNumber } from '../../../../../utils';
+import { useTranslation } from 'react-i18next';
 
 dayjs.extend(isToday);
 
@@ -26,6 +28,7 @@ type PropsType = {
 };
 
 const CardDialogGroup = ({ dialog }: PropsType) => {
+  const { t } = useTranslation();
   const { params } = useRouteMatch<QSParamsType>();
   const { state, contents } = useRecoilValueLoadable(
     userInfoQuery({ username: dialog.last_message_owner }),
@@ -78,7 +81,18 @@ const CardDialogGroup = ({ dialog }: PropsType) => {
                 {contents.realname || contents.username}
               </div>
             ) : null}
-            {dialog.last_message_body || '...'}
+            {dialog.last_message_body === null ? (
+              <small className="text-muted">
+                <INotInterested style={{ fontSize: '1rem' }} />{' '}
+                <i>{t('deleted')}</i>
+              </small>
+            ) : dialog.last_message_body.length ? (
+              dialog.last_message_body
+            ) : (
+              <div className="badge badge-pill badge-light text-muted">
+                {t('created')}
+              </div>
+            )}
           </div>
           {dialog.unread_count > 0 && (
             <div

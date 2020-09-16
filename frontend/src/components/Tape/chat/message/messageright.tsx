@@ -1,7 +1,7 @@
 import React from 'react';
 import dayjs from 'dayjs';
 import LocalizedFormat from 'dayjs/plugin/localizedFormat';
-
+import INotInterested from '@material-ui/icons/NotInterested';
 import SubMenu from './submenu';
 import {
   MessageType,
@@ -75,7 +75,16 @@ const MessageRight = ({
                 instanceOfMessage(replyContents) ? (
                   <MessageReply reply={replyContents} />
                 ) : null}
-                <div className="float-left text-break">{body}</div>
+                <div className="float-left text-break">
+                  {body === null ? (
+                    <small className="text-muted">
+                      <INotInterested style={{ fontSize: '1rem' }} />{' '}
+                      <i>{t('deleted')}</i>
+                    </small>
+                  ) : (
+                    body
+                  )}
+                </div>
                 <div className="float-right pl-2 pl-md-4 pt-1 small">
                   {updated_at && (
                     <small

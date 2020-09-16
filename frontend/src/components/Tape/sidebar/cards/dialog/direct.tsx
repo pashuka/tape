@@ -1,5 +1,6 @@
 import React from 'react';
 import INotificationsOffIcon from '@material-ui/icons/NotificationsOff';
+import INotInterested from '@material-ui/icons/NotInterested';
 import { useRouteMatch } from 'react-router-dom';
 import { useRecoilValueLoadable } from 'recoil';
 import dayjs from 'dayjs';
@@ -105,7 +106,14 @@ const CardDialogDirect = ({ dialog, username }: PropsType) => {
                 {t('You')}
               </div>
             ) : null}
-            {dialog.last_message_body}
+            {dialog.last_message_body === null ? (
+              <small className="text-muted">
+                <INotInterested style={{ fontSize: '1rem' }} />{' '}
+                <i>{t('deleted')}</i>
+              </small>
+            ) : (
+              dialog.last_message_body
+            )}
           </div>
           {dialog.unread_count > 0 && (
             <div

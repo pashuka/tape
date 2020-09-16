@@ -92,6 +92,11 @@ const streamTapeEvents = (req, res) => {
   const fetchEventsSince = async (lastEventId) => {
     return [
       /* all events since event with ID `lastEventId` would go here */
+      {
+        id: uuid.v4(),
+        event: "event-since",
+        data: uuid.v4(),
+      },
     ];
   };
 

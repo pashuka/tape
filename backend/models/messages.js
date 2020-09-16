@@ -80,7 +80,7 @@ class model extends Repository {
     if (typeof message !== "string") {
       throw new BadRequest([{ message: "Bad message" }]);
     }
-    if (message.length < lengths.message.min && message.length > lengths.message.max) {
+    if (message.trim().length < lengths.message.min && message.length > lengths.message.max) {
       throw new BadRequest([
         {
           message: `Message length must be between ${lengths.message.min} and ${lengths.message.max} characters`,
@@ -107,7 +107,7 @@ class model extends Repository {
       if (!participant) {
         throw new BadRequest([{ username: `Username ${username} is not exist` }]);
       }
-      // TODO: check on duplicate end to end dialogs if we only have username and dialog_id is undefined
+      // Check on duplicate end to end dialogs if we only have username and dialog_id is undefined
       /**
        * explain (analyze)
        * select m2.*
@@ -132,26 +132,23 @@ class model extends Repository {
         throw new BadRequest([{ username: "Dialog with this username exist" }]);
       }
 
-      // TODO: impl group dialog type creation
       // TODO: impl transactional solution
       /**
-       * knex.transaction((trx) => {
-       *   return knex.schema.table('Orders', (table) => table.string('user_nick_name').transacting(trx))
-       *   .then(() => {
-       *     return Promise.all(
-       *       nickNames.map((row) => {
-       *         return knex('Orders')
-       *         .update({ user_nick_name: row.nickName })
-       *         .where('user_id', row.userId)
-       *         .transacting(trx);
-       *       })
-       *    )
+       * const trx = await knex.transaction();
+       * dialog_id = await trx(tables.dialogs)
+       * .insert({ member_count: 2 })
+       * .returning(["id"])
+       * .then(async (dialog) => {
+       *   const dialog_id = dialog[0].id;
+       *   await trx(tables.members).insert([
+       *     { dialog_id, user_id: this.user.id, role: "admin" },
+       *     { dialog_id, user_id: participant.id, role: "admin" },
+       *   ]);
+       *   return dialog_id;
        * })
        * .then(trx.commit)
        * .catch(trx.rollback);
-      });
        */
-      // const trx = await knex.transaction();
       dialog = await knex(tables.dialogs).insert({ member_count: 2 }).returning(["id"]);
       dialog_id = dialog[0].id;
       // both user is admin in direct conversation
@@ -201,7 +198,7 @@ class model extends Repository {
     if (typeof message !== "string") {
       throw new BadRequest([{ message: "Bad message" }]);
     }
-    if (message.length < lengths.message.min && message.length > lengths.message.max) {
+    if (message.trim().length < lengths.message.min && message.length > lengths.message.max) {
       throw new BadRequest([
         {
           message: `Message length must be between ${lengths.message.min} and ${lengths.message.max} characters`,

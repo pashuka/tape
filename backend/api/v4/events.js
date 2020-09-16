@@ -17,6 +17,8 @@ router.get(`/${api.v4}/${resources.events}`, async (ctx) => {
   // Find the implementation below
   streamTapeEvents(ctx.req, ctx.res);
 
+  // TODO: deal with user's signout, maybe we need to send and handle event using redis pub/sub after this one we need to close stream connection if it's not
+
   /**
    * To bypass Koa's built-in response handling, you may explicitly set ctx.respond = false;.
    * Use this if you want to write to the raw res object instead of letting Koa handle the

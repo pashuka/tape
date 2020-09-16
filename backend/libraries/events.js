@@ -5,10 +5,10 @@ const knex = require("./knex");
 const { tryParseJSON } = require("./utils");
 const { tapeEvents, tables } = require("../constants");
 
-let pool = [];
+let clientPool = [];
 
 const listener = (id, event, data) => {
-  pool.forEach(({ user_id, streamContext }) => {
+  clientPool.forEach(({ user_id, streamContext }) => {
     if (user_id === id) {
       streamContext.sendEvent({
         id: uuid.v4(),
@@ -20,7 +20,7 @@ const listener = (id, event, data) => {
 };
 
 const broadcast = (event, data) => {
-  pool.forEach(({ streamContext }) =>
+  clientPool.forEach(({ streamContext }) =>
     streamContext.sendEvent({
       id: uuid.v4(),
       event,
@@ -30,7 +30,8 @@ const broadcast = (event, data) => {
 };
 
 process.on("cleanup", () => {
-  pool.forEach(({ streamContext }) => streamContext.close());
+  clientPool.forEach(({ streamContext }) => streamContext.close());
+  clientPool = [];
 });
 
 subscriber.on("message", async (channel, message) => {
@@ -60,7 +61,7 @@ subscriber.on("message", async (channel, message) => {
       const { dialog_id } = data;
       const dialogMembers = await knex(tables.members)
         .select("user_id")
-        // TODO: select only where {members.settings.mute: false} or members.settings.mute: null}
+        // TODO: Select only where {members.settings.mute: false} or members.settings.mute: null} in case of push notifications. Maybe send notification anyway but with mute sound/vibrate alerts, without display screen notification.
         .where({ dialog_id });
       if (dialogMembers) {
         dialogMembers.map(({ user_id }) => {
@@ -103,20 +104,22 @@ const streamTapeEvents = (req, res) => {
       return fetchEventsSince(lastEventId);
     },
     stream(streamContext) {
-      pool.push({
+      clientPool.push({
         stream_id,
         user_id,
         streamContext,
       });
 
       if (process.env.NODE_ENV === "development") {
-        console.log("Count subscribers:", pool.length);
+        console.log("Count subscribers:", clientPool.length);
       }
 
       // Return an unsubscribe function, so the stream can be terminated properly
       return () => {
         // clean pool
-        pool = pool.filter((_) => !(stream_id === _.stream_id && user_id === _.user_id));
+        clientPool = clientPool.filter(
+          (_) => !(stream_id === _.stream_id && user_id === _.user_id)
+        );
       };
     },
   });

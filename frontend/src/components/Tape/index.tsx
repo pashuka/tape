@@ -148,7 +148,7 @@ const Messenger = ({ tab, route }: PropsType) => {
                 </p>{' '}
                 <p>
                   {t(
-                    'You must have a strong and stable Internet connection on your computer to use Tape',
+                    'You must have a strong and stable Internet connection on your computer to use Tape.',
                   )}
                 </p>{' '}
               </React.Fragment>

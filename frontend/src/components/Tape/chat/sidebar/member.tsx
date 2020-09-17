@@ -6,18 +6,18 @@ import {
   instanceOfUser,
   userInfoQuery,
   UserType,
+  UserNameType,
 } from '../../../../hooks/recoil/user';
-import { MemberType } from '../../../../hooks/recoil/member';
+import { MemberType, MemberRoleType } from '../../../../hooks/recoil/member';
 import Avatar from '../../components/avatar';
 import Skeleton from '../../../Skeleton';
-import { DialogMemberType } from '../../../../hooks/recoil/dialog';
 // import SubMenu from './submenu';
 
-type PropsType = {
-  member: DialogMemberType;
+type PropsType = UserNameType & {
+  role: MemberRoleType;
 };
 
-const CardMember = ({ member: { username, role } }: PropsType) => {
+const CardMember = ({ username, role }: PropsType) => {
   const { state, contents } = useRecoilValueLoadable(
     userInfoQuery({ username }),
   );
@@ -40,7 +40,7 @@ const CardMember = ({ member: { username, role } }: PropsType) => {
           <Avatar
             pending={state === 'loading'}
             picture={member?.profile?.picture}
-            size="md"
+            size="sm"
           />
 
           <div className="media-body ml-2 overflow-hidden border-top">

@@ -10,10 +10,11 @@ import {
 } from '../../../../hooks/recoil/dialog';
 import Avatar from '../../components/avatar';
 import { useTranslation } from 'react-i18next';
-import { useRecoilState, useRecoilValueLoadable } from 'recoil';
+import { useRecoilState, useRecoilValueLoadable, useRecoilValue } from 'recoil';
 import { limitFetchMax } from '../../../../hooks/recoil/constants';
 import CardHeader from '../../sidebar/cards/header';
 import CardMember from './member';
+import { authState } from '../../../../hooks/recoil/auth';
 
 dayjs.extend(relativeTime);
 
@@ -26,6 +27,7 @@ const SideBarBodyDialogGroup = ({ scrollBottom, dialog }: PropsType) => {
   const { t } = useTranslation();
   const title = dialog.profile.title;
 
+  const iam = useRecoilValue(authState);
   const [offset, setOffset] = useRecoilState(dialogMembersOffsetAtom);
   const { state, contents } = useRecoilValueLoadable(dialogMembersState);
   const [records, setRecords] = React.useState<DialogMemberType[]>(
@@ -59,8 +61,15 @@ const SideBarBodyDialogGroup = ({ scrollBottom, dialog }: PropsType) => {
         </p>
       </div>
       <CardHeader title="Members" />
-      {records.map((_) => (
-        <CardMember key={_.username} member={_} />
+      {iam && (
+        <CardMember
+          key={iam.username}
+          username={iam.username}
+          role={dialog.role}
+        />
+      )}
+      {records.map(({ username, role }) => (
+        <CardMember key={username} username={username} role={role} />
       ))}
     </div>
   );

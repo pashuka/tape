@@ -1,0 +1,101 @@
+{
+  "init": [
+    {
+      "name": "initJssCs",
+      "filename": "/Users/pav/Work/messenger/git/tape/.codedoc/node_modules/@codedoc/core/dist/es6/transport/setup-jss.js",
+      "hash": "2idiwPzkXJqdn/4WI+kmmQ=="
+    },
+    {
+      "name": "installTheme",
+      "filename": "/Users/pav/Work/messenger/git/tape/.codedoc/content/theme.ts",
+      "hash": "kTmz3xQu3XCEH39UTWtazg=="
+    },
+    {
+      "name": "codeSelection",
+      "filename": "/Users/pav/Work/messenger/git/tape/.codedoc/node_modules/@codedoc/core/dist/es6/components/code/selection.js",
+      "hash": "6SmZn8YjAV0GknEzebl6AA=="
+    },
+    {
+      "name": "sameLineLengthInCodes",
+      "filename": "/Users/pav/Work/messenger/git/tape/.codedoc/node_modules/@codedoc/core/dist/es6/components/code/same-line-length.js",
+      "hash": "F3l95q2IiQB3N0QBwONDxw=="
+    },
+    {
+      "name": "initHintBox",
+      "filename": "/Users/pav/Work/messenger/git/tape/.codedoc/node_modules/@codedoc/core/dist/es6/components/code/line-hint/index.js",
+      "hash": "ay4TryA2N/NZ+URV6C0ZTg=="
+    },
+    {
+      "name": "initCodeLineRef",
+      "filename": "/Users/pav/Work/messenger/git/tape/.codedoc/node_modules/@codedoc/core/dist/es6/components/code/line-ref/index.js",
+      "hash": "b+7rvREmzWXdaVuGV//O2g=="
+    },
+    {
+      "name": "initSmartCopy",
+      "filename": "/Users/pav/Work/messenger/git/tape/.codedoc/node_modules/@codedoc/core/dist/es6/components/code/smart-copy.js",
+      "hash": "9/ovC3QDHwbkZr76dXhSMg=="
+    },
+    {
+      "name": "copyHeadings",
+      "filename": "/Users/pav/Work/messenger/git/tape/.codedoc/node_modules/@codedoc/core/dist/es6/components/heading/copy-headings.js",
+      "hash": "cUoPDvUHh8KZDCVGMLrBNQ=="
+    },
+    {
+      "name": "contentNavHighlight",
+      "filename": "/Users/pav/Work/messenger/git/tape/.codedoc/node_modules/@codedoc/core/dist/es6/components/page/contentnav/highlight.js",
+      "hash": "uVUgaa2fPE/ERx9wlnp95Q=="
+    },
+    {
+      "name": "loadDeferredIFrames",
+      "filename": "/Users/pav/Work/messenger/git/tape/.codedoc/node_modules/@codedoc/core/dist/es6/transport/deferred-iframe.js",
+      "hash": "7LSCHWkQWriEiWKp+ljt1A=="
+    },
+    {
+      "name": "smoothLoading",
+      "filename": "/Users/pav/Work/messenger/git/tape/.codedoc/node_modules/@codedoc/core/dist/es6/transport/smooth-loading.js",
+      "hash": "y4+hFPKAP8IAX7/funZ/Hw=="
+    },
+    {
+      "name": "tocHighlight",
+      "filename": "/Users/pav/Work/messenger/git/tape/.codedoc/node_modules/@codedoc/core/dist/es6/components/page/toc/toc-highlight.js",
+      "hash": "XlyIsRavZvyrIMPz6lCW+g=="
+    },
+    {
+      "name": "postNavSearch",
+      "filename": "/Users/pav/Work/messenger/git/tape/.codedoc/node_modules/@codedoc/core/dist/es6/components/page/toc/search/post-nav/index.js",
+      "hash": "8E8h9N2AdGkXoQ4Vve2u8A=="
+    },
+    {
+      "name": "copyLineLinks",
+      "filename": "/Users/pav/Work/messenger/git/tape/.codedoc/node_modules/@codedoc/core/dist/es6/components/code/line-links/copy-line-link.js",
+      "hash": "ay78RgPilE9/B1BOUg10rA=="
+    },
+    {
+      "name": "reloadOnChange",
+      "filename": "/Users/pav/Work/messenger/git/tape/.codedoc/node_modules/@codedoc/core/dist/es6/serve/reload.js",
+      "hash": "UDAVWAOYL6TjrJ+W+AN3sg=="
+    }
+  ],
+  "components": [
+    {
+      "name": "ToCToggle",
+      "filename": "/Users/pav/Work/messenger/git/tape/.codedoc/node_modules/@codedoc/core/dist/es6/components/page/toc/toggle/index.js",
+      "hash": "BQk95uyIFMXeerSJCFCJHA=="
+    },
+    {
+      "name": "DarkModeSwitch",
+      "filename": "/Users/pav/Work/messenger/git/tape/.codedoc/node_modules/@codedoc/core/dist/es6/components/darkmode/index.js",
+      "hash": "VTmHzL6hUlN4nEHqWQJatw=="
+    },
+    {
+      "name": "ConfigTransport",
+      "filename": "/Users/pav/Work/messenger/git/tape/.codedoc/node_modules/@codedoc/core/dist/es6/transport/config.js",
+      "hash": "Le29LofECp4Ny+JWbRsEpA=="
+    }
+  ],
+  "renderer": {
+    "name": "getRenderer",
+    "filename": "/Users/pav/Work/messenger/git/tape/.codedoc/node_modules/@codedoc/core/dist/es6/transport/renderer.js",
+    "hash": "nMVPj2kTFHT0CXnPAGbIXw=="
+  }
+}

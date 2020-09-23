@@ -24,41 +24,14 @@ module.exports = {
     },
   },
   knex: {
-    development: {
-      client: "pg",
-      connection: {
-        host: "localhost",
-        user: "username",
-        password: "userpassword",
-        database: "databasename",
-        charset: "utf8",
-      },
-      pool: { min: 0, max: 5 },
-      migrations: { directory: __dirname + "/knex/migrations" },
-      seeds: { directory: __dirname + "/knex/seeds" },
-      debug: true,
-    },
-    staging: {
-      client: "postgresql",
-      connection: {
-        host: "stage.psql.domain.name",
-        user: "username",
-        password: "userpassword",
-        database: "databasename",
-      },
-      pool: { min: 2, max: 10 },
-      migrations: { tableName: "knex_migrations" },
-    },
     production: {
       client: "postgresql",
-      connection: {
-        host: "prod.psql.domain.name",
-        user: "username",
-        password: "userpassword",
-        database: "databasename",
-      },
+      connection:
+        "postgres://<username>:<userpassword>@<psql.domain.name>:5432/<databasename>?sslmode=disable&connect_timeout=10",
       pool: { min: 2, max: 10 },
-      migrations: { tableName: "knex_migrations" },
+      migrations: { tableName: "knex_migrations", directory: __dirname + "/knex/migrations" },
+      seeds: { directory: __dirname + "/knex/seeds" },
+      debug: false,
     },
   },
   seed: {
@@ -96,10 +69,11 @@ module.exports = {
     port: 6379,
   },
   sentry: {
-    dsn: "https://xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx@sentry.io/xxxxxxxx",
+    // dsn: "https://xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx@sentry.io/xxxxxxxx",
+    dsn: false,
   },
   formidable: {
-    destination: "../frontend/public/uploads",
+    destination: "../frontend/build/uploads",
     docs: ["file"],
     thumb: {
       size: 64,

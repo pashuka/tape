@@ -41,6 +41,7 @@ const api = {
 };
 
 const tables = {
+  admins: "admins",
   dialogs: "dialogs",
   members: "members",
   messages: "messages",

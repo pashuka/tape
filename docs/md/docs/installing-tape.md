@@ -1,39 +1,3 @@
-- [Software and Hardware Requirements](#software-and-hardware-requirements)
-  - [Software Requirements](#software-requirements)
-    - [Client Software](#client-software)
-      - [http Web](#http-web)
-    - [mail_outline Email Client](#mail_outline-email-client)
-  - [Server Software](#server-software)
-    - [Tape Server Operating System](#tape-server-operating-system)
-    - [Database Software](#database-software)
-  - [Hardware Requirements](#hardware-requirements)
-    - [people_outline Hardware Requirements for Team Deployments](#people_outline-hardware-requirements-for-team-deployments)
-    - [Hardware Requirements for Multi-Server Deployments](#hardware-requirements-for-multi-server-deployments)
-      - [Scale Requirements](#scale-requirements)
-      - [System Requirements](#system-requirements)
-    - [storage Storage Calculations](#storage-storage-calculations)
-- [Introduction](#introduction)
-- [Installing Ubuntu Server 18.04 LTS](#installing-ubuntu-server-1804-lts)
-- [Installing Ubuntu Server 20.04 LTS](#installing-ubuntu-server-2004-lts)
-- [Installing PostgreSQL Database Server](#installing-postgresql-database-server)
-- [Installing and Configuring Redis](#installing-and-configuring-redis)
-- [Installing Node.js using a PPA](#installing-nodejs-using-a-ppa)
-- [Install necessary dependency packages](#install-necessary-dependency-packages)
-  - [Yarn](#yarn)
-  - [Knex.js migration CLI](#knexjs-migration-cli)
-- [Installing Tape Server](#installing-tape-server)
-- [Installing NGINX Server](#installing-nginx-server)
-- [Configuring NGINX as a proxy for Tape Server](#configuring-nginx-as-a-proxy-for-tape-server)
-- [Configuring NGINX with SSL and HTTP/2](#configuring-nginx-with-ssl-and-http2)
--
-- [Configuring Tape Server]()
-- [Configuring TLS on Tape Server]()
-- [Configuring NGINX as a proxy for Tape Server]()
-- [NGINX Configuration FAQ]()
-- [Configuring NGINX with SSL and HTTP/2]()
-
----
-
 # Software and Hardware Requirements
 
 This guide outlines minimum software and hardware requirements for deploying Tape. Requirements may vary based on utilization and observing performance of pilot projects is recommended prior to scale out.
@@ -473,7 +437,7 @@ Assume that the IP address of this server is 10.10.10.2.
 12. Create the storage directory for files.
 
     ```bash
-    sudo mkdir /opt/tape/frontend/public/uploads
+    sudo mkdir /opt/tape/frontend/build/uploads
     ```
 
     > [help](:Icon) **NOTE**

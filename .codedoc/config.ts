@@ -7,7 +7,6 @@ export const config = /*#__PURE__*/ configuration({
   dest: {
     // @see /docs/config/output
     html: "docs/build", // --> the base folder for HTML files
-    assets: "docs/build", // --> the base folder for assets
     bundle: "docs/assets", // --> where to store codedoc's bundle (relative to `assets`)
     styles: "docs/assets", // --> where to store codedoc's styles (relative to `assets`)
     namespace: "", // --> project namespace

@@ -1,5 +1,11 @@
 # Tape
 
+![Main](./group-info.png)
+
+--- 
+![Mobile](./tape.build.pm_tape_dialogs_(iPhone%20X).png)
+
+
 ## Aims
 
 This project's aim to show how to develop real time messengers

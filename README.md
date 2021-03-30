@@ -1,5 +1,9 @@
 # Tape
 
+![Cover](./Tape-590-300.jpg)
+
+---
+
 ![Main](./group-info.png)
 
 --- 

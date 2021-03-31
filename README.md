@@ -4,11 +4,32 @@
 
 ---
 
-![Main](./group-info.png)
+![load](./docs/images/04_load4.jpg)
 
 --- 
-![Mobile](./tape.build.pm_tape_dialogs_(iPhone%20X).png)
+adasdad
+![groupinfo](./docs/images/05_groupinfo.jpg)
 
+--- 
+![6](./docs/images/06_members.jpg)
+
+--- 
+![7](./docs/images/07_search.jpg)
+
+--- 
+![8](./docs/images/08_profile.jpg)
+
+--- 
+![9](./docs/images/09_mobile_load.jpg)
+
+--- 
+![10](./docs/images/10_mobile_load3.jpg)
+
+--- 
+![11](./docs/images/11_mobile_submenu.jpg)
+
+--- 
+![12](./docs/images/12_mobile_groupinfo.jpg)
 
 ## Aims
 

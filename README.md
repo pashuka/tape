@@ -7,7 +7,6 @@
 ![load](./docs/images/04_load4.jpg)
 
 --- 
-adasdad
 ![groupinfo](./docs/images/05_groupinfo.jpg)
 
 --- 

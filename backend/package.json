@@ -1,5 +1,5 @@
 {
-  "name": "api",
+  "name": "backend",
   "version": "0.0.1",
   "proxy-disable": "http://localhost:3333",
   "main": "server.js",

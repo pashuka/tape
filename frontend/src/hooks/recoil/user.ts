@@ -28,7 +28,7 @@ const userInfoVersion = Recoil.atomFamily({
 });
 
 type userInfoParamsType = {
-  username: string;
+  username: string | null;
   withDialog?: boolean;
 };
 
@@ -39,7 +39,7 @@ export const userInfoQuery = Recoil.selectorFamily<
   key: 'user-info-query',
   get: ({ username, withDialog }) => async ({ get }) => {
     get(userInfoVersion({ username, withDialog })); // 'register' as a resetable dependency
-    return username.length
+    return username && username.length
       ? await request<UserType | MemberType>(
           getRoute(
             `get/${routes.user}/?username=${String(username)}${

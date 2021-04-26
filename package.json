@@ -2,6 +2,8 @@
   "name": "tape",
   "private": true,
   "scripts": {
+    "backend": "yarn workspace backend",
+    "frontend": "yarn workspace frontend",
     "start": "yarn wsrun dev",
     "lint": "yarn wsrun lint",
     "lint-fix": "yarn wsrun lint-fix",

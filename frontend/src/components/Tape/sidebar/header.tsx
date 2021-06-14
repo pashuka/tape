@@ -29,9 +29,8 @@ const Header = ({
 }: HeaderPropsType) => {
   const { t } = useTranslation();
   const history = useHistory();
-  const [ddRef, isVisible, setIsVisible] = useOutsideClick<HTMLDivElement>(
-    false,
-  );
+  const [ddRef, isVisible, setIsVisible] =
+    useOutsideClick<HTMLDivElement>(false);
   const searchRef = React.createRef<HTMLInputElement>();
   const { params } = useRouteMatch<QSParamsType>();
 
@@ -50,7 +49,7 @@ const Header = ({
   }, [params]);
 
   return (
-    <div className="dialog-header py-2 py-lg-3 px-2">
+    <div className="dialog-header py-2 py-lg-3 px-2 sticky-top bg-gray-200">
       <div className="input-group">
         <div className="input-group-prepend">
           <span

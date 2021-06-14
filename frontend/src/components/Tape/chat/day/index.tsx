@@ -28,7 +28,7 @@ const Day = ({ createdAt, prevDay, isScrolling, isSticky }: PropsType) => {
       }`}
     >
       <div className="mx-auto text-center pt-3 pb-3">
-        <small className="alert alert-success small font-weight-light p-1">
+        <small className="alert alert-success small font-weight-light p-1 shadow">
           {day.isToday()
             ? 'Today'
             : day.isYesterday()

@@ -23,17 +23,14 @@ type ContentPropsType = {
 };
 
 const Content = ({ iam, dialog }: ContentPropsType) => {
-  const refLastElement = React.createRef<HTMLDivElement>();
   const refContentElement = React.createRef<HTMLDivElement>();
   const [scrollOnTop, setScrollOnTop] = React.useState(false);
-  const [prevScrollHeight, setPrevScrollHeight] = React.useState(0);
+  const [prevOffset, setPrevOffset] = React.useState(0);
 
   const [offset, setOffset] = useRecoilState(messagesOffsetAtom);
   const { state, contents } = useRecoilValueLoadable(messagesState);
-  const {
-    state: lastMessageState,
-    contents: lastMessageContents,
-  } = useRecoilValueLoadable(lastReadMessage);
+  const { state: lastMessageState, contents: lastMessageContents } =
+    useRecoilValueLoadable(lastReadMessage);
   const [records, setRecords] = React.useState<MessageType[]>(
     [] as MessageType[],
   );
@@ -46,20 +43,15 @@ const Content = ({ iam, dialog }: ContentPropsType) => {
     { defer: true },
   );
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   React.useEffect(() => {
-    if (refContentElement.current) {
-      setPrevScrollHeight(refContentElement.current.scrollHeight);
-    }
-  });
-
-  React.useEffect(() => {
+    if (!refContentElement.current) return;
+    const el = refContentElement.current;
     if (offset === 0) {
-      refLastElement.current?.scrollIntoView();
-    } else if (records.length && refContentElement.current) {
-      refContentElement.current?.scrollTo({
+      el.scrollTop = el.scrollHeight;
+    } else if (records.length) {
+      el.scrollTo({
         left: 0,
-        top: refContentElement.current.scrollHeight - prevScrollHeight,
+        top: el.scrollHeight - prevOffset,
         behavior: 'auto',
       });
     }
@@ -79,6 +71,13 @@ const Content = ({ iam, dialog }: ContentPropsType) => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [state, contents]);
+
+  React.useEffect(() => {
+    if (prevOffset) {
+      setScrollOnTop(true);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [prevOffset]);
 
   React.useEffect(() => {
     if (
@@ -101,8 +100,11 @@ const Content = ({ iam, dialog }: ContentPropsType) => {
 
   const handleScroll = (e: React.UIEvent<HTMLElement>) => {
     const el = e.currentTarget;
+    // here we check current scroll offset at the top of chat content element screen
+    // if we check it for zero then we should fetch messages only if we scroll at the
+    // top of the screen, try to load messages little bit earlier
     if (el.scrollTop === 0) {
-      setScrollOnTop(true);
+      setPrevOffset(el.scrollHeight);
     } else {
       setScrollOnTop(false);
     }
@@ -124,9 +126,6 @@ const Content = ({ iam, dialog }: ContentPropsType) => {
         </div>
         <Messages messages={records} iam={iam} />
       </div>
-
-      {/* Scroll to last message */}
-      <div ref={refLastElement}></div>
     </div>
   );
 };

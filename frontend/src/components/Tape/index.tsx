@@ -33,9 +33,8 @@ const Messenger = ({ tab, route }: PropsType) => {
   const { t } = useTranslation();
   const { device } = useUserAgent();
   const [sidebarHeight, setSidebarHeight] = React.useState(0);
-  const [sidebarScrollOnBottom, setSidebarScrollOnBottom] = React.useState(
-    false,
-  );
+  const [sidebarScrollOnBottom, setSidebarScrollOnBottom] =
+    React.useState(false);
   const refNavbar = React.createRef<HTMLDivElement>();
 
   const eventsStatus = useRecoilValue(EventSourceStatusAtom);
@@ -155,17 +154,10 @@ const Messenger = ({ tab, route }: PropsType) => {
             }
             buttons={[
               <button
-                key="sign-out-button"
-                type="button"
-                className="btn btn-link"
-                disabled
-              >
-                {t('Sign Out')}
-              </button>,
-              <button
                 key="retry-now-button"
                 type="button"
                 className="btn btn-primary"
+                onClick={() => window.location.reload()}
               >
                 {t('Retry Now')}
               </button>,

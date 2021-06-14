@@ -23,11 +23,10 @@ const Messages = ({ messages, iam }: PropsType) => {
           ) : (
             <MessageLeft data={_} isAdmin={false} />
           );
-        const day = <Day createdAt={created_at} prevDay={prevDay} />;
         prevDay = created_at;
         return (
-          <React.Fragment key={index}>
-            {day}
+          <React.Fragment key={`message-${_.id}`}>
+            <Day isSticky={true} createdAt={created_at} prevDay={prevDay} />
             {message}
           </React.Fragment>
         );
